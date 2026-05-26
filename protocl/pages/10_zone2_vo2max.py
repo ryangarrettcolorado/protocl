@@ -10,12 +10,8 @@ from modules.data_loader import load_data, refresh_data
 from modules.charts import COLORS, apply_theme, metric_card_html
 
 
-st.set_page_config(page_title="Zone 2 / VO2max · Protocōl", page_icon="⚗️", layout="wide")
-
-from modules.theme import inject_css, render_sidebar_brand
+from modules.theme import inject_css, grouped_sections
 inject_css()
-render_sidebar_brand()
-
 # ────────────────────────────────────────────────────────────────────────────
 # Header
 # ────────────────────────────────────────────────────────────────────────────
@@ -79,7 +75,7 @@ st.markdown("")
 # ────────────────────────────────────────────────────────────────────────────
 # Tabs
 # ────────────────────────────────────────────────────────────────────────────
-tab_dose, tab_vo2, tab_efficiency, tab_protocol = st.tabs(
+tab_dose, tab_vo2, tab_efficiency, tab_protocol = grouped_sections(
     ["⏱️ Z2 Dose", "❤️ VO2max", "⚙️ Efficiency", "📖 Protocol Notes"]
 )
 

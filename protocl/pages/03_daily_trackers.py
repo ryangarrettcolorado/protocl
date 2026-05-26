@@ -10,12 +10,8 @@ from modules.data_loader import load_data, refresh_data, append_row
 from modules.charts import COLORS, apply_theme, metric_card_html
 
 
-st.set_page_config(page_title="Daily Trackers · Protocōl", page_icon="⚗️", layout="wide")
-
-from modules.theme import inject_css, render_sidebar_brand
+from modules.theme import inject_css, grouped_sections
 inject_css()
-render_sidebar_brand()
-
 # ────────────────────────────────────────────────────────────────────────────
 # Header
 # ────────────────────────────────────────────────────────────────────────────
@@ -61,7 +57,7 @@ st.markdown("")
 # ────────────────────────────────────────────────────────────────────────────
 # Tabs
 # ────────────────────────────────────────────────────────────────────────────
-tab_macros, tab_sleep, tab_hydration, tab_log, tab_add = st.tabs(
+tab_macros, tab_sleep, tab_hydration, tab_log, tab_add = grouped_sections(
     ["🍽️ Macros", "🌙 Sleep", "💧 Hydration", "📋 Log", "➕ Log Today"]
 )
 

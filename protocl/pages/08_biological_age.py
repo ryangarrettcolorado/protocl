@@ -16,12 +16,8 @@ from modules.bioage import (
 )
 
 
-st.set_page_config(page_title="Biological Age · Protocōl", page_icon="⚗️", layout="wide")
-
-from modules.theme import inject_css, render_sidebar_brand
+from modules.theme import inject_css, grouped_sections
 inject_css()
-render_sidebar_brand()
-
 # ────────────────────────────────────────────────────────────────────────────
 # Header
 # ────────────────────────────────────────────────────────────────────────────
@@ -86,7 +82,7 @@ st.markdown("")
 # ────────────────────────────────────────────────────────────────────────────
 # Tabs
 # ────────────────────────────────────────────────────────────────────────────
-tab_trend, tab_breakdown, tab_levers, tab_about = st.tabs(
+tab_trend, tab_breakdown, tab_levers, tab_about = grouped_sections(
     ["📈 Trend", "🔬 Biomarker Contributions", "🎚️ Sensitivity", "📖 About"]
 )
 

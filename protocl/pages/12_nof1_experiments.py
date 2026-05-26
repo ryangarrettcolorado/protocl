@@ -11,12 +11,8 @@ from modules.data_loader import load_data, refresh_data, write_json
 from modules.charts import COLORS, apply_theme, metric_card_html
 
 
-st.set_page_config(page_title="N=1 Experiments · Protocōl", page_icon="⚗️", layout="wide")
-
-from modules.theme import inject_css, render_sidebar_brand
+from modules.theme import inject_css, grouped_sections
 inject_css()
-render_sidebar_brand()
-
 # ────────────────────────────────────────────────────────────────────────────
 # Header
 # ────────────────────────────────────────────────────────────────────────────
@@ -85,7 +81,7 @@ def status_badge(status: str) -> str:
 # ────────────────────────────────────────────────────────────────────────────
 # Tabs
 # ────────────────────────────────────────────────────────────────────────────
-tab_active, tab_complete, tab_design, tab_about = st.tabs(
+tab_active, tab_complete, tab_design, tab_about = grouped_sections(
     ["🟡 Active", "✅ Completed", "➕ Design New", "📖 About"]
 )
 

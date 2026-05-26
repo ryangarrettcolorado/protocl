@@ -12,12 +12,8 @@ from modules.data_loader import load_data, refresh_data, append_row
 from modules.charts import COLORS, apply_theme, metric_card_html
 
 
-st.set_page_config(page_title="Body Composition · Protocōl", page_icon="⚗️", layout="wide")
-
-from modules.theme import inject_css, render_sidebar_brand
+from modules.theme import inject_css, grouped_sections
 inject_css()
-render_sidebar_brand()
-
 # ────────────────────────────────────────────────────────────────────────────
 # Header
 # ────────────────────────────────────────────────────────────────────────────
@@ -68,7 +64,7 @@ st.markdown("")
 # ────────────────────────────────────────────────────────────────────────────
 # Tabs
 # ────────────────────────────────────────────────────────────────────────────
-tab_trends, tab_recomp, tab_segmental, tab_table, tab_add = st.tabs(
+tab_trends, tab_recomp, tab_segmental, tab_table, tab_add = grouped_sections(
     ["📈 Trends", "🔀 Recomp View", "📊 Composition", "📋 All Scans", "➕ Add Scan"]
 )
 

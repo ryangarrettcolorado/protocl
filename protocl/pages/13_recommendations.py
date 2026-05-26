@@ -13,12 +13,8 @@ from modules.biomarker_aliases import display_name
 from modules.llm import llm_chat, llm_badge, is_configured
 
 
-st.set_page_config(page_title="Recommendations · Protocōl", page_icon="⚗️", layout="wide")
-
-from modules.theme import inject_css, render_sidebar_brand
+from modules.theme import inject_css, grouped_sections
 inject_css()
-render_sidebar_brand()
-
 # ────────────────────────────────────────────────────────────────────────────
 # Header
 # ────────────────────────────────────────────────────────────────────────────
@@ -188,7 +184,7 @@ st.markdown("")
 # ────────────────────────────────────────────────────────────────────────────
 # Tabs
 # ────────────────────────────────────────────────────────────────────────────
-tab_recs, tab_llm = st.tabs(["✅ Recommendations", "🤖 LLM Reasoning"])
+tab_recs, tab_llm = grouped_sections(["✅ Recommendations", "🤖 LLM Reasoning"])
 
 # ── Recs ────────────────────────────────────────────────────────────────────
 with tab_recs:

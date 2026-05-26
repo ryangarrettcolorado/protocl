@@ -16,12 +16,8 @@ from modules.charts import COLORS, metric_card_html
 from modules.biomarker_aliases import ALIASES
 
 
-st.set_page_config(page_title="Import Center · Protocōl", page_icon="⚗️", layout="wide")
-
-from modules.theme import inject_css, render_sidebar_brand
+from modules.theme import inject_css, grouped_sections
 inject_css()
-render_sidebar_brand()
-
 # ────────────────────────────────────────────────────────────────────────────
 # Header
 # ────────────────────────────────────────────────────────────────────────────
@@ -261,7 +257,7 @@ st.markdown("")
 # ────────────────────────────────────────────────────────────────────────────
 # Tabs
 # ────────────────────────────────────────────────────────────────────────────
-tab_upload, tab_templates, tab_log, tab_about = st.tabs(
+tab_upload, tab_templates, tab_log, tab_about = grouped_sections(
     ["📥 Upload", "📄 Templates", "📜 Import log", "ℹ️ About"]
 )
 

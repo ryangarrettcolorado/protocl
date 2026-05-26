@@ -1,0 +1,75 @@
+{
+  "schema_version": 1,
+  "profile": {
+    "display_name": "Ryan",
+    "biological_sex": "male",
+    "date_of_birth": "1983-11-14",
+    "timezone": "America/Denver"
+  },
+  "persona": "custom",
+  "visible_pages": [
+    "home",
+    "action_items",
+    "daily_trackers",
+    "bloodwork",
+    "body_composition",
+    "cgm_glucose",
+    "wearables",
+    "biological_age",
+    "training_activity",
+    "zone2_vo2max",
+    "protocol",
+    "nof1_experiments",
+    "recommendations",
+    "risks_alerts",
+    "clinician_summary",
+    "timeline",
+    "imports",
+    "settings"
+  ],
+  "home_layout": {
+    "rows_visible": [
+      "status",
+      "alerts",
+      "attention",
+      "trends",
+      "changes",
+      "recommendations",
+      "clinician"
+    ],
+    "row_order": [
+      "status",
+      "alerts",
+      "attention",
+      "trends",
+      "changes",
+      "recommendations",
+      "clinician"
+    ],
+    "pinned_biomarkers": [
+      "apob_mg_dl",
+      "hba1c_pct",
+      "testosterone_free_pg_ml",
+      "hscrp_mg_l",
+      "vitamin_d_ng_ml"
+    ]
+  },
+  "ranges": {
+    "default_view": "overlay",
+    "personal_targets": {}
+  },
+  "appearance": {
+    "theme": "dark",
+    "accent_color": "gold",
+    "density": "comfortable"
+  },
+  "notifications_v2_stub": {
+    "channels": ["in_app", "email"],
+    "severity_threshold": "warning",
+    "digest_cadence": "weekly"
+  },
+  "_meta": {
+    "created_at": null,
+    "updated_at": null
+  }
+}

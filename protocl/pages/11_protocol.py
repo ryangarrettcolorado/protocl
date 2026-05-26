@@ -13,12 +13,8 @@ from modules.charts import COLORS, apply_theme, metric_card_html
 from modules.biomarker_aliases import display_name
 
 
-st.set_page_config(page_title="Protocol · Protocōl", page_icon="⚗️", layout="wide")
-
-
-from modules.theme import inject_css, render_sidebar_brand
+from modules.theme import inject_css, grouped_sections
 inject_css()
-render_sidebar_brand()
 col_title, col_refresh = st.columns([6, 1])
 with col_title:
     st.title("Protocol")
@@ -79,7 +75,7 @@ st.markdown("")
 # Tabs
 # ────────────────────────────────────────────────────────────────────────────
 
-tab_active, tab_timeline, tab_log, tab_effect, tab_add = st.tabs(
+tab_active, tab_timeline, tab_log, tab_effect, tab_add = grouped_sections(
     ["Active Protocol", "Timeline (Gantt)", "Change Log", "Effectiveness", "+ Add Item"]
 )
 

@@ -10,12 +10,8 @@ from modules.data_loader import load_data, refresh_data
 from modules.charts import COLORS, apply_theme, metric_card_html
 
 
-st.set_page_config(page_title="CGM · Protocōl", page_icon="⚗️", layout="wide")
-
-from modules.theme import inject_css, render_sidebar_brand
+from modules.theme import inject_css, grouped_sections
 inject_css()
-render_sidebar_brand()
-
 # ────────────────────────────────────────────────────────────────────────────
 # Header
 # ────────────────────────────────────────────────────────────────────────────
@@ -80,7 +76,7 @@ st.markdown("")
 # ────────────────────────────────────────────────────────────────────────────
 # Tabs
 # ────────────────────────────────────────────────────────────────────────────
-tab_agp, tab_daily, tab_dist, tab_meals, tab_ketones = st.tabs(
+tab_agp, tab_daily, tab_dist, tab_meals, tab_ketones = grouped_sections(
     ["📉 AGP Curve", "📅 Daily Traces", "📊 Distribution", "🍽️ Meal Response", "🟣 Ketones / GKI"]
 )
 

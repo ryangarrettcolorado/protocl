@@ -11,12 +11,8 @@ from modules.data_loader import load_data, refresh_data, append_row, DATA_DIR, D
 from modules.charts import COLORS, metric_card_html
 
 
-st.set_page_config(page_title="Action Items · Protocōl", page_icon="⚗️", layout="wide")
-
-from modules.theme import inject_css, render_sidebar_brand
+from modules.theme import inject_css, grouped_sections
 inject_css()
-render_sidebar_brand()
-
 # ────────────────────────────────────────────────────────────────────────────
 # Header
 # ────────────────────────────────────────────────────────────────────────────
@@ -84,7 +80,7 @@ st.markdown("")
 # ────────────────────────────────────────────────────────────────────────────
 # Tabs
 # ────────────────────────────────────────────────────────────────────────────
-tab_board, tab_table, tab_add = st.tabs(["📋 Board", "📊 Table", "➕ New Item"])
+tab_board, tab_table, tab_add = grouped_sections(["📋 Board", "📊 Table", "➕ New Item"])
 
 # ── Helpers ─────────────────────────────────────────────────────────────────
 def priority_pill(priority: str) -> str:
