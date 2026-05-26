@@ -1,0 +1,61 @@
+{
+  "_meta": {
+    "description": "Canonical biomarker reference ranges for Protocōl. Each entry includes both the lab reference range and an expert-derived 'optimal' range with the source and confidence tier.",
+    "version": "1.0",
+    "last_updated": "2026-05-25"
+  },
+
+  "total_cholesterol_mg_dl":  {"panel": "lipids", "unit": "mg/dL", "lab_low": 125, "lab_high": 200, "optimal_low": 150, "optimal_high": 200, "source": "Dr. Peter Attia (Outlive)", "source_url": "https://peterattiamd.com", "tier": "T3"},
+  "ldl_c_mg_dl":              {"panel": "lipids", "unit": "mg/dL", "lab_low": 0,   "lab_high": 100, "optimal_low": 0,   "optimal_high": 80,  "source": "Dr. Peter Attia / Dr. Thomas Dayspring", "source_url": "https://peterattiamd.com/category/lipidology/", "tier": "T2"},
+  "hdl_c_mg_dl":              {"panel": "lipids", "unit": "mg/dL", "lab_low": 40,  "lab_high": 100, "optimal_low": 55,  "optimal_high": 90,  "source": "Dr. Thomas Dayspring NMR Lipidology", "source_url": "https://www.lipidcenter.com", "tier": "T3"},
+  "triglycerides_mg_dl":      {"panel": "lipids", "unit": "mg/dL", "lab_low": 0,   "lab_high": 150, "optimal_low": 40,  "optimal_high": 80,  "source": "Dr. Peter Attia", "source_url": "https://peterattiamd.com", "tier": "T2"},
+  "apob_mg_dl":               {"panel": "lipids", "unit": "mg/dL", "lab_low": 40,  "lab_high": 125, "optimal_low": 40,  "optimal_high": 70,  "source": "Dr. Peter Attia (Outlive)", "source_url": "https://peterattiamd.com/category/lipidology/", "tier": "T2"},
+  "lp_a_nmol_l":              {"panel": "lipids", "unit": "nmol/L", "lab_low": 0,  "lab_high": 75,  "optimal_low": 0,   "optimal_high": 50,  "source": "Dr. Peter Attia", "source_url": "https://peterattiamd.com", "tier": "T3"},
+
+  "alt_u_l":                  {"panel": "liver", "unit": "U/L", "lab_low": 0,  "lab_high": 55,  "optimal_low": 10, "optimal_high": 25, "source": "Dr. Rhonda Patrick / FoundMyFitness", "source_url": "https://www.foundmyfitness.com", "tier": "T3"},
+  "ast_u_l":                  {"panel": "liver", "unit": "U/L", "lab_low": 0,  "lab_high": 48,  "optimal_low": 10, "optimal_high": 25, "source": "Dr. Rhonda Patrick", "source_url": "https://www.foundmyfitness.com", "tier": "T3"},
+  "alp_u_l":                  {"panel": "liver", "unit": "U/L", "lab_low": 40, "lab_high": 129, "optimal_low": 50, "optimal_high": 80, "source": "PhenoAge (Levine et al. 2018)", "source_url": "https://pubmed.ncbi.nlm.nih.gov/29676998/", "tier": "T1"},
+  "ggt_u_l":                  {"panel": "liver", "unit": "U/L", "lab_low": 0,  "lab_high": 55,  "optimal_low": 10, "optimal_high": 25, "source": "Dr. Peter Attia", "source_url": "https://peterattiamd.com", "tier": "T3"},
+  "albumin_g_dl":             {"panel": "liver", "unit": "g/dL", "lab_low": 3.5, "lab_high": 5.0, "optimal_low": 4.4, "optimal_high": 5.0, "source": "PhenoAge (Levine 2018)", "source_url": "https://pubmed.ncbi.nlm.nih.gov/29676998/", "tier": "T1"},
+
+  "creatinine_mg_dl":         {"panel": "kidney", "unit": "mg/dL", "lab_low": 0.7, "lab_high": 1.3, "optimal_low": 0.8, "optimal_high": 1.1, "source": "PhenoAge (Levine 2018)", "source_url": "https://pubmed.ncbi.nlm.nih.gov/29676998/", "tier": "T1"},
+  "bun_mg_dl":                {"panel": "kidney", "unit": "mg/dL", "lab_low": 6,   "lab_high": 24,  "optimal_low": 10,  "optimal_high": 18,  "source": "Functional medicine consensus", "source_url": "https://www.ifm.org", "tier": "T3"},
+  "egfr_ml_min":              {"panel": "kidney", "unit": "mL/min", "lab_low": 60, "lab_high": 200, "optimal_low": 90, "optimal_high": 200, "source": "KDIGO Guidelines", "source_url": "https://kdigo.org", "tier": "T2"},
+  "uric_acid_mg_dl":          {"panel": "kidney", "unit": "mg/dL", "lab_low": 3.5, "lab_high": 7.2, "optimal_low": 3.5, "optimal_high": 5.5, "source": "Dr. Peter Attia", "source_url": "https://peterattiamd.com", "tier": "T3"},
+
+  "testosterone_total_ng_dl": {"panel": "hormones", "unit": "ng/dL", "lab_low": 264, "lab_high": 916, "optimal_low": 800, "optimal_high": 1100, "source": "Defy Medical / Dr. Keith Nichols", "source_url": "https://www.defymedical.com", "tier": "T3"},
+  "testosterone_free_pg_ml":  {"panel": "hormones", "unit": "pg/mL", "lab_low": 8.7, "lab_high": 25.1, "optimal_low": 20, "optimal_high": 30, "source": "Defy Medical", "source_url": "https://www.defymedical.com", "tier": "T3"},
+  "shbg_nmol_l":              {"panel": "hormones", "unit": "nmol/L", "lab_low": 10, "lab_high": 57, "optimal_low": 20, "optimal_high": 35, "source": "Defy Medical", "source_url": "https://www.defymedical.com", "tier": "T3"},
+  "estradiol_pg_ml":           {"panel": "hormones", "unit": "pg/mL", "lab_low": 7, "lab_high": 42, "optimal_low": 20, "optimal_high": 35, "source": "Defy Medical / Elite HRT", "source_url": "https://www.elitehrt.com", "tier": "T3"},
+  "dhea_s_ug_dl":             {"panel": "hormones", "unit": "ug/dL", "lab_low": 71, "lab_high": 375, "optimal_low": 350, "optimal_high": 500, "source": "Functional medicine consensus", "source_url": "https://www.ifm.org", "tier": "T3"},
+  "cortisol_am_ug_dl":        {"panel": "hormones", "unit": "ug/dL", "lab_low": 6.2, "lab_high": 19.4, "optimal_low": 10, "optimal_high": 15, "source": "Functional medicine consensus", "source_url": "https://www.ifm.org", "tier": "T3"},
+  "igf_1_ng_ml":              {"panel": "hormones", "unit": "ng/mL", "lab_low": 88, "lab_high": 246, "optimal_low": 120, "optimal_high": 200, "source": "Dr. Peter Attia (longevity tradeoff)", "source_url": "https://peterattiamd.com", "tier": "T3"},
+
+  "tsh_uiu_ml":               {"panel": "thyroid", "unit": "uIU/mL", "lab_low": 0.45, "lab_high": 4.5, "optimal_low": 0.5, "optimal_high": 2.0, "source": "Functional medicine consensus", "source_url": "https://www.ifm.org", "tier": "T3"},
+  "free_t4_ng_dl":            {"panel": "thyroid", "unit": "ng/dL", "lab_low": 0.82, "lab_high": 1.77, "optimal_low": 1.1, "optimal_high": 1.5, "source": "Functional medicine consensus", "source_url": "https://www.ifm.org", "tier": "T3"},
+  "free_t3_pg_ml":            {"panel": "thyroid", "unit": "pg/mL", "lab_low": 2.0,  "lab_high": 4.4,  "optimal_low": 3.2, "optimal_high": 4.2, "source": "Functional medicine consensus", "source_url": "https://www.ifm.org", "tier": "T3"},
+  "reverse_t3_ng_dl":         {"panel": "thyroid", "unit": "ng/dL", "lab_low": 9.2,  "lab_high": 24.1, "optimal_low": 9, "optimal_high": 15, "source": "Functional medicine consensus", "source_url": "https://www.ifm.org", "tier": "T3"},
+
+  "glucose_mg_dl":            {"panel": "glucose_insulin", "unit": "mg/dL", "lab_low": 70, "lab_high": 99,  "optimal_low": 72, "optimal_high": 85, "source": "Dr. Casey Means / Levels Health", "source_url": "https://www.levelshealth.com", "tier": "T3"},
+  "hba1c_pct":                {"panel": "glucose_insulin", "unit": "%",    "lab_low": 4.0, "lab_high": 5.6, "optimal_low": 4.4, "optimal_high": 5.1, "source": "Dr. Robert Lustig", "source_url": "https://robertlustig.com", "tier": "T3"},
+  "fasting_insulin_uiu_ml":   {"panel": "glucose_insulin", "unit": "uIU/mL", "lab_low": 2, "lab_high": 25, "optimal_low": 2, "optimal_high": 5, "source": "Dr. Ben Bikman", "source_url": "https://www.benbikman.com", "tier": "T2"},
+  "homa_ir":                  {"panel": "glucose_insulin", "unit": "ratio", "lab_low": 0.5, "lab_high": 2.0, "optimal_low": 0.5, "optimal_high": 1.0, "source": "Dr. Ben Bikman", "source_url": "https://www.benbikman.com", "tier": "T2"},
+
+  "wbc_k_ul":                 {"panel": "hematology", "unit": "K/uL", "lab_low": 3.4, "lab_high": 10.8, "optimal_low": 4.0, "optimal_high": 6.0, "source": "PhenoAge (Levine 2018)", "source_url": "https://pubmed.ncbi.nlm.nih.gov/29676998/", "tier": "T1"},
+  "rbc_m_ul":                 {"panel": "hematology", "unit": "M/uL", "lab_low": 4.14, "lab_high": 5.80, "optimal_low": 4.5, "optimal_high": 5.5, "source": "Functional medicine consensus", "source_url": "https://www.ifm.org", "tier": "T3"},
+  "hemoglobin_g_dl":          {"panel": "hematology", "unit": "g/dL", "lab_low": 13.0, "lab_high": 17.7, "optimal_low": 14.0, "optimal_high": 16.5, "source": "Functional medicine consensus", "source_url": "https://www.ifm.org", "tier": "T3"},
+  "hematocrit_pct":           {"panel": "hematology", "unit": "%", "lab_low": 38.5, "lab_high": 52.0, "optimal_low": 42.0, "optimal_high": 48.0, "source": "Defy Medical (TRT polycythemia risk)", "source_url": "https://www.defymedical.com", "tier": "T3"},
+  "mcv_fl":                   {"panel": "hematology", "unit": "fL", "lab_low": 79, "lab_high": 97, "optimal_low": 85, "optimal_high": 92, "source": "PhenoAge (Levine 2018)", "source_url": "https://pubmed.ncbi.nlm.nih.gov/29676998/", "tier": "T1"},
+  "rdw_pct":                  {"panel": "hematology", "unit": "%", "lab_low": 11.5, "lab_high": 14.5, "optimal_low": 11.5, "optimal_high": 13.0, "source": "PhenoAge (Levine 2018)", "source_url": "https://pubmed.ncbi.nlm.nih.gov/29676998/", "tier": "T1"},
+  "lymphocytes_pct":          {"panel": "hematology", "unit": "%", "lab_low": 14, "lab_high": 46, "optimal_low": 25, "optimal_high": 40, "source": "PhenoAge (Levine 2018)", "source_url": "https://pubmed.ncbi.nlm.nih.gov/29676998/", "tier": "T1"},
+  "ferritin_ng_ml":           {"panel": "hematology", "unit": "ng/mL", "lab_low": 30, "lab_high": 400, "optimal_low": 60, "optimal_high": 150, "source": "Dr. Rhonda Patrick", "source_url": "https://www.foundmyfitness.com", "tier": "T3"},
+
+  "hscrp_mg_l":               {"panel": "inflammation", "unit": "mg/L", "lab_low": 0, "lab_high": 3.0, "optimal_low": 0, "optimal_high": 0.8, "source": "Dr. Peter Attia", "source_url": "https://peterattiamd.com", "tier": "T2"},
+  "homocysteine_umol_l":      {"panel": "inflammation", "unit": "umol/L", "lab_low": 0, "lab_high": 15, "optimal_low": 5, "optimal_high": 8, "source": "Dr. Rhonda Patrick", "source_url": "https://www.foundmyfitness.com", "tier": "T2"},
+
+  "vitamin_d_ng_ml":          {"panel": "vitamins_minerals", "unit": "ng/mL", "lab_low": 30, "lab_high": 100, "optimal_low": 50, "optimal_high": 80, "source": "GrassrootsHealth", "source_url": "https://www.grassrootshealth.net", "tier": "T2"},
+  "vitamin_b12_pg_ml":        {"panel": "vitamins_minerals", "unit": "pg/mL", "lab_low": 200, "lab_high": 1100, "optimal_low": 600, "optimal_high": 1000, "source": "Functional medicine consensus", "source_url": "https://www.ifm.org", "tier": "T3"},
+  "folate_ng_ml":             {"panel": "vitamins_minerals", "unit": "ng/mL", "lab_low": 3.0, "lab_high": 20.0, "optimal_low": 10, "optimal_high": 20, "source": "Functional medicine consensus", "source_url": "https://www.ifm.org", "tier": "T3"},
+  "magnesium_rbc_mg_dl":      {"panel": "vitamins_minerals", "unit": "mg/dL", "lab_low": 4.2, "lab_high": 6.8, "optimal_low": 6.0, "optimal_high": 6.8, "source": "Dr. Carolyn Dean", "source_url": "https://drcarolyndean.com", "tier": "T4"},
+  "omega_3_index_pct":        {"panel": "cardiovascular", "unit": "%", "lab_low": 4, "lab_high": 12, "optimal_low": 8, "optimal_high": 12, "source": "Omega-3 Index research (Dr. Bill Harris)", "source_url": "https://omegaquant.com", "tier": "T2"}
+}

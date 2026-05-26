@@ -1,0 +1,14 @@
+start_date,end_date,category,name,dose,unit,frequency,route,timing,reason,prescriber,cycle_status,adherence_pct,notes
+2025-08-01,,hormone,Testosterone Cypionate,160,mg,weekly (split E3.5D),subq injection,Mon/Thu AM,TRT — restore physiologic levels,Defy Medical,active,100,0.16 mL × 2 per week
+2025-09-15,,hormone,Anastrozole,0.25,mg,as needed (E2 control),oral,with TRT dose,Manage estradiol on TRT,Defy Medical,active,80,Only when E2 > 35
+2026-02-01,,peptide,BPC-157,250,mcg,daily,subq injection,"AM, near injury site",Connective tissue repair (shoulder),compounding pharmacy,active,95,8-week cycle
+2026-03-10,,peptide,CJC-1295 / Ipamorelin,300/300,mcg,5 nights/week,subq injection,"bedtime, fasted","GH pulse support, body comp, sleep",compounding pharmacy,active,90,"5-on, 2-off"
+2025-06-01,,supplement,Creatine Monohydrate,5,g,daily,oral,any time,"Strength, cognitive support, longevity",self,active,98,
+2025-06-01,,supplement,Omega-3 (EPA/DHA),3,g,daily,oral,with meals,"CV health, omega-3 index target",self,active,95,Nordic Naturals Ultimate Omega
+2025-06-01,,supplement,Vitamin D3 + K2,5000/200,IU/mcg,daily,oral,with breakfast (fat),Vit D target 60-80,self,active,95,
+2025-06-01,,supplement,Magnesium Glycinate,400,mg,daily,oral,bedtime,"RBC Mg target, sleep quality",self,active,95,
+2025-09-01,,supplement,Berberine,500,mg,2x daily with carb meals,oral,lunch + dinner,Glucose / insulin sensitivity,self,active,85,
+2025-10-01,,supplement,Rapamycin,6,mg,weekly,oral,Sunday AM fasted,Longevity / mTOR cycling,AgelessRx,active,100,8-week on / 4-week off pattern
+2025-06-01,2025-09-30,supplement,Ashwagandha (KSM-66),600,mg,daily,oral,PM,Cortisol control during high-stress period,self,completed,90,Discontinued after cortisol normalized
+2025-07-15,2025-12-15,peptide,Tesamorelin,1,mg,daily,subq injection,AM fasted,Visceral fat reduction trial,compounding pharmacy,completed,92,5-month cycle complete
+2025-08-01,2025-09-15,supplement,DIM,200,mg,daily,oral,AM,E2 management before anastrozole,self,completed,100,Replaced by anastrozole

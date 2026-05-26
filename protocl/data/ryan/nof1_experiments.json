@@ -1,0 +1,168 @@
+[
+  {
+    "id": "exp_001",
+    "title": "Berberine 1000mg/day vs baseline \u2014 fasting glucose",
+    "hypothesis": "If I take 500mg berberine 2x/day with carb meals, fasting glucose will drop by \u22655 mg/dL over 8 weeks.",
+    "intervention": {
+      "name": "Berberine",
+      "type": "supplement",
+      "dose": "500mg 2x daily",
+      "frequency": "with lunch + dinner",
+      "start_date": "2025-09-01",
+      "end_date": "2025-10-27"
+    },
+    "washout_period_days": 14,
+    "control_period": {
+      "start_date": "2025-07-15",
+      "end_date": "2025-08-28"
+    },
+    "primary_outcome": {
+      "metric": "glucose_mg_dl (fasting)",
+      "source": "bloodwork",
+      "direction": "decrease",
+      "minimum_effect_size": "5 mg/dL"
+    },
+    "secondary_outcomes": [
+      "hba1c_pct",
+      "homa_ir"
+    ],
+    "confounders_to_control": [
+      "sleep_hrs",
+      "training_load",
+      "stress_notes"
+    ],
+    "blinding": "none",
+    "crossover_periods": 1,
+    "measurement_frequency": "on_draw",
+    "status": "complete",
+    "results": {
+      "baseline_mean": 92.0,
+      "intervention_mean": 84.0,
+      "delta": -8.0,
+      "delta_pct": -8.7,
+      "cohens_d": 1.42,
+      "verdict": "likely_beneficial",
+      "confidence": "high",
+      "notes": "Glucose dropped 8 mg/dL; HOMA-IR halved. Continuing protocol."
+    },
+    "sources_informing_design": [
+      {
+        "name": "Yin et al. 2008 \u2014 Metformin vs Berberine RCT",
+        "url": "https://pubmed.ncbi.nlm.nih.gov/18397984/",
+        "tier": "T1"
+      }
+    ],
+    "created_date": "2025-08-25",
+    "last_updated": "2025-11-10"
+  },
+  {
+    "id": "exp_002",
+    "title": "Methylene Blue 10mg AM \u2014 cognitive + HRV response",
+    "hypothesis": "If I take 10mg MB in the morning, subjective focus + HRV will improve over 4 weeks.",
+    "intervention": {
+      "name": "Methylene Blue (USP)",
+      "type": "supplement",
+      "dose": "10mg",
+      "frequency": "daily AM",
+      "start_date": "2026-01-05",
+      "end_date": "2026-02-02"
+    },
+    "washout_period_days": 14,
+    "control_period": {
+      "start_date": "2025-11-20",
+      "end_date": "2025-12-22"
+    },
+    "primary_outcome": {
+      "metric": "hrv_sdnn_ms (7-day avg)",
+      "source": "wearable",
+      "direction": "increase",
+      "minimum_effect_size": "5 ms"
+    },
+    "secondary_outcomes": [
+      "subjective_focus_1_10"
+    ],
+    "confounders_to_control": [
+      "sleep_hrs",
+      "caffeine_intake"
+    ],
+    "blinding": "none",
+    "crossover_periods": 1,
+    "measurement_frequency": "daily",
+    "status": "complete",
+    "results": {
+      "baseline_mean": 62.4,
+      "intervention_mean": 64.1,
+      "delta": 1.7,
+      "delta_pct": 2.7,
+      "cohens_d": 0.28,
+      "verdict": "inconclusive",
+      "confidence": "low",
+      "notes": "Subjective focus mildly improved but HRV change within noise. Inconclusive \u2014 would need longer trial."
+    },
+    "sources_informing_design": [
+      {
+        "name": "Tucker et al. 2018 \u2014 Mitochondrial effects of MB",
+        "url": "https://pubmed.ncbi.nlm.nih.gov/29554500/",
+        "tier": "T3"
+      }
+    ],
+    "created_date": "2025-12-28",
+    "last_updated": "2026-02-05"
+  },
+  {
+    "id": "exp_003",
+    "title": "CJC-1295/Ipamorelin nightly \u2014 body comp + sleep",
+    "hypothesis": "If I run 300/300 mcg nightly for 12 weeks, lean mass will increase by \u22652 lbs and deep sleep by \u226510%.",
+    "intervention": {
+      "name": "CJC-1295 + Ipamorelin",
+      "type": "peptide",
+      "dose": "300mcg / 300mcg",
+      "frequency": "5 nights/week bedtime fasted",
+      "start_date": "2026-03-10",
+      "end_date": "2026-06-02"
+    },
+    "washout_period_days": 21,
+    "control_period": {
+      "start_date": "2025-12-15",
+      "end_date": "2026-02-17"
+    },
+    "primary_outcome": {
+      "metric": "lean_mass_lbs",
+      "source": "inbody",
+      "direction": "increase",
+      "minimum_effect_size": "2 lbs"
+    },
+    "secondary_outcomes": [
+      "sleep_deep_hrs",
+      "igf_1_ng_ml"
+    ],
+    "confounders_to_control": [
+      "protein_g",
+      "training_load",
+      "sleep_hrs"
+    ],
+    "blinding": "none",
+    "crossover_periods": 1,
+    "measurement_frequency": "weekly",
+    "status": "active",
+    "results": {
+      "baseline_mean": null,
+      "intervention_mean": null,
+      "delta": null,
+      "delta_pct": null,
+      "cohens_d": null,
+      "verdict": "inconclusive",
+      "confidence": "low",
+      "notes": "In progress \u2014 11/12 weeks complete."
+    },
+    "sources_informing_design": [
+      {
+        "name": "Sigalos & Pastuszak 2018 \u2014 GHRP safety",
+        "url": "https://pubmed.ncbi.nlm.nih.gov/29463274/",
+        "tier": "T3"
+      }
+    ],
+    "created_date": "2026-03-05",
+    "last_updated": "2026-05-20"
+  }
+]
