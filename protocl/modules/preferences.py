@@ -34,7 +34,7 @@ PERSONA_PRESETS: dict[str, dict[str, Any]] = {
         "visible_pages": [
             "home", "action_items", "daily_trackers",
             "bloodwork", "body_composition", "cgm_glucose", "wearables",
-            "training_activity", "zone2_vo2max",
+            "training_activity", "strava_cycling", "zone2_vo2max",
             "protocol", "nof1_experiments", "recommendations",
             "timeline", "imports", "settings", "integrations",
         ],
@@ -48,7 +48,7 @@ PERSONA_PRESETS: dict[str, dict[str, Any]] = {
             "home", "action_items", "daily_trackers",
             "bloodwork", "body_composition", "cgm_glucose", "wearables",
             "biological_age",
-            "training_activity", "zone2_vo2max",
+            "training_activity", "strava_cycling", "zone2_vo2max",
             "protocol", "nof1_experiments", "recommendations", "risks_alerts",
             "clinician_summary", "timeline", "imports", "settings", "integrations",
         ],

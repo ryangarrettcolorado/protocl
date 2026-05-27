@@ -17,6 +17,7 @@
     "wearables",
     "biological_age",
     "training_activity",
+    "strava_cycling",
     "zone2_vo2max",
     "protocol",
     "nof1_experiments",
