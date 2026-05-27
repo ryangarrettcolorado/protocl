@@ -32,24 +32,47 @@ h1, h2, h3, h4 { letter-spacing: -0.01em; }
 /* ── Top brand bar (replaces sidebar brand) ────────────────────────────── */
 .protocl-top-brand {
     display: flex;
-    align-items: baseline;
-    gap: 12px;
-    padding: 14px 1rem 14px;
-    border-bottom: 1px solid rgba(255,182,18,0.10);
+    align-items: center;
+    gap: 18px;
+    padding: 22px 1rem 20px;
+    border-bottom: 1px solid rgba(255,182,18,0.14);
     /* Streamlit's deploy/share toolbar sits ~36px tall in the top-right.
        Push the brand down enough that it never tucks under it. */
-    margin: 2.5rem -1rem 1.25rem;
+    margin: 2.5rem -1rem 1.5rem;
+}
+.protocl-mark {
+    flex: 0 0 auto;
+    width: 48px;
+    height: 48px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    filter: drop-shadow(0 0 12px rgba(255,182,18,0.25));
+}
+.protocl-mark svg { width: 100%; height: 100%; display: block; }
+.protocl-brand-stack {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    line-height: 1.1;
 }
 .protocl-brand {
     color: #FFB612;
     font-weight: 800;
-    font-size: 1.25rem;
-    letter-spacing: 0.02em;
+    font-size: 2.35rem;
+    letter-spacing: 0.005em;
+    line-height: 1;
 }
 .protocl-tagline {
-    color: #A0A0A0;
-    font-size: 0.78rem;
+    color: #B8B8B8;
+    font-size: 0.92rem;
     font-style: italic;
+    letter-spacing: 0.01em;
+}
+@media (max-width: 640px) {
+    .protocl-mark { width: 38px; height: 38px; }
+    .protocl-brand { font-size: 1.7rem; }
+    .protocl-tagline { font-size: 0.8rem; }
 }
 
 /* ── KPI metric cards ──────────────────────────────────────────────────── */
@@ -233,10 +256,33 @@ def render_top_brand(tagline: str = "Your data. Your protocol. Your proof.") -> 
     Streamlit renders ``st.navigation`` once per session at the entry point,
     so this needs to be called from ``app.py`` (not from individual pages).
     """
+    # Custom inline SVG mark: hexagonal molecular node (data + biology) with
+    # an inner double-helix curve. Echoes the macron-O in "Protocōl".
+    mark_svg = (
+        '<svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" '
+        'aria-hidden="true" role="img">'
+        # outer hexagon
+        '<path d="M32 3.5 L57 17.75 L57 46.25 L32 60.5 L7 46.25 L7 17.75 Z" '
+        'fill="none" stroke="#FFB612" stroke-width="2.5" stroke-linejoin="round"/>'
+        # inner ring (data node)
+        '<circle cx="32" cy="32" r="6" fill="#FFB612"/>'
+        # helix-style arcs through the node
+        '<path d="M16 22 Q32 32 48 22" fill="none" stroke="#FFB612" '
+        'stroke-width="2" stroke-linecap="round" opacity="0.85"/>'
+        '<path d="M16 42 Q32 32 48 42" fill="none" stroke="#FFB612" '
+        'stroke-width="2" stroke-linecap="round" opacity="0.85"/>'
+        # vertex accents
+        '<circle cx="32" cy="3.5" r="1.8" fill="#FFB612"/>'
+        '<circle cx="32" cy="60.5" r="1.8" fill="#FFB612"/>'
+        '</svg>'
+    )
     st.markdown(
         f'<div class="protocl-top-brand">'
-        f'<span class="protocl-brand">⚗️ Protocōl</span>'
+        f'<span class="protocl-mark">{mark_svg}</span>'
+        f'<span class="protocl-brand-stack">'
+        f'<span class="protocl-brand">Protocōl</span>'
         f'<span class="protocl-tagline">{tagline}</span>'
+        f'</span>'
         f'</div>',
         unsafe_allow_html=True,
     )
