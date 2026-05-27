@@ -1,1 +1,6 @@
 timestamp,source_type,filename,rows_imported,rows_skipped_duplicate,errors,imported_by
+2026-05-27T01:35:20,bloodwork_pdf,Ryan-Bloodtest.pdf,106,0,,migrate_real_data.py
+2026-05-27T01:35:20,inbody_csv,InBody-20260526.csv,29,0,,migrate_real_data.py
+2026-05-27T01:35:20,protocol_md,weekly_peptide_supplement_protocol_v3.md,29,0,,migrate_real_data.py
+2026-05-27T01:35:20,apple_health_gpx,route_*.gpx (6 files),6,0,,migrate_real_data.py
+2026-05-27T01:35:20,apple_health_ecg,ecg_*.csv (4 files),4,0,,migrate_real_data.py

@@ -1,4 +1,6 @@
 date,category,note
-2026-04-10,travel,"5-day trip to Phoenix — disrupted sleep, glucose elevated"
-2026-04-25,deload,Planned training deload week
-2026-05-13,illness,"Mild cold, 3 days reduced training intensity"
+2020-04-14,ecg,"Apple Watch ECG (Watch5,2): Classification = Sinus Rhythm; symptoms = none; sample rate ≈ 511.18 hertz"
+2020-04-15,ecg,"Apple Watch ECG (Watch5,2): Classification = Sinus Rhythm; symptoms = none; sample rate ≈ 511.18 hertz"
+2024-03-26,ecg,"Apple Watch ECG (Watch5,2): Classification = Sinus Rhythm; symptoms = none; sample rate ≈ 511.18 hertz"
+2024-09-21,ecg,"Apple Watch ECG (Watch7,5): Classification = Sinus Rhythm; symptoms = none; sample rate ≈ 512 hertz"
+2026-05-27,data_migration,"v1.5 dummy data replaced with real personal data: LabCorp panel 2025-09-30 + 2025-06-20, 19 InBody scans, full v3 protocol, Apple Health GPX routes (6) + ECG (4). Apple Health export.zip still needed for sleep/HR/HRV/steps → wearables.csv."

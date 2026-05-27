@@ -90,6 +90,29 @@ ALIASES: dict[str, list[str]] = {
     # Cardiovascular
     "lp_pla2_ng_ml": ["lp-pla2"],
     "omega_3_index_pct": ["omega-3 index"],
+    "psa_ng_ml": ["psa", "prostate specific ag", "prostate specific antigen", "prostate-specific ag"],
+
+    # Lipids (extended)
+    "vldl_c_mg_dl": ["vldl", "vldl cholesterol", "vldl cholesterol cal"],
+
+    # CBC (extended)
+    "mch_pg": ["mch", "mean corpuscular hemoglobin"],
+    "mchc_g_dl": ["mchc"],
+    "neutrophils_abs_k_ul": ["neutrophils (absolute)", "neuts abs"],
+    "lymphocytes_abs_k_ul": ["lymphs (absolute)", "lymphocytes absolute"],
+    "monocytes_pct": ["monocytes", "monocytes %"],
+    "eosinophils_pct": ["eos", "eos %", "eosinophils"],
+    "basophils_pct": ["basos", "basos %", "basophils"],
+
+    # CMP (extended)
+    "sodium_mmol_l": ["sodium"],
+    "potassium_mmol_l": ["potassium"],
+    "chloride_mmol_l": ["chloride"],
+    "co2_mmol_l": ["co2", "carbon dioxide", "carbon dioxide, total", "carbon dioxide total"],
+    "calcium_mg_dl": ["calcium"],
+    "total_protein_g_dl": ["total protein", "protein total", "protein, total"],
+    "globulin_g_dl": ["globulin", "globulin total", "globulin, total"],
+    "bun_creatinine_ratio": ["bun/creatinine ratio", "bun creatinine ratio"],
 }
 
 
