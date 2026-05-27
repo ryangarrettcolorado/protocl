@@ -23,8 +23,21 @@ COLORS = {
     "success":      "#4CAF50",
     "warning":      "#FF9800",
     "danger":       "#F44336",
-    "chart_series": ["#FFB612", "#4FC3F7", "#81C784", "#FF8A65", "#CE93D8", "#80DEEA"],
+    # v2 high-contrast accessible palette — used in order by every multi-series chart.
+    "chart_series": ["#4FC3F7", "#FFD54F", "#A5D6A7", "#EF9A9A",
+                     "#CE93D8", "#80DEEA", "#FFAB91", "#F48FB1"],
 }
+
+
+def full_height(n_rows: int, *, row_px: int = 35, header_px: int = 38,
+                max_px: int = 1200) -> int:
+    """Compute a `height=` for `st.dataframe` so every row is visible.
+
+    Streamlit's default container scrolls past ~10 rows. Pass the result via
+    `height=full_height(len(df))` to size dynamically (capped at `max_px`).
+    """
+    n = max(1, int(n_rows))
+    return min(header_px + row_px * n, max_px)
 
 
 PLOTLY_LAYOUT: dict = {

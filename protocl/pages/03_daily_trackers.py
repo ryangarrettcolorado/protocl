@@ -7,7 +7,7 @@ import plotly.graph_objects as go
 import streamlit as st
 
 from modules.data_loader import load_data, refresh_data, append_row
-from modules.charts import COLORS, apply_theme, metric_card_html
+from modules.charts import COLORS, apply_theme, metric_card_html, full_height
 
 
 from modules.theme import inject_css, grouped_sections
@@ -145,7 +145,8 @@ with tab_macros:
                     "100%",
                 ],
             })
-            st.dataframe(avg_df, use_container_width=True, hide_index=True)
+            st.dataframe(avg_df, use_container_width=True, hide_index=True,
+                         height=full_height(len(avg_df)))
 
 
 # ── Sleep (from daily log) ──────────────────────────────────────────────────
@@ -231,7 +232,10 @@ with tab_log:
         show["date"] = show["date"].dt.strftime("%Y-%m-%d")
         cols_show = ["date", "calories_kcal", "protein_g", "carbs_g", "fat_g",
                      "fiber_g", "water_oz", "sleep_hrs", "sleep_quality_1_10", "notes"]
-        st.dataframe(show[cols_show], use_container_width=True, hide_index=True)
+        cols_df = show[cols_show]
+        st.dataframe(cols_df, use_container_width=True, hide_index=True,
+                     height=full_height(len(cols_df)))
+        st.caption(f"{len(cols_df)} row(s)")
 
 
 # ── Add today's log ─────────────────────────────────────────────────────────

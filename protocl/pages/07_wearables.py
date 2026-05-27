@@ -7,7 +7,7 @@ import plotly.graph_objects as go
 import streamlit as st
 
 from modules.data_loader import load_data, refresh_data
-from modules.charts import COLORS, apply_theme, metric_card_html
+from modules.charts import COLORS, apply_theme, metric_card_html, full_height
 
 
 from modules.theme import inject_css, grouped_sections
@@ -243,4 +243,7 @@ with tab_table:
                  "sleep_duration_hrs", "sleep_deep_hrs", "sleep_rem_hrs",
                  "sleep_consistency_pct", "respiratory_rate_brpm", "spo2_pct",
                  "active_calories", "steps", "stand_hrs", "skin_temp_delta_f"]
-    st.dataframe(show[show_cols], use_container_width=True, hide_index=True)
+    wear_show = show[show_cols]
+    st.dataframe(wear_show, use_container_width=True, hide_index=True,
+                 height=full_height(len(wear_show)))
+    st.caption(f"{len(wear_show)} row(s)")

@@ -9,7 +9,7 @@ import plotly.graph_objects as go
 import streamlit as st
 
 from modules.data_loader import load_data, refresh_data, append_row
-from modules.charts import COLORS, apply_theme, metric_card_html
+from modules.charts import COLORS, apply_theme, metric_card_html, full_height
 
 
 from modules.theme import inject_css, grouped_sections
@@ -215,7 +215,10 @@ with tab_table:
     cols_show = ["date", "weight_lbs", "body_fat_pct", "skeletal_muscle_mass_lbs",
                  "lean_mass_lbs", "body_fat_mass_lbs", "visceral_fat_level",
                  "total_body_water_lbs", "bmr_kcal", "source", "notes"]
-    st.dataframe(display_df[cols_show], use_container_width=True, hide_index=True)
+    bc_df = display_df[cols_show]
+    st.dataframe(bc_df, use_container_width=True, hide_index=True,
+                 height=full_height(len(bc_df)))
+    st.caption(f"{len(bc_df)} row(s)")
 
 # ── Add scan ────────────────────────────────────────────────────────────────
 with tab_add:

@@ -7,7 +7,7 @@ import plotly.graph_objects as go
 import streamlit as st
 
 from modules.data_loader import load_data, refresh_data
-from modules.charts import COLORS, apply_theme, metric_card_html
+from modules.charts import COLORS, apply_theme, metric_card_html, full_height
 
 
 from modules.theme import inject_css, grouped_sections
@@ -275,9 +275,10 @@ with tab_ketones:
             st.plotly_chart(fig_gki, use_container_width=True)
             st.caption(f"Latest GKI: **{ketones['gki'].iloc[-1]:.1f}**")
 
-        st.dataframe(
-            ketones.assign(datetime=ketones["datetime"].dt.strftime("%Y-%m-%d %H:%M"))[
-                ["datetime", "blood_ketones_mmol_l", "blood_glucose_mg_dl", "gki", "source", "notes"]
-            ].sort_values("datetime", ascending=False),
-            use_container_width=True, hide_index=True,
-        )
+        ketones_show = ketones.assign(
+            datetime=ketones["datetime"].dt.strftime("%Y-%m-%d %H:%M")
+        )[["datetime", "blood_ketones_mmol_l", "blood_glucose_mg_dl", "gki", "source", "notes"]]\
+            .sort_values("datetime", ascending=False)
+        st.dataframe(ketones_show, use_container_width=True, hide_index=True,
+                     height=full_height(len(ketones_show)))
+        st.caption(f"{len(ketones_show)} row(s)")

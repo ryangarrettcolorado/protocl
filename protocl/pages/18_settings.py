@@ -22,6 +22,7 @@ from modules.preferences import (
 )
 from modules.reference_ranges import load_reference, panel_label
 from modules.theme import inject_css
+from modules.charts import full_height
 
 
 inject_css()
@@ -340,7 +341,9 @@ with st.expander("🗄 Data Sources", expanded=False):
             rows.append({"File": f.name, "Rows": rc,
                          "Size (KB)": f"{size/1024:.1f}", "Last modified": mtime})
     if rows:
-        st.dataframe(pd.DataFrame(rows), use_container_width=True, hide_index=True)
+        rows_df = pd.DataFrame(rows)
+        st.dataframe(rows_df, use_container_width=True, hide_index=True,
+                     height=full_height(len(rows_df)))
     else:
         st.caption(f"No data files yet under data/{DEFAULT_USER}/.")
 

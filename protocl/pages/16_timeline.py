@@ -6,7 +6,7 @@ import plotly.graph_objects as go
 import streamlit as st
 
 from modules.data_loader import load_data, refresh_data
-from modules.charts import COLORS, apply_theme, metric_card_html
+from modules.charts import COLORS, apply_theme, metric_card_html, full_height
 
 
 from modules.theme import inject_css, grouped_sections
@@ -240,8 +240,10 @@ with tab_list:
 with tab_table:
     show = filtered.copy()
     show["date"] = show["date"].dt.strftime("%Y-%m-%d")
-    st.dataframe(show[["date", "category", "title", "detail"]],
-                 use_container_width=True, hide_index=True)
+    tl_show = show[["date", "category", "title", "detail"]]
+    st.dataframe(tl_show, use_container_width=True, hide_index=True,
+                 height=full_height(len(tl_show)))
+    st.caption(f"{len(tl_show)} row(s)")
     st.download_button(
         "⬇ Download as CSV",
         data=show.to_csv(index=False),

@@ -82,6 +82,25 @@ def _days_ago(ts: pd.Timestamp | None) -> int | None:
     return int((TODAY - pd.Timestamp(ts)).days)
 
 
+def _human_days_ago(days: int | None) -> str:
+    """Render a day-count as a human-readable months + days string.
+
+    Uses a 30-day month approximation. Examples:
+      237 → "7mo 27d ago"; 45 → "1mo 15d ago"; 30 → "1mo ago"; 20 → "20d ago".
+    """
+    if days is None:
+        return "—"
+    days = int(days)
+    if days < 0:
+        return "today"
+    if days < 30:
+        return f"{days}d ago"
+    months, rem = divmod(days, 30)
+    if rem == 0:
+        return f"{months}mo ago"
+    return f"{months}mo {rem}d ago"
+
+
 def _next_visit() -> dict | None:
     """Load ``data/<user>/next_visit.json`` if it exists."""
     p = DATA_DIR / DEFAULT_USER / "next_visit.json"
@@ -121,7 +140,7 @@ def _last_bloodwork_tile(data: HealthData) -> tuple[str, str, str, bool | None]:
     last = pd.Timestamp(bw["date"].max())
     days = _days_ago(last) or 0
     n_draws = bw["date"].nunique()
-    return ("Last Bloodwork", f"{days}d ago", f"{n_draws} draws on file", days < 180)
+    return ("Last Bloodwork", _human_days_ago(days), f"{n_draws} draws on file", days < 180)
 
 
 def _vo2_tile(data: HealthData) -> tuple[str, str, str, bool | None]:

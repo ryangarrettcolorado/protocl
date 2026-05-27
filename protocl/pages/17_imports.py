@@ -12,7 +12,7 @@ import streamlit as st
 from modules.data_loader import (
     load_data, refresh_data, append_row, DATA_DIR, DEFAULT_USER
 )
-from modules.charts import COLORS, metric_card_html
+from modules.charts import COLORS, metric_card_html, full_height
 from modules.biomarker_aliases import ALIASES, display_name
 from modules.ingest.ocr import (
     extract_bloodwork_rows, extract_supplement_label, OCRUnavailable,
@@ -693,7 +693,9 @@ with tab_log:
         st.info("No imports logged yet. Every successful upload writes a row here.")
     else:
         show = log_df.sort_values("timestamp", ascending=False).copy()
-        st.dataframe(show, use_container_width=True, hide_index=True)
+        st.dataframe(show, use_container_width=True, hide_index=True,
+                     height=full_height(len(show)))
+        st.caption(f"{len(show)} row(s)")
         st.download_button(
             "⬇ Download import log",
             data=show.to_csv(index=False),

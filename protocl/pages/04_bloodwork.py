@@ -17,7 +17,7 @@ from modules.data_loader import (
 )
 from modules.charts import (
     COLORS, time_series,
-    status_label, metric_card_html, tier_badge_html,
+    status_label, metric_card_html, tier_badge_html, full_height,
 )
 from modules.reference_ranges import load_reference, panel_label
 from modules.biomarker_aliases import display_name
@@ -218,7 +218,9 @@ if not latest.empty:
                 return f"color: {c}; font-weight: 600"
 
             styled = df.style.map(style_status, subset=["Status"])
-            st.dataframe(styled, use_container_width=True, hide_index=True)
+            st.dataframe(styled, use_container_width=True, hide_index=True,
+                         height=full_height(len(df)))
+            st.caption(f"{len(df)} row(s)")
 
 # ────────────────────────────────────────────────────────────────────────────
 # Biomarker drill-down
@@ -254,15 +256,23 @@ with st.expander("Biomarker drill-down — details", expanded=False):
                 unsafe_allow_html=True,
             )
 
+        # Pull the most recent non-null unit from the actual draws so the
+        # axis label always matches the data even if the reference is sparse.
+        unit_series = sub["unit"].dropna() if "unit" in sub.columns else pd.Series([], dtype=str)
+        latest_unit = str(unit_series.iloc[-1]) if not unit_series.empty else r.get("unit", "")
+
         fig = time_series(
             sub.rename(columns={"date": "date", "value": "value"}),
             x="date", y="value",
             title=None,
             optimal_low=r.get("optimal_low"), optimal_high=r.get("optimal_high"),
             lab_low=r.get("lab_low"), lab_high=r.get("lab_high"),
-            unit=r.get("unit", ""),
+            unit=latest_unit,
             height=420,
         )
+        y_title = f"{display_name(bm)} ({latest_unit})" if latest_unit else display_name(bm)
+        fig.update_xaxes(title_text="Date")
+        fig.update_yaxes(title_text=y_title)
 
         if not data.protocol.empty:
             CAT_COLORS = {"hormone": "#FFB612", "peptide": "#4FC3F7",
@@ -295,9 +305,11 @@ with st.expander("Biomarker drill-down — details", expanded=False):
         st.markdown("##### History")
         hist = sub[["date", "value", "unit", "source_lab", "notes"]].copy()
         hist["date"] = hist["date"].dt.strftime("%Y-%m-%d")
-        st.dataframe(hist.rename(columns={"date": "Date", "value": "Value", "unit": "Unit",
-                                          "source_lab": "Lab", "notes": "Notes"}),
-                     use_container_width=True, hide_index=True)
+        hist_renamed = hist.rename(columns={"date": "Date", "value": "Value", "unit": "Unit",
+                                            "source_lab": "Lab", "notes": "Notes"})
+        st.dataframe(hist_renamed, use_container_width=True, hide_index=True,
+                     height=full_height(len(hist_renamed)))
+        st.caption(f"{len(hist_renamed)} row(s)")
 
 # ────────────────────────────────────────────────────────────────────────────
 # Add Draw
