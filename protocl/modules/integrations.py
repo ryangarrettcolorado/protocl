@@ -56,88 +56,228 @@ SVG_GITHUB = _svg(
     f'C49 45 55 37 55 27 C55 15 46 6 28 6 Z" fill="{GOLD}"/>'
 )
 
-# Generic file-parsed sources ────────────────────────────────────────────────
+# Generic file-parsed sources — each mark mimics the real-world device or
+# document the data comes from.
+# ────────────────────────────────────────────────────────────────────────────
+
+# Bloodwork — Vacutainer blood-collection tube with red/gold stopper,
+# label band, and blood fill in the lower portion. Reads as a LabCorp draw.
 SVG_BLOODWORK = _svg(
-    f'<rect x="22" y="8" width="12" height="4" rx="1" fill="{GOLD}"/>'
-    f'<path d="M23 12 V40 C23 44 26 47 28 47 C30 47 33 44 33 40 V12" '
-    f'fill="none" stroke="{GOLD}" stroke-width="2.5"/>'
-    f'<path d="M23 28 V40 C23 44 26 47 28 47 C30 47 33 44 33 40 V28 Z" '
-    f'fill="{GOLD}" opacity="0.55"/>'
+    # Stopper cap (lavender/gold tone on real tubes)
+    f'<rect x="21" y="6" width="14" height="6" rx="1.5" fill="{GOLD}"/>'
+    f'<rect x="21" y="10" width="14" height="2" fill="{GOLD}" opacity="0.7"/>'
+    # Tube outline (rounded bottom)
+    f'<path d="M22 12 V42 C22 46 25 50 28 50 C31 50 34 46 34 42 V12 Z" '
+    f'fill="none" stroke="{GOLD}" stroke-width="2.2"/>'
+    # Blood fill in lower portion
+    f'<path d="M22 32 V42 C22 46 25 50 28 50 C31 50 34 46 34 42 V32 Z" '
+    f'fill="#C8102E" opacity="0.85"/>'
+    # Liquid meniscus line
+    f'<path d="M22 32 H34" stroke="#C8102E" stroke-width="1.5"/>'
+    # White label band
+    f'<rect x="22" y="18" width="12" height="7" fill="rgba(255,255,255,0.85)"/>'
+    # Barcode lines on label
+    f'<path d="M24 20 V23 M25.5 20 V23 M27 20 V23 M28.5 20 V23 '
+    f'M30 20 V23 M31.5 20 V23" stroke="#0E0E10" stroke-width="0.6"/>'
 )
 
+# InBody — the actual machine silhouette: vertical column with handgrips,
+# foot pads, and a display screen at the top.
 SVG_BODYCOMP = _svg(
-    f'<rect x="8" y="14" width="40" height="34" rx="4" fill="none" '
-    f'stroke="{GOLD}" stroke-width="2.5"/>'
-    f'<circle cx="28" cy="26" r="6" fill="none" stroke="{GOLD}" stroke-width="2.5"/>'
-    f'<path d="M28 22 V26 L31 28" stroke="{GOLD}" stroke-width="2" '
-    f'stroke-linecap="round" fill="none"/>'
-    f'<rect x="22" y="40" width="12" height="2.5" rx="1" fill="{GOLD}"/>'
+    # Base foot platform
+    f'<rect x="10" y="44" width="36" height="6" rx="1" fill="none" '
+    f'stroke="{GOLD}" stroke-width="2"/>'
+    # Foot outlines on platform
+    f'<ellipse cx="18" cy="47" rx="3" ry="1.5" fill="{GOLD}" opacity="0.45"/>'
+    f'<ellipse cx="38" cy="47" rx="3" ry="1.5" fill="{GOLD}" opacity="0.45"/>'
+    # Central column
+    f'<rect x="24" y="14" width="8" height="30" fill="none" '
+    f'stroke="{GOLD}" stroke-width="2"/>'
+    # Display screen at top
+    f'<rect x="16" y="6" width="24" height="12" rx="1.5" fill="none" '
+    f'stroke="{GOLD}" stroke-width="2.2"/>'
+    f'<path d="M20 11 H32 M20 14 H28" stroke="{GOLD}" stroke-width="1.5" '
+    f'opacity="0.8"/>'
+    # Handgrip arms extending sideways
+    f'<path d="M24 26 H14 M32 26 H42" stroke="{GOLD}" stroke-width="2" '
+    f'stroke-linecap="round"/>'
+    f'<circle cx="13" cy="26" r="2" fill="{GOLD}"/>'
+    f'<circle cx="43" cy="26" r="2" fill="{GOLD}"/>'
 )
 
+# GPX — map pin with route trace (winding GPS path beneath the pin).
 SVG_GPX = _svg(
-    f'<path d="M6 44 L18 24 L26 34 L36 16 L50 44 Z" fill="none" '
-    f'stroke="{GOLD}" stroke-width="2.5" stroke-linejoin="round"/>'
-    f'<path d="M14 30 L22 30" stroke="{GOLD}" stroke-width="2" opacity="0.6"/>'
-    f'<circle cx="36" cy="16" r="2.5" fill="{GOLD}"/>'
+    # Winding route trace at the bottom
+    f'<path d="M6 46 C12 46 14 38 20 38 C26 38 28 44 34 44 '
+    f'C40 44 42 36 50 36" fill="none" stroke="{GOLD}" '
+    f'stroke-width="2" stroke-linecap="round" stroke-dasharray="1 3" '
+    f'opacity="0.7"/>'
+    # Map pin teardrop
+    f'<path d="M28 6 C20 6 14 12 14 20 C14 28 22 36 28 44 '
+    f'C34 36 42 28 42 20 C42 12 36 6 28 6 Z" fill="{GOLD}"/>'
+    # Pin hole (dark center)
+    f'<circle cx="28" cy="20" r="4.5" fill="#0E0E10"/>'
 )
 
+# ECG — Apple Watch silhouette with an ECG trace running across the face.
 SVG_ECG = _svg(
-    f'<path d="M4 28 H16 L20 18 L26 38 L32 14 L38 32 L42 28 H52" '
-    f'fill="none" stroke="{GOLD}" stroke-width="2.5" stroke-linejoin="round" '
+    # Watch lugs (top + bottom)
+    f'<rect x="19" y="4" width="18" height="6" rx="1.5" fill="{GOLD}" opacity="0.55"/>'
+    f'<rect x="19" y="46" width="18" height="6" rx="1.5" fill="{GOLD}" opacity="0.55"/>'
+    # Watch case
+    f'<rect x="14" y="10" width="28" height="36" rx="6" fill="none" '
+    f'stroke="{GOLD}" stroke-width="2.4"/>'
+    # Digital crown nub on right side
+    f'<rect x="42" y="22" width="2.5" height="5" rx="0.5" fill="{GOLD}"/>'
+    # ECG trace on the face
+    f'<path d="M17 28 H22 L24 24 L26 32 L28 18 L30 36 L32 26 H39" '
+    f'fill="none" stroke="{GOLD}" stroke-width="1.8" stroke-linejoin="round" '
     f'stroke-linecap="round"/>'
 )
 
+# Protocol — pill bottle with cap, prescription label, and visible pills.
 SVG_PROTOCOL = _svg(
-    f'<rect x="14" y="8" width="28" height="40" rx="3" fill="none" '
-    f'stroke="{GOLD}" stroke-width="2.5"/>'
-    f'<path d="M20 18 H36 M20 26 H36 M20 34 H30" stroke="{GOLD}" '
-    f'stroke-width="2" stroke-linecap="round"/>'
-    f'<circle cx="38" cy="40" r="6" fill="#0E0E10" stroke="{GOLD}" stroke-width="2"/>'
-    f'<path d="M35 40 L37.5 42.5 L41 38.5" stroke="{GOLD}" stroke-width="2" '
-    f'fill="none" stroke-linecap="round"/>'
+    # Cap
+    f'<rect x="18" y="6" width="20" height="6" rx="1.5" fill="{GOLD}"/>'
+    f'<rect x="20" y="4" width="16" height="3" rx="1" fill="{GOLD}" opacity="0.7"/>'
+    # Bottle body
+    f'<rect x="16" y="12" width="24" height="38" rx="3" fill="none" '
+    f'stroke="{GOLD}" stroke-width="2.2"/>'
+    # Label background
+    f'<rect x="18" y="18" width="20" height="14" fill="rgba(255,255,255,0.08)"/>'
+    # Rx symbol on label
+    f'<text x="21" y="29" font-family="Georgia, serif" font-size="11" '
+    f'font-weight="700" fill="{GOLD}">℞</text>'
+    # Label text lines
+    f'<path d="M28 24 H36 M28 27 H34" stroke="{GOLD}" stroke-width="1" '
+    f'opacity="0.7"/>'
+    # Pills/capsules at the bottom of the bottle
+    f'<rect x="20" y="38" width="6" height="3" rx="1.5" fill="{GOLD}" opacity="0.85"/>'
+    f'<rect x="28" y="40" width="6" height="3" rx="1.5" fill="{GOLD}" opacity="0.85"/>'
+    f'<rect x="22" y="44" width="6" height="3" rx="1.5" fill="{GOLD}" opacity="0.85"/>'
+    f'<rect x="30" y="45" width="6" height="3" rx="1.5" fill="{GOLD}" opacity="0.85"/>'
 )
 
+# Daily Log — spiral-bound notebook with ruled lines and a check.
 SVG_MANUAL = _svg(
-    f'<path d="M10 42 L34 18 L40 24 L16 48 L8 50 Z" fill="none" '
-    f'stroke="{GOLD}" stroke-width="2.5" stroke-linejoin="round"/>'
-    f'<path d="M30 22 L36 28" stroke="{GOLD}" stroke-width="2.5"/>'
+    # Spiral binding rings down the left edge
+    f'<circle cx="12" cy="12" r="1.8" fill="none" stroke="{GOLD}" stroke-width="1.5"/>'
+    f'<circle cx="12" cy="22" r="1.8" fill="none" stroke="{GOLD}" stroke-width="1.5"/>'
+    f'<circle cx="12" cy="32" r="1.8" fill="none" stroke="{GOLD}" stroke-width="1.5"/>'
+    f'<circle cx="12" cy="42" r="1.8" fill="none" stroke="{GOLD}" stroke-width="1.5"/>'
+    # Notebook page
+    f'<rect x="16" y="6" width="32" height="44" rx="2" fill="none" '
+    f'stroke="{GOLD}" stroke-width="2.2"/>'
+    # Top header bar (date line)
+    f'<rect x="20" y="11" width="20" height="2.5" rx="0.5" fill="{GOLD}" opacity="0.55"/>'
+    # Ruled lines
+    f'<path d="M20 20 H44 M20 26 H40 M20 32 H42 M20 38 H38" '
+    f'stroke="{GOLD}" stroke-width="1.2" opacity="0.65"/>'
+    # Checkmark on last line
+    f'<path d="M22 44 L24 46 L28 42" stroke="{GOLD}" stroke-width="2" '
+    f'fill="none" stroke-linecap="round" stroke-linejoin="round"/>'
 )
 
-# Coming-soon placeholders ───────────────────────────────────────────────────
+# Coming-soon placeholders — also shaped like the actual hardware so users
+# recognize them at a glance. Muted gray to signal not-yet-available.
+# ────────────────────────────────────────────────────────────────────────────
+
+# CGM — adhesive sensor patch with a circular transmitter dome (Dexcom G7
+# / Libre 3 silhouette: round disc on an oval adhesive base).
 SVG_CGM = _svg(
-    f'<circle cx="28" cy="28" r="14" fill="none" stroke="{MUTED}" stroke-width="2.5"/>'
-    f'<circle cx="28" cy="28" r="5" fill="{MUTED}"/>'
-    f'<path d="M28 8 V14 M28 42 V48 M8 28 H14 M42 28 H48" stroke="{MUTED}" '
-    f'stroke-width="2.5" stroke-linecap="round"/>'
+    # Adhesive oval base (skin patch)
+    f'<ellipse cx="28" cy="30" rx="22" ry="10" fill="none" '
+    f'stroke="{MUTED}" stroke-width="2" stroke-dasharray="2 2"/>'
+    # Transmitter dome (the circular puck)
+    f'<circle cx="28" cy="28" r="11" fill="none" stroke="{MUTED}" stroke-width="2.5"/>'
+    f'<circle cx="28" cy="28" r="7" fill="{MUTED}" opacity="0.4"/>'
+    # Sensor indicator (center)
+    f'<circle cx="28" cy="28" r="2.5" fill="{MUTED}"/>'
+    # Wireless signal arcs above
+    f'<path d="M22 14 Q28 10 34 14" fill="none" stroke="{MUTED}" '
+    f'stroke-width="1.8" stroke-linecap="round" opacity="0.75"/>'
+    f'<path d="M19 9 Q28 3 37 9" fill="none" stroke="{MUTED}" '
+    f'stroke-width="1.8" stroke-linecap="round" opacity="0.5"/>'
 )
 
+# Fullscript — pharmacy prescription pad with Rx mark and signature line.
 SVG_FULLSCRIPT = _svg(
-    f'<path d="M18 10 L18 46 C18 48 19 50 22 50 H38 V42 H26 V36 H36 V30 H26 V18 H38 V10 Z" '
-    f'fill="{MUTED}"/>'
+    # Pad outline with torn-top stub
+    f'<path d="M12 8 L44 8 L44 50 L12 50 Z" fill="none" '
+    f'stroke="{MUTED}" stroke-width="2.2"/>'
+    # Tear perforations at top
+    f'<path d="M14 12 H42" stroke="{MUTED}" stroke-width="1" '
+    f'stroke-dasharray="2 2"/>'
+    # Rx symbol
+    f'<text x="17" y="30" font-family="Georgia, serif" font-size="14" '
+    f'font-weight="700" fill="{MUTED}">℞</text>'
+    # Prescription detail lines
+    f'<path d="M28 22 H40 M28 26 H38 M16 36 H40 M16 40 H34" '
+    f'stroke="{MUTED}" stroke-width="1.3" opacity="0.75"/>'
+    # Signature line + scribble at bottom
+    f'<path d="M16 46 H40" stroke="{MUTED}" stroke-width="1" opacity="0.5"/>'
+    f'<path d="M28 45 C30 43 32 47 34 45" fill="none" stroke="{MUTED}" '
+    f'stroke-width="1.4" stroke-linecap="round"/>'
 )
 
+# Other Wearable — Whoop-style fitness strap (no screen, just a band
+# with a sensor module) to distinguish from the Apple Watch (ECG icon).
 SVG_OTHER_WEARABLE = _svg(
-    f'<rect x="18" y="6" width="20" height="8" rx="2" fill="{MUTED}"/>'
-    f'<rect x="14" y="14" width="28" height="28" rx="6" fill="none" '
-    f'stroke="{MUTED}" stroke-width="2.5"/>'
-    f'<rect x="18" y="42" width="20" height="8" rx="2" fill="{MUTED}"/>'
-    f'<circle cx="28" cy="28" r="6" fill="none" stroke="{MUTED}" stroke-width="2"/>'
+    # Upper strap
+    f'<path d="M14 6 L22 6 L24 22 L32 22 L34 6 L42 6" fill="none" '
+    f'stroke="{MUTED}" stroke-width="2.2" stroke-linejoin="round"/>'
+    # Sensor module (rounded rectangle in the center)
+    f'<rect x="20" y="22" width="16" height="12" rx="3" fill="none" '
+    f'stroke="{MUTED}" stroke-width="2.2"/>'
+    # Optical heart-rate LEDs on the underside
+    f'<circle cx="25" cy="28" r="1.5" fill="{MUTED}"/>'
+    f'<circle cx="31" cy="28" r="1.5" fill="{MUTED}"/>'
+    # Lower strap
+    f'<path d="M14 50 L22 50 L24 34 L32 34 L34 50 L42 50" fill="none" '
+    f'stroke="{MUTED}" stroke-width="2.2" stroke-linejoin="round"/>'
 )
 
+# Smart Scale — top-down view with foot outlines and a digital readout.
 SVG_SMART_SCALE = _svg(
-    f'<rect x="6" y="20" width="44" height="22" rx="3" fill="none" '
-    f'stroke="{MUTED}" stroke-width="2.5"/>'
-    f'<rect x="20" y="26" width="16" height="6" rx="1" fill="{MUTED}"/>'
-    f'<path d="M14 42 V46 M42 42 V46" stroke="{MUTED}" stroke-width="2.5" '
-    f'stroke-linecap="round"/>'
+    # Scale platform (rounded square top-down)
+    f'<rect x="6" y="8" width="44" height="40" rx="6" fill="none" '
+    f'stroke="{MUTED}" stroke-width="2.4"/>'
+    # Foot outlines (top-down silhouettes)
+    f'<ellipse cx="18" cy="22" rx="4" ry="6" fill="{MUTED}" opacity="0.45"/>'
+    f'<circle cx="15" cy="15" r="1.2" fill="{MUTED}" opacity="0.45"/>'
+    f'<circle cx="17" cy="14" r="1.1" fill="{MUTED}" opacity="0.45"/>'
+    f'<circle cx="19" cy="14" r="1" fill="{MUTED}" opacity="0.45"/>'
+    f'<ellipse cx="38" cy="22" rx="4" ry="6" fill="{MUTED}" opacity="0.45"/>'
+    f'<circle cx="35" cy="15" r="1" fill="{MUTED}" opacity="0.45"/>'
+    f'<circle cx="37" cy="14" r="1.1" fill="{MUTED}" opacity="0.45"/>'
+    f'<circle cx="39" cy="14" r="1.2" fill="{MUTED}" opacity="0.45"/>'
+    f'<circle cx="41" cy="15" r="1" fill="{MUTED}" opacity="0.45"/>'
+    # Digital display readout
+    f'<rect x="18" y="36" width="20" height="8" rx="1.5" fill="{MUTED}" opacity="0.55"/>'
+    f'<path d="M22 40 H26 M28 40 H30 M32 40 H36" stroke="#0E0E10" '
+    f'stroke-width="1.5" stroke-linecap="round"/>'
 )
 
+# DEXA — overhead scanner gantry/C-arm above a patient table.
 SVG_DEXA = _svg(
-    f'<rect x="10" y="14" width="36" height="28" rx="3" fill="none" '
-    f'stroke="{MUTED}" stroke-width="2.5"/>'
-    f'<circle cx="22" cy="24" r="2" fill="{MUTED}"/>'
-    f'<path d="M26 22 C28 30 32 30 34 22" fill="none" stroke="{MUTED}" stroke-width="2"/>'
-    f'<path d="M16 36 H40" stroke="{MUTED}" stroke-width="2" opacity="0.5"/>'
+    # Scanner arm (vertical post + horizontal beam above table)
+    f'<rect x="6" y="6" width="4" height="32" rx="1" fill="{MUTED}"/>'
+    f'<rect x="6" y="6" width="36" height="4" rx="1" fill="{MUTED}"/>'
+    # Scan head hanging from the beam
+    f'<rect x="34" y="10" width="10" height="8" rx="1.5" fill="{MUTED}"/>'
+    f'<path d="M39 18 V24" stroke="{MUTED}" stroke-width="2"/>'
+    # Scan beam lines (energy down to body)
+    f'<path d="M36 18 V32 M39 18 V36 M42 18 V32" stroke="{MUTED}" '
+    f'stroke-width="1" stroke-dasharray="1 2" opacity="0.6"/>'
+    # Patient table
+    f'<rect x="12" y="40" width="40" height="4" rx="1" fill="none" '
+    f'stroke="{MUTED}" stroke-width="2"/>'
+    # Body silhouette on table (head + torso)
+    f'<circle cx="20" cy="36" r="2.5" fill="{MUTED}" opacity="0.55"/>'
+    f'<rect x="24" y="34" width="22" height="5" rx="2" fill="{MUTED}" opacity="0.55"/>'
+    # Table legs
+    f'<path d="M16 44 V50 M48 44 V50" stroke="{MUTED}" stroke-width="2" '
+    f'stroke-linecap="round"/>'
 )
 
 
