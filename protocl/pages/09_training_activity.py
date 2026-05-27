@@ -381,6 +381,95 @@ with tab_cycling:
         else:
             st.info(f"Need 2+ rides with power data. Currently {len(power_rides)} ride(s).")
 
+        # HR zone time-in-zone for cycling (last 12mo)
+        cyc_hr = c12[c12["avg_hr_bpm"].notna() & c12["duration_min"].notna()].copy()
+        if len(cyc_hr) >= 3:
+            st.subheader("HR Zone Distribution — Cycling Only")
+            st.caption(
+                "Time in each HR zone across cycling rides (last 12mo). "
+                "Hour-bucket HR averages, so this approximates the dominant zone per ride."
+            )
+
+            def cycling_zone(hr):
+                if pd.isna(hr): return "Unknown"
+                if hr < 122: return "Z1 Recovery"
+                if hr < 145: return "Z2 Aerobic"
+                if hr < 160: return "Z3 Tempo"
+                if hr < 172: return "Z4 Threshold"
+                return "Z5 VO2"
+
+            cyc_hr["zone"] = cyc_hr["avg_hr_bpm"].apply(cycling_zone)
+            zone_mins_c = cyc_hr.groupby("zone")["duration_min"].sum().reset_index()
+            zone_order = ["Z1 Recovery", "Z2 Aerobic", "Z3 Tempo", "Z4 Threshold", "Z5 VO2"]
+            zone_mins_c["zone"] = pd.Categorical(zone_mins_c["zone"], categories=zone_order, ordered=True)
+            zone_mins_c = zone_mins_c.sort_values("zone").dropna(subset=["zone"])
+            zone_colors_c = {
+                "Z1 Recovery": "#80DEEA",
+                "Z2 Aerobic": COLORS["success"],
+                "Z3 Tempo": COLORS["gold"],
+                "Z4 Threshold": COLORS["warning"],
+                "Z5 VO2": COLORS["danger"],
+            }
+            total_min = zone_mins_c["duration_min"].sum()
+            zc1, zc2 = st.columns([3, 2])
+            with zc1:
+                fig_zc = go.Figure(go.Bar(
+                    x=zone_mins_c["zone"], y=zone_mins_c["duration_min"],
+                    marker=dict(color=[zone_colors_c.get(z, "#888") for z in zone_mins_c["zone"]]),
+                    text=[f"{m:.0f}m ({m/total_min*100:.0f}%)" for m in zone_mins_c["duration_min"]],
+                    textposition="outside",
+                ))
+                apply_theme(fig_zc, height=320)
+                fig_zc.update_layout(yaxis=dict(title="Minutes"), showlegend=False)
+                st.plotly_chart(fig_zc, use_container_width=True)
+            with zc2:
+                st.metric("Total cycling time (zones known)", f"{total_min/60:.1f} h")
+                z2_min = zone_mins_c[zone_mins_c["zone"] == "Z2 Aerobic"]["duration_min"].sum()
+                z2_pct = z2_min / total_min * 100 if total_min else 0
+                st.metric("Z2 aerobic share", f"{z2_pct:.0f}%",
+                           help="Polarized training models target ~75-80% Z1-Z2.")
+                hi_min = zone_mins_c[zone_mins_c["zone"].isin(["Z3 Tempo", "Z4 Threshold", "Z5 VO2"])]["duration_min"].sum()
+                st.metric("High-intensity share (Z3+)", f"{hi_min/total_min*100:.0f}%" if total_min else "—")
+
+            # Aerobic efficiency trend: mph per heartbeat
+            st.subheader("Aerobic Efficiency Trend")
+            st.caption(
+                "Speed-per-heartbeat (mph ÷ avg HR) over time — a fitness proxy. "
+                "Rising line = same HR producing more speed. Best on similar terrain."
+            )
+            eff = cyc_hr.copy()
+            eff["efficiency"] = eff["mph"] / eff["avg_hr_bpm"] * 100  # x100 for readable units
+            eff = eff.sort_values("date")
+            fig_eff = go.Figure()
+            for atype in ["mtb", "ride"]:
+                sub = eff[eff["activity_type"] == atype]
+                if sub.empty:
+                    continue
+                fig_eff.add_trace(go.Scatter(
+                    x=sub["date"], y=sub["efficiency"],
+                    mode="markers+lines",
+                    name=type_labels.get(atype, atype),
+                    line=dict(color=type_colors[atype], width=2),
+                    marker=dict(
+                        size=(sub["distance_miles"] * 1.4).clip(8, 22),
+                        color=type_colors[atype],
+                        line=dict(color="#0E0E10", width=1),
+                    ),
+                    customdata=sub[["distance_miles", "avg_hr_bpm", "mph", "ft_per_mi"]].values,
+                    hovertemplate=(
+                        "<b>%{x|%b %d, %Y}</b><br>"
+                        "Speed/HR ×100: %{y:.2f}<br>"
+                        "%{customdata[2]:.1f} mph @ %{customdata[1]:.0f} bpm<br>"
+                        "%{customdata[0]:.1f} mi · %{customdata[3]:.0f} ft/mi<extra></extra>"
+                    ),
+                ))
+            apply_theme(fig_eff, height=320)
+            fig_eff.update_layout(
+                yaxis=dict(title="Speed / HR × 100"),
+                legend=dict(orientation="h", y=1.1, x=0),
+            )
+            st.plotly_chart(fig_eff, use_container_width=True)
+
         # Biggest rides leaderboard
         st.subheader("Biggest Rides")
         st.caption("Sorted by elevation gain — your biggest days on the bike.")

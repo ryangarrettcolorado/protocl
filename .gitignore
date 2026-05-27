@@ -47,5 +47,6 @@ build/
 dist/
 *.egg
 
-# Strava raw API dump (reproducible, large)
+# Raw connector API dumps (reproducible, large)
 protocl/data/ryan/_strava_raw.json
+protocl/data/ryan/_hr_raw.json

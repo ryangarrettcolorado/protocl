@@ -17,3 +17,4 @@ timestamp,source_type,filename,rows_imported,rows_skipped_duplicate,errors,impor
 2026-05-27T01:47:37,apple_healthkit_connector,rhr+hrv+steps+energy+bodymass,365.0,0.0,,load_apple_health.py
 2026-05-27T01:47:37,apple_healthkit_connector,sleep+workouts+distance+flights,81.0,0.0,,load_apple_health.py
 2026-05-27T02:14:24,strava_api,training.csv (+strava),84.0,0.0,,load_strava.py
+2026-05-27T02:27:24,apple_healthkit_connector,heart_rate hourly → training.csv cycling rows,14.0,3.0,,enrich_cycling_hr.py
