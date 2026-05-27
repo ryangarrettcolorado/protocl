@@ -13,10 +13,14 @@ from modules.data_loader import (
     load_data, refresh_data, append_row, DATA_DIR, DEFAULT_USER
 )
 from modules.charts import COLORS, metric_card_html
-from modules.biomarker_aliases import ALIASES
+from modules.biomarker_aliases import ALIASES, display_name
+from modules.ingest.ocr import (
+    extract_bloodwork_rows, extract_supplement_label, OCRUnavailable,
+)
+from modules.llm import is_configured as llm_configured, llm_badge
 
 
-from modules.theme import inject_css, grouped_sections
+from modules.theme import inject_css, grouped_sections, render_section_header
 inject_css()
 # ────────────────────────────────────────────────────────────────────────────
 # Header
@@ -251,6 +255,204 @@ cols = st.columns(6)
 for col, (label, value, delta, pos) in zip(cols, kpis):
     with col:
         st.markdown(metric_card_html(label, value, delta, pos), unsafe_allow_html=True)
+
+st.markdown("")
+
+# ────────────────────────────────────────────────────────────────────────────
+# Smart Capture — PDF lab reports + supplement-label photos (OCR / vision)
+# ────────────────────────────────────────────────────────────────────────────
+render_section_header("📷", "Smart Capture — PDF & Image",
+                     count_text="lab PDFs · supplement labels",
+                     chips_html=llm_badge())
+with st.expander("Smart Capture — drop a lab PDF or a supplement-label photo", expanded=False):
+    st.caption(
+        "Upload a **lab report PDF** (LabCorp / Quest / Empire City) and Protocōl will "
+        "extract every biomarker and map it to the canonical schema. Or upload a "
+        "**supplement-label photo** and Protocōl will parse the ingredients into a "
+        "protocol row.  OpenAI vision is used when configured; falls back to "
+        "tesseract OCR otherwise."
+    )
+
+    sc_mode = st.radio(
+        "What are you uploading?",
+        options=["Lab report (PDF / image)", "Supplement label (photo)"],
+        horizontal=True,
+        key="sc_mode",
+    )
+
+    if sc_mode == "Lab report (PDF / image)":
+        sc_file = st.file_uploader(
+            "PDF, PNG, or JPEG",
+            type=["pdf", "png", "jpg", "jpeg"],
+            key="sc_lab_upload",
+        )
+        sc_date = st.date_input(
+            "Draw date (optional — used if Protocōl can't read it from the file)",
+            value=datetime(2026, 5, 25).date(),
+            key="sc_lab_date",
+        )
+        sc_lab_hint = st.text_input("Lab (optional)", placeholder="LabCorp / Quest / Empire City",
+                                    key="sc_lab_name")
+
+        if sc_file is not None:
+            with st.spinner("Reading file and extracting biomarkers…"):
+                try:
+                    result = extract_bloodwork_rows(
+                        sc_file.read(), sc_file.name,
+                        draw_date_hint=sc_date.strftime("%Y-%m-%d"),
+                    )
+                except OCRUnavailable as e:
+                    st.error(str(e))
+                    st.stop()
+
+            st.success(
+                f"Extracted **{len(result['rows'])}** biomarkers via `{result['engine']}`"
+                + (f" — detected draw date: **{result['draw_date']}**" if result['draw_date'] else "")
+            )
+            for w in result.get("warnings", []):
+                st.warning(w)
+
+            if not result["rows"]:
+                st.info("No biomarkers matched the alias dictionary. Try a clearer scan, "
+                        "or use the manual CSV upload below.")
+            else:
+                # Build a DataFrame the user can review and edit before commit
+                preview_rows = []
+                for r in result["rows"]:
+                    preview_rows.append({
+                        "date": result["draw_date"] or sc_date.strftime("%Y-%m-%d"),
+                        "biomarker_canonical": r["biomarker_canonical"],
+                        "display_name": display_name(r["biomarker_canonical"]),
+                        "value": r["value"],
+                        "unit": r["unit"],
+                        "lab_ref_low": r["ref_low"],
+                        "lab_ref_high": r["ref_high"],
+                        "name_raw": r["name_raw"],
+                    })
+                preview_df = pd.DataFrame(preview_rows)
+                st.markdown("##### Review extracted rows")
+                edited = st.data_editor(
+                    preview_df,
+                    use_container_width=True,
+                    hide_index=True,
+                    num_rows="dynamic",
+                    column_config={
+                        "date": st.column_config.TextColumn("Date"),
+                        "biomarker_canonical": st.column_config.TextColumn("Canonical key"),
+                        "display_name": st.column_config.TextColumn("Biomarker", disabled=True),
+                        "value": st.column_config.NumberColumn("Value", format="%.2f"),
+                        "unit": st.column_config.TextColumn("Unit"),
+                        "lab_ref_low": st.column_config.NumberColumn("Lab Low"),
+                        "lab_ref_high": st.column_config.NumberColumn("Lab High"),
+                        "name_raw": st.column_config.TextColumn("Source text", disabled=True),
+                    },
+                    key="sc_lab_editor",
+                )
+
+                if st.button("✅ Import all rows to bloodwork.csv",
+                             type="primary", use_container_width=True,
+                             key="sc_lab_commit"):
+                    n_added = 0
+                    for _, row in edited.iterrows():
+                        if pd.isna(row.get("value")):
+                            continue
+                        append_row("bloodwork.csv", {
+                            "date": row["date"],
+                            "panel": "",
+                            "biomarker_canonical": row["biomarker_canonical"],
+                            "value": row["value"],
+                            "unit": row.get("unit", ""),
+                            "lab_ref_low": row.get("lab_ref_low", ""),
+                            "lab_ref_high": row.get("lab_ref_high", ""),
+                            "source_lab": result.get("source_lab") or sc_lab_hint or "smart_capture",
+                            "notes": f"imported via {result['engine']} from {sc_file.name}",
+                        })
+                        n_added += 1
+                    log_import("bloodwork_pdf", sc_file.name, n_added, 0, "")
+                    st.cache_data.clear()
+                    st.success(f"Imported **{n_added}** biomarkers into bloodwork.csv.")
+                    st.balloons()
+
+    else:  # supplement label
+        sc_img = st.file_uploader(
+            "JPEG or PNG of a supplement label",
+            type=["png", "jpg", "jpeg", "pdf"],
+            key="sc_supp_upload",
+        )
+        if sc_img is not None:
+            with st.spinner("Parsing label…"):
+                try:
+                    result = extract_supplement_label(sc_img.read(), sc_img.name)
+                except OCRUnavailable as e:
+                    st.error(str(e))
+                    st.stop()
+
+            for w in result.get("warnings", []):
+                st.warning(w)
+
+            parsed = result.get("parsed") or {}
+            st.success(f"Parsed via `{result['engine']}`")
+
+            # Pre-fill a form with whatever vision extracted; user can edit/confirm
+            with st.form("sc_supp_form", clear_on_submit=False):
+                c1, c2 = st.columns(2)
+                with c1:
+                    p_name = st.text_input("Product name", value=parsed.get("product_name", ""))
+                    p_brand = st.text_input("Brand", value=parsed.get("brand", ""))
+                    p_category = st.selectbox(
+                        "Category",
+                        options=["supplement", "hormone", "peptide", "medication"],
+                        index=["supplement", "hormone", "peptide", "medication"].index(
+                            parsed.get("category", "supplement")
+                        ) if parsed.get("category") in ("supplement", "hormone", "peptide", "medication") else 0,
+                    )
+                with c2:
+                    p_serving = st.text_input("Serving size", value=parsed.get("serving_size", ""))
+                    p_start = st.date_input("Start date", value=datetime(2026, 5, 25).date())
+                    p_dose = st.text_input(
+                        "Dose (auto-filled from primary ingredient)",
+                        value=", ".join(
+                            f"{ing.get('name','?')} {ing.get('amount','')}{ing.get('unit','')}"
+                            for ing in (parsed.get("ingredients") or [])[:3]
+                        ),
+                    )
+
+                p_notes = st.text_area(
+                    "Notes",
+                    value=(parsed.get("directions", "") or "")
+                    + ("\n\nWarnings: " + parsed.get("warnings", "") if parsed.get("warnings") else ""),
+                )
+
+                if parsed.get("ingredients"):
+                    with st.expander("All ingredients extracted"):
+                        st.dataframe(
+                            pd.DataFrame(parsed["ingredients"]),
+                            use_container_width=True,
+                            hide_index=True,
+                        )
+
+                if result.get("raw_text"):
+                    with st.expander("Raw OCR text (tesseract fallback)"):
+                        st.code(result["raw_text"][:2000])
+
+                submit = st.form_submit_button("✅ Add to protocol.csv", type="primary",
+                                                use_container_width=True)
+                if submit:
+                    append_row("protocol.csv", {
+                        "name": p_name,
+                        "category": p_category,
+                        "dose": p_dose,
+                        "frequency": p_serving,
+                        "start_date": p_start.strftime("%Y-%m-%d"),
+                        "end_date": "",
+                        "status": "active",
+                        "reason": f"Added via Smart Capture from {sc_img.name}",
+                        "notes": (f"Brand: {p_brand}\n" if p_brand else "") + p_notes,
+                    })
+                    log_import("supplement_label", sc_img.name, 1, 0, "")
+                    st.cache_data.clear()
+                    st.success(f"Added **{p_name or 'supplement'}** to your protocol.")
+                    st.balloons()
 
 st.markdown("")
 

@@ -8,11 +8,13 @@ maxUploadSize = 50
 gatherUsageStats = false
 
 [theme]
-base = "light"
-primaryColor = "#C9A24B"
-backgroundColor = "#F6F2EC"
-secondaryBackgroundColor = "#EFEAE2"
-textColor = "#1C1F22"
+# Locked to dark — Protocōl's identity is gold-on-near-black.
+# All component CSS in modules/theme.py is built against this palette.
+base = "dark"
+primaryColor = "#FFB612"
+backgroundColor = "#0E0E10"
+secondaryBackgroundColor = "#1C1C1C"
+textColor = "#F2F2F2"
 font = "sans serif"
 
 [client]

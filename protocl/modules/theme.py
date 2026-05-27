@@ -34,11 +34,11 @@ h1, h2, h3, h4 { letter-spacing: -0.01em; }
     display: flex;
     align-items: baseline;
     gap: 12px;
-    padding: 6px 4px 10px;
+    padding: 14px 1rem 14px;
     border-bottom: 1px solid rgba(255,182,18,0.10);
-    margin: -1.25rem -1rem 1rem;
-    padding-left: 1rem;
-    padding-right: 1rem;
+    /* Streamlit's deploy/share toolbar sits ~36px tall in the top-right.
+       Push the brand down enough that it never tucks under it. */
+    margin: 2.5rem -1rem 1.25rem;
 }
 .protocl-brand {
     color: #FFB612;
