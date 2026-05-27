@@ -535,20 +535,40 @@ def _hrv_sleep_chart(data: HealthData) -> go.Figure | None:
     if w.empty:
         w = data.wearables.sort_values("date").tail(90)
     fig = go.Figure()
+    # Faint raw daily values as background; prominent 7-day rolling mean on top.
     if "hrv_sdnn_ms" in w.columns:
+        hrv_roll = w["hrv_sdnn_ms"].rolling(7, min_periods=2).mean()
         fig.add_trace(go.Scatter(
             x=w["date"], y=w["hrv_sdnn_ms"],
-            mode="lines", name="HRV (SDNN ms)",
-            line=dict(color=COLORS["gold"], width=2),
-            hovertemplate="%{x|%b %d}<br>HRV %{y:.0f} ms<extra></extra>",
+            mode="lines", name="HRV daily",
+            line=dict(color=COLORS["chart_series"][0], width=1),
+            opacity=0.25,
+            showlegend=False,
+            hoverinfo="skip",
+        ))
+        fig.add_trace(go.Scatter(
+            x=w["date"], y=hrv_roll,
+            mode="lines", name="HRV (7d avg)",
+            line=dict(color=COLORS["chart_series"][0], width=2.5),
+            hovertemplate="%{x|%b %d}<br>HRV 7d %{y:.0f} ms<extra></extra>",
         ))
     if "sleep_duration_hrs" in w.columns:
+        sleep_roll = w["sleep_duration_hrs"].rolling(7, min_periods=2).mean()
         fig.add_trace(go.Scatter(
             x=w["date"], y=w["sleep_duration_hrs"],
-            mode="lines", name="Sleep (hrs)",
-            line=dict(color=COLORS["chart_series"][1], width=1.5, dash="dot"),
+            mode="lines", name="Sleep daily",
+            line=dict(color=COLORS["chart_series"][1], width=1),
+            opacity=0.25,
             yaxis="y2",
-            hovertemplate="%{x|%b %d}<br>Sleep %{y:.1f} h<extra></extra>",
+            showlegend=False,
+            hoverinfo="skip",
+        ))
+        fig.add_trace(go.Scatter(
+            x=w["date"], y=sleep_roll,
+            mode="lines", name="Sleep (7d avg)",
+            line=dict(color=COLORS["chart_series"][1], width=2.5),
+            yaxis="y2",
+            hovertemplate="%{x|%b %d}<br>Sleep 7d %{y:.1f} h<extra></extra>",
         ))
     apply_theme(fig, height=260)
     fig.update_layout(
@@ -585,6 +605,7 @@ def render_row_trends(data: HealthData, prefs: dict) -> None:
             st.caption("No wearables data yet.")
         else:
             st.plotly_chart(fig, use_container_width=True)
+            st.caption("Lines show 7-day rolling average. Faint background = raw daily values.")
     st.markdown('</div>', unsafe_allow_html=True)
 
 
