@@ -245,9 +245,21 @@ footer { visibility: hidden; }
 """
 
 
+# Bump this whenever CSS changes shape so we can prove server-side which build
+# is live (the value is also shown by the freshness badge on Home).
+UI_VERSION = "1.5.3"
+UI_BUILD_LABEL = "v1.5 · chevron-shield · real-data · hk-connector"
+
+
 def inject_css() -> None:
-    """Inject the Protocōl CSS. Idempotent — call once per page near the top."""
-    st.markdown(CUSTOM_CSS, unsafe_allow_html=True)
+    """Inject the Protocōl CSS. Idempotent — call once per page near the top.
+
+    Prepends a tiny build marker (HTML comment) so the live page source always
+    proves which UI version is being served. This eliminates ambiguity when
+    Streamlit Cloud cold-starts and a browser briefly serves stale cached CSS.
+    """
+    marker = f'<!-- protocl ui={UI_VERSION} build="{UI_BUILD_LABEL}" -->'
+    st.markdown(marker + CUSTOM_CSS, unsafe_allow_html=True)
 
 
 def render_top_brand(tagline: str = "Your data. Your protocol. Your proof.") -> None:

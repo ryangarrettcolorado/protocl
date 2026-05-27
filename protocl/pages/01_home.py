@@ -9,6 +9,7 @@ from __future__ import annotations
 import streamlit as st
 
 from modules.data_loader import refresh_data
+from modules.freshness import render_freshness_strip
 from modules.home_dashboard import render_home
 from modules.preferences import load_preferences, profile
 from modules.theme import inject_css
@@ -28,5 +29,7 @@ with col_title:
 with col_refresh:
     if st.button("🔄 Refresh", use_container_width=True):
         refresh_data()
+
+render_freshness_strip()
 
 render_home(prefs)

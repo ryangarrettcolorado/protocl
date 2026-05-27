@@ -101,8 +101,21 @@ def refresh_data() -> None:
 # form-driven inserts (daily log, ketone reading, context note, etc.).
 # ────────────────────────────────────────────────────────────────────────────
 
+# Map filename -> import_log source_type so freshness picks up manual entries.
+_MANUAL_SOURCE_TYPES = {
+    "daily_log.csv":       "manual_entry",
+    "ketone_readings.csv": "manual_entry",
+    "cgm_readings.csv":    "manual_entry",
+    "context_notes.csv":   "manual_entry",
+    "action_items.csv":    "manual_entry",
+}
+
+
 def append_row(filename: str, row: dict, user_id: str = DEFAULT_USER) -> None:
-    """Append a single row to a CSV, creating the file if missing."""
+    """Append a single row to a CSV, creating the file if missing.
+
+    Also stamps `import_log.csv` so the freshness badge updates.
+    """
     path = _user_dir(user_id) / filename
     df = pd.DataFrame([row])
     if path.exists():
@@ -110,6 +123,26 @@ def append_row(filename: str, row: dict, user_id: str = DEFAULT_USER) -> None:
     else:
         path.parent.mkdir(parents=True, exist_ok=True)
         df.to_csv(path, mode="w", header=True, index=False)
+
+    # Audit-trail stamp for manually entered feeds.
+    source_type = _MANUAL_SOURCE_TYPES.get(filename)
+    if source_type:
+        log_path = _user_dir(user_id) / "import_log.csv"
+        log_row = pd.DataFrame([{
+            "timestamp": pd.Timestamp.now().isoformat(timespec="seconds"),
+            "source_type": source_type,
+            "filename": filename,
+            "rows_imported": 1,
+            "rows_skipped_duplicate": 0,
+            "errors": "",
+            "imported_by": "streamlit_form",
+        }])
+        if log_path.exists():
+            log_row.to_csv(log_path, mode="a", header=False, index=False)
+        else:
+            log_path.parent.mkdir(parents=True, exist_ok=True)
+            log_row.to_csv(log_path, mode="w", header=True, index=False)
+
     st.cache_data.clear()
 
 
