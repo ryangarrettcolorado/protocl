@@ -22,7 +22,7 @@ from modules.charts import (
 from modules.reference_ranges import load_reference, panel_label
 from modules.biomarker_aliases import display_name
 from modules.theme import inject_css, render_section_header
-from modules.preferences import load_preferences, get_appearance
+from modules.preferences import load_preferences
 
 # ────────────────────────────────────────────────────────────────────────────
 # Page shell — no set_page_config (nav owns it); no sidebar brand (top brand)
@@ -31,7 +31,6 @@ from modules.preferences import load_preferences, get_appearance
 inject_css()
 
 prefs = load_preferences()
-appearance = get_appearance(prefs)
 
 col_title, col_refresh = st.columns([6, 1])
 with col_title:
