@@ -599,3 +599,18 @@ with tab_sessions:
     st.dataframe(sessions_show, use_container_width=True, hide_index=True,
                  height=full_height(len(sessions_show)))
     st.caption(f"{len(sessions_show)} row(s)")
+
+
+with st.expander("📚 Sources Informing Design", expanded=False):
+    st.markdown("""
+- **Seiler, S.** *What is best practice for training intensity and duration distribution in
+  endurance athletes?* — the polarized-training (Z1/Z2 vs Z4/Z5) literature underpinning the
+  Z1–Z5 zone definitions used on this page.
+  [pubmed.ncbi.nlm.nih.gov/20861519](https://pubmed.ncbi.nlm.nih.gov/20861519/)
+- **Laursen, P. & Buchheit, M.** *Science and Application of High-Intensity Interval Training*
+  (Human Kinetics, 2019) — physiological basis for the Z4/Z5 categorization and HIIT dosing.
+- **American Heart Association** — adult aerobic activity guidance: ≥150 min moderate or
+  ≥75 min vigorous per week. [heart.org](https://www.heart.org/en/healthy-living/fitness/fitness-basics/aha-recs-for-physical-activity-in-adults)
+- **Attia, P.** *Outlive*, Ch. 12 — practical zone-based programming for longevity, including
+  the case for spending the bulk of weekly volume in Z2.
+""")
