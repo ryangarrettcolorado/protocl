@@ -45,6 +45,22 @@ SVG_APPLE_HEALTH = _svg(
     '<path d="M21 28 H26 V23 H30 V28 H35 V32 H30 V37 H26 V32 H21 Z" fill="#fff"/>'
 )
 
+# Google Calendar — the iconic torn-page calendar with date "31" + Google color band.
+SVG_GCAL = _svg(
+    # Top color band (Google blue)
+    f'<rect x="8" y="8" width="40" height="7" rx="2" fill="#4285F4"/>'
+    # Body of the page (white-ish, semi-transparent so dark theme shows through)
+    f'<rect x="8" y="15" width="40" height="35" rx="2" fill="rgba(255,255,255,0.92)"/>'
+    # Spiral binding rings (visible on the top band)
+    f'<rect x="16" y="4" width="2.5" height="8" rx="1" fill="#888"/>'
+    f'<rect x="37.5" y="4" width="2.5" height="8" rx="1" fill="#888"/>'
+    # Date "31" in Google brand colors (each digit a different brand color)
+    f'<text x="15" y="40" font-family="-apple-system, Helvetica, Arial, sans-serif" '
+    f'font-size="20" font-weight="500" fill="#4285F4">3</text>'
+    f'<text x="28" y="40" font-family="-apple-system, Helvetica, Arial, sans-serif" '
+    f'font-size="20" font-weight="500" fill="#EA4335">1</text>'
+)
+
 SVG_GITHUB = _svg(
     f'<path d="M28 6 C16 6 7 15 7 27 C7 37 13 45 22 48 C23 48 24 47 24 46 '
     f'V42 C18 43 17 39 17 39 C16 37 15 36 15 36 C13 35 15 35 15 35 '
@@ -258,6 +274,98 @@ SVG_SMART_SCALE = _svg(
     f'stroke-width="1.5" stroke-linecap="round"/>'
 )
 
+# Nutrition — phone screen showing a plate with macro ring (food-tracking apps
+# like MyFitnessPal/Cronometer/MacroFactor all look roughly like this).
+SVG_NUTRITION = _svg(
+    # Phone outline
+    f'<rect x="14" y="4" width="28" height="48" rx="4" fill="none" '
+    f'stroke="{MUTED}" stroke-width="2.2"/>'
+    # Speaker slot at top
+    f'<rect x="24" y="8" width="8" height="1.5" rx="0.5" fill="{MUTED}"/>'
+    # Macro ring (donut) showing protein/carbs/fat split
+    f'<circle cx="28" cy="24" r="8" fill="none" stroke="{MUTED}" '
+    f'stroke-width="2.5" opacity="0.35"/>'
+    # Filled portion of the ring (protein progress)
+    f'<path d="M28 16 A8 8 0 0 1 35.5 26.5" fill="none" stroke="{MUTED}" '
+    f'stroke-width="2.5" stroke-linecap="round"/>'
+    # Calorie number in center
+    f'<text x="28" y="26" font-family="-apple-system, Helvetica, sans-serif" '
+    f'font-size="6" font-weight="700" fill="{MUTED}" text-anchor="middle">2150</text>'
+    f'<text x="28" y="31" font-family="-apple-system, Helvetica, sans-serif" '
+    f'font-size="3.5" fill="{MUTED}" text-anchor="middle" opacity="0.7">kcal</text>'
+    # Food log rows below
+    f'<rect x="18" y="38" width="3" height="3" rx="0.5" fill="{MUTED}" opacity="0.7"/>'
+    f'<path d="M23 40 H38" stroke="{MUTED}" stroke-width="1.2" opacity="0.6"/>'
+    f'<rect x="18" y="43" width="3" height="3" rx="0.5" fill="{MUTED}" opacity="0.7"/>'
+    f'<path d="M23 45 H36" stroke="{MUTED}" stroke-width="1.2" opacity="0.6"/>'
+    f'<rect x="18" y="48" width="3" height="3" rx="0.5" fill="{MUTED}" opacity="0.7"/>'
+)
+
+# Strength — a dumbbell (universal symbol for resistance training, recognizable
+# whether the source is Hevy, Strong, or Whoop strength tracker).
+SVG_STRENGTH = _svg(
+    # Left weight plate
+    f'<rect x="6" y="18" width="6" height="20" rx="1.5" fill="{MUTED}"/>'
+    f'<rect x="12" y="22" width="3" height="12" rx="1" fill="{MUTED}"/>'
+    # Bar
+    f'<rect x="15" y="26" width="26" height="4" rx="1" fill="{MUTED}"/>'
+    # Grip texture on the bar
+    f'<path d="M20 26 V30 M24 26 V30 M28 26 V30 M32 26 V30 M36 26 V30" '
+    f'stroke="#0E0E10" stroke-width="0.7"/>'
+    # Right weight plate
+    f'<rect x="41" y="22" width="3" height="12" rx="1" fill="{MUTED}"/>'
+    f'<rect x="44" y="18" width="6" height="20" rx="1.5" fill="{MUTED}"/>'
+    # Set tally marks below (representing logged sets)
+    f'<path d="M16 44 V50 M20 44 V50 M24 44 V50 M28 44 V50 M32 44 V50 '
+    f'M16 47 L34 45" stroke="{MUTED}" stroke-width="1.5" stroke-linecap="round" '
+    f'opacity="0.7"/>'
+)
+
+# Metabolic Lab — VO2 max test mask (gas-analysis mask worn during the test)
+# with tube connecting to the analyzer.
+SVG_METABOLIC = _svg(
+    # Face/head outline (side profile, simplified)
+    f'<path d="M30 8 C22 8 16 14 16 22 V36 C16 42 20 46 26 46 H32 V40 H30 '
+    f'C26 40 24 38 24 34 V30 H30" fill="none" stroke="{MUTED}" '
+    f'stroke-width="2" opacity="0.45"/>'
+    # Mask cup (covers nose/mouth)
+    f'<path d="M14 22 C10 22 8 26 8 30 C8 34 10 38 14 38 L26 38 '
+    f'C28 38 30 36 30 32 V28 C30 24 28 22 26 22 Z" fill="none" '
+    f'stroke="{MUTED}" stroke-width="2.3"/>'
+    # Mask seam
+    f'<path d="M14 30 L26 30" stroke="{MUTED}" stroke-width="1.2" opacity="0.6"/>'
+    # Mask strap going around the head
+    f'<path d="M22 22 C26 18 30 18 34 22" fill="none" stroke="{MUTED}" '
+    f'stroke-width="1.5" opacity="0.55"/>'
+    f'<path d="M22 38 C26 42 30 42 34 38" fill="none" stroke="{MUTED}" '
+    f'stroke-width="1.5" opacity="0.55"/>'
+    # Gas-analysis tube exiting the mask
+    f'<path d="M8 30 C4 30 4 44 12 50" fill="none" stroke="{MUTED}" '
+    f'stroke-width="2.5" stroke-linecap="round"/>'
+    # Tube ribbing (corrugated)
+    f'<path d="M5 34 L7 34 M4 38 L6 38 M5 42 L8 43 M7 46 L10 47" '
+    f'stroke="{MUTED}" stroke-width="1" opacity="0.6"/>'
+)
+
+# Epigenetic Age — DNA double helix (universal mark for genetic/methylation
+# tests: TruDiagnostic, GlycanAge, 23andMe etc.)
+SVG_EPIGENETIC = _svg(
+    # Left strand (sinusoidal)
+    f'<path d="M18 6 C28 12 28 20 18 26 C8 32 8 40 18 46 L18 50" '
+    f'fill="none" stroke="{MUTED}" stroke-width="2.4" stroke-linecap="round"/>'
+    # Right strand (mirrored)
+    f'<path d="M38 6 C28 12 28 20 38 26 C48 32 48 40 38 46 L38 50" '
+    f'fill="none" stroke="{MUTED}" stroke-width="2.4" stroke-linecap="round"/>'
+    # Base-pair rungs connecting the strands
+    f'<path d="M21 10 L35 10" stroke="{MUTED}" stroke-width="1.6" opacity="0.7"/>'
+    f'<path d="M24 14 L32 14" stroke="{MUTED}" stroke-width="1.6" opacity="0.55"/>'
+    f'<path d="M22 22 L34 22" stroke="{MUTED}" stroke-width="1.6" opacity="0.55"/>'
+    f'<path d="M19 26 L37 26" stroke="{MUTED}" stroke-width="1.6" opacity="0.7"/>'
+    f'<path d="M22 30 L34 30" stroke="{MUTED}" stroke-width="1.6" opacity="0.55"/>'
+    f'<path d="M24 38 L32 38" stroke="{MUTED}" stroke-width="1.6" opacity="0.55"/>'
+    f'<path d="M21 42 L35 42" stroke="{MUTED}" stroke-width="1.6" opacity="0.7"/>'
+)
+
 # DEXA — overhead scanner gantry/C-arm above a patient table.
 SVG_DEXA = _svg(
     # Scanner arm (vertical post + horizontal beam above table)
@@ -333,6 +441,20 @@ CATALOG: list[Integration] = [
         feed_label="Wearables",
         action_label="Disconnect",
         action_hint="Stops HealthKit sync via the connector.",
+    ),
+    Integration(
+        key="google_calendar",
+        name="Google Calendar",
+        category="Context",
+        status="connected",
+        connection_type="connector",
+        svg=SVG_GCAL,
+        description="Travel, late nights, time-zone changes — context that "
+                    "explains HRV dips, sleep debt and missed workouts.",
+        source_types=[],
+        feed_label=None,
+        action_label="Manage",
+        action_hint="Open the calendar connector settings.",
     ),
     Integration(
         key="github",
@@ -478,6 +600,50 @@ CATALOG: list[Integration] = [
         svg=SVG_SMART_SCALE,
         description="Daily weight and bio-impedance trends without manual "
                     "logging. Bridges the gap between monthly InBody scans.",
+        action_label="Notify me",
+    ),
+    Integration(
+        key="nutrition",
+        name="Nutrition (MyFitnessPal / Cronometer)",
+        category="Diet",
+        status="coming_soon",
+        connection_type="coming_soon",
+        svg=SVG_NUTRITION,
+        description="Daily calories, macros and micronutrient timing. Pairs "
+                    "with CGM and bloodwork to close the food→biomarker loop.",
+        action_label="Notify me",
+    ),
+    Integration(
+        key="strength",
+        name="Strength Training (Hevy / Strong)",
+        category="Activity",
+        status="coming_soon",
+        connection_type="coming_soon",
+        svg=SVG_STRENGTH,
+        description="Lifting sessions, set/rep/load progression and weekly "
+                    "volume. Fills the gap Strava doesn't cover.",
+        action_label="Notify me",
+    ),
+    Integration(
+        key="metabolic_lab",
+        name="Metabolic Lab (VO₂ max / RMR)",
+        category="Performance",
+        status="coming_soon",
+        connection_type="coming_soon",
+        svg=SVG_METABOLIC,
+        description="Lab-measured VO₂ max, resting metabolic rate and lactate "
+                    "thresholds. Replaces watch-estimated VO₂ with calibrated values.",
+        action_label="Notify me",
+    ),
+    Integration(
+        key="epigenetic",
+        name="Epigenetic Age (TruDiagnostic / GlycanAge)",
+        category="Lab",
+        status="coming_soon",
+        connection_type="coming_soon",
+        svg=SVG_EPIGENETIC,
+        description="Methylation-based biological age, pace of aging and "
+                    "organ-specific clocks. Powers the Biological Age page.",
         action_label="Notify me",
     ),
     Integration(
