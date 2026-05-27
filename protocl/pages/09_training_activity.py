@@ -12,12 +12,8 @@ from modules.data_loader import load_data, refresh_data
 from modules.charts import COLORS, apply_theme, metric_card_html
 
 
-st.set_page_config(page_title="Training · Protocōl", page_icon="⚗️", layout="wide")
-
-from modules.theme import inject_css, render_sidebar_brand
+from modules.theme import inject_css, grouped_sections
 inject_css()
-render_sidebar_brand()
-
 # ────────────────────────────────────────────────────────────────────────────
 # Header
 # ────────────────────────────────────────────────────────────────────────────
@@ -74,7 +70,7 @@ st.markdown("")
 # ────────────────────────────────────────────────────────────────────────────
 # Tabs
 # ────────────────────────────────────────────────────────────────────────────
-tab_load, tab_intensity, tab_calendar, tab_sessions = st.tabs(
+tab_load, tab_intensity, tab_calendar, tab_sessions = grouped_sections(
     ["📈 Load & Volume", "🔥 Intensity", "🗓️ Calendar", "📋 Sessions"]
 )
 

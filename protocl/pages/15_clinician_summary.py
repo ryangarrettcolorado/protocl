@@ -13,12 +13,8 @@ from modules.bioage import latest_phenoage
 from modules.llm import llm_chat, is_configured, llm_badge
 
 
-st.set_page_config(page_title="Clinician Summary · Protocōl", page_icon="⚗️", layout="wide")
-
-from modules.theme import inject_css, render_sidebar_brand
+from modules.theme import inject_css, grouped_sections
 inject_css()
-render_sidebar_brand()
-
 # ────────────────────────────────────────────────────────────────────────────
 # Header
 # ────────────────────────────────────────────────────────────────────────────
@@ -278,7 +274,7 @@ laboratory reference ranges. Use as a discussion aid; not a clinical diagnosis.*
 # ────────────────────────────────────────────────────────────────────────────
 # Tabs — narrative + LLM + raw
 # ────────────────────────────────────────────────────────────────────────────
-tab_narrative, tab_llm, tab_raw, tab_about = st.tabs(
+tab_narrative, tab_llm, tab_raw, tab_about = grouped_sections(
     ["📋 Narrative Summary", "🤖 LLM-generated", "🗂 Raw markdown", "ℹ️ About"]
 )
 

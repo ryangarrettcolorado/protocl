@@ -9,12 +9,8 @@ from modules.data_loader import load_data, refresh_data
 from modules.charts import COLORS, apply_theme, metric_card_html
 
 
-st.set_page_config(page_title="Timeline · Protocōl", page_icon="⚗️", layout="wide")
-
-from modules.theme import inject_css, render_sidebar_brand
+from modules.theme import inject_css, grouped_sections
 inject_css()
-render_sidebar_brand()
-
 # ────────────────────────────────────────────────────────────────────────────
 # Header
 # ────────────────────────────────────────────────────────────────────────────
@@ -179,7 +175,7 @@ st.caption(f"Showing **{len(filtered)}** of {len(events_df)} events")
 # ────────────────────────────────────────────────────────────────────────────
 # Tabs — gantt vs list
 # ────────────────────────────────────────────────────────────────────────────
-tab_gantt, tab_list, tab_table, tab_about = st.tabs(
+tab_gantt, tab_list, tab_table, tab_about = grouped_sections(
     ["📊 Lanes view", "🧾 Event list", "🗂 Table", "ℹ️ About"]
 )
 

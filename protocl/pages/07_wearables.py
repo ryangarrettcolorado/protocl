@@ -10,12 +10,8 @@ from modules.data_loader import load_data, refresh_data
 from modules.charts import COLORS, apply_theme, metric_card_html
 
 
-st.set_page_config(page_title="Wearables · Protocōl", page_icon="⚗️", layout="wide")
-
-from modules.theme import inject_css, render_sidebar_brand
+from modules.theme import inject_css, grouped_sections
 inject_css()
-render_sidebar_brand()
-
 # ────────────────────────────────────────────────────────────────────────────
 # Header
 # ────────────────────────────────────────────────────────────────────────────
@@ -76,7 +72,7 @@ st.markdown("")
 # ────────────────────────────────────────────────────────────────────────────
 # Tabs
 # ────────────────────────────────────────────────────────────────────────────
-tab_recovery, tab_sleep, tab_activity, tab_table = st.tabs(
+tab_recovery, tab_sleep, tab_activity, tab_table = grouped_sections(
     ["💓 Recovery", "🌙 Sleep", "🚶 Activity", "📋 Raw Data"]
 )
 

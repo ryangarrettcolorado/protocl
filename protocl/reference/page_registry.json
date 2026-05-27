@@ -1,0 +1,29 @@
+{
+  "groups": [
+    { "id": "today",              "label": "Today",                 "icon": "🎯", "order": 1 },
+    { "id": "health_signals",     "label": "Health Signals",        "icon": "🧬", "order": 2 },
+    { "id": "performance",        "label": "Performance",           "icon": "💪", "order": 3 },
+    { "id": "protocol_insights",  "label": "Protocol & Insights",   "icon": "⚗️", "order": 4 },
+    { "id": "data_settings",      "label": "Data & Settings",       "icon": "🛠",  "order": 5 }
+  ],
+  "pages": [
+    { "id": "home",               "title": "Home",               "icon": "🏠", "module": "pages/01_home.py",               "group": "today",             "order": 1,  "default_visible": true, "personas": ["performance", "longevity", "clinical"] },
+    { "id": "action_items",       "title": "Action Items",       "icon": "✅", "module": "pages/02_action_items.py",       "group": "today",             "order": 2,  "default_visible": true, "personas": ["performance", "longevity", "clinical"] },
+    { "id": "daily_trackers",     "title": "Daily Trackers",     "icon": "📔", "module": "pages/03_daily_trackers.py",     "group": "today",             "order": 3,  "default_visible": true, "personas": ["performance", "longevity", "clinical"] },
+    { "id": "bloodwork",          "title": "Bloodwork",          "icon": "🩸", "module": "pages/04_bloodwork.py",          "group": "health_signals",    "order": 4,  "default_visible": true, "personas": ["performance", "longevity", "clinical"] },
+    { "id": "body_composition",   "title": "Body Composition",   "icon": "📐", "module": "pages/05_body_composition.py",   "group": "health_signals",    "order": 5,  "default_visible": true, "personas": ["performance", "longevity", "clinical"] },
+    { "id": "cgm_glucose",        "title": "CGM & Glucose",      "icon": "🍬", "module": "pages/06_cgm_glucose.py",        "group": "health_signals",    "order": 6,  "default_visible": true, "personas": ["performance", "longevity", "clinical"] },
+    { "id": "wearables",          "title": "Wearables",          "icon": "⌚", "module": "pages/07_wearables.py",          "group": "health_signals",    "order": 7,  "default_visible": true, "personas": ["performance", "longevity", "clinical"] },
+    { "id": "biological_age",     "title": "Biological Age",     "icon": "🧬", "module": "pages/08_biological_age.py",     "group": "health_signals",    "order": 8,  "default_visible": true, "personas": ["longevity", "clinical"] },
+    { "id": "training_activity",  "title": "Training Activity",  "icon": "🏋", "module": "pages/09_training_activity.py",  "group": "performance",       "order": 9,  "default_visible": true, "personas": ["performance"] },
+    { "id": "zone2_vo2max",       "title": "Zone 2 / VO₂ max",   "icon": "🫁", "module": "pages/10_zone2_vo2max.py",       "group": "performance",       "order": 10, "default_visible": true, "personas": ["performance"] },
+    { "id": "protocol",           "title": "Protocol",           "icon": "⚗️", "module": "pages/11_protocol.py",           "group": "protocol_insights", "order": 11, "default_visible": true, "personas": ["performance", "longevity", "clinical"] },
+    { "id": "nof1_experiments",   "title": "N=1 Experiments",    "icon": "🧪", "module": "pages/12_nof1_experiments.py",   "group": "protocol_insights", "order": 12, "default_visible": true, "personas": ["performance", "longevity"] },
+    { "id": "recommendations",    "title": "Recommendations",    "icon": "💡", "module": "pages/13_recommendations.py",    "group": "protocol_insights", "order": 13, "default_visible": true, "personas": ["performance", "longevity", "clinical"] },
+    { "id": "risks_alerts",       "title": "Risks & Alerts",     "icon": "🚨", "module": "pages/14_risks_alerts.py",       "group": "protocol_insights", "order": 14, "default_visible": true, "personas": ["longevity", "clinical"] },
+    { "id": "clinician_summary",  "title": "Clinician Summary",  "icon": "📋", "module": "pages/15_clinician_summary.py",  "group": "protocol_insights", "order": 15, "default_visible": true, "personas": ["clinical"] },
+    { "id": "timeline",           "title": "Timeline",           "icon": "📅", "module": "pages/16_timeline.py",           "group": "data_settings",     "order": 16, "default_visible": true, "personas": ["longevity", "clinical"] },
+    { "id": "imports",            "title": "Import Center",      "icon": "📥", "module": "pages/17_imports.py",            "group": "data_settings",     "order": 17, "default_visible": true, "personas": ["performance", "longevity", "clinical"] },
+    { "id": "settings",           "title": "Settings",           "icon": "⚙",  "module": "pages/18_settings.py",           "group": "data_settings",     "order": 18, "default_visible": true, "personas": ["performance", "longevity", "clinical"] }
+  ]
+}

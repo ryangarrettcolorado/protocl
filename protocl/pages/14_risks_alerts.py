@@ -11,12 +11,8 @@ from modules.reference_ranges import load_reference, get as ref_get
 from modules.biomarker_aliases import display_name
 
 
-st.set_page_config(page_title="Risks · Protocōl", page_icon="⚗️", layout="wide")
-
-from modules.theme import inject_css, render_sidebar_brand
+from modules.theme import inject_css, grouped_sections
 inject_css()
-render_sidebar_brand()
-
 # ────────────────────────────────────────────────────────────────────────────
 # Header
 # ────────────────────────────────────────────────────────────────────────────
@@ -188,7 +184,7 @@ st.markdown("")
 # ────────────────────────────────────────────────────────────────────────────
 # Tabs
 # ────────────────────────────────────────────────────────────────────────────
-tab_oor, tab_trends, tab_interactions = st.tabs(
+tab_oor, tab_trends, tab_interactions = grouped_sections(
     ["🚩 Out-of-Range", "📈 Adverse Trends", "⚠️ Interactions"]
 )
 

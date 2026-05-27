@@ -9,3 +9,8 @@ PyGithub>=2.3.0
 fitparse>=1.2.0
 lxml>=5.2.0
 openpyxl>=3.1.0
+# PDF + image OCR for Import Center (vision-first with tesseract fallback)
+pypdf>=4.0.0
+Pillow>=10.0.0
+pytesseract>=0.3.10
+pdf2image>=1.17.0

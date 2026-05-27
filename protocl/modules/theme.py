@@ -3,6 +3,19 @@
 Streamlit renders each page as its own document, so CSS injected in app.py
 does NOT cascade to pages/*.py. This module centralizes the CSS so we can
 keep it in one place and call it from each page's setup block.
+
+v1.5 additions:
+- ``render_top_brand`` — slim brand bar above the top nav (replaces sidebar brand).
+- ``.section-group-header`` + ``.section-status-chip-row`` — collapsible
+  group headers used by the single-page-grouped layout.
+- ``.sticky-filter-bar`` — sticky page-local filter bar.
+- ``.density-compact`` / ``.density-comfortable`` — body-level density.
+- ``.home-row`` — consistent vertical spacing between Home dashboard rows.
+- ``.alert-chip-*`` — Row 2 banner chips.
+- ``.timeline-event-row`` — Row 5 event list styling.
+
+``render_sidebar_brand`` is kept as a no-op alias so any straggler imports
+don't crash during the v1.5 migration.
 """
 from __future__ import annotations
 
@@ -11,11 +24,35 @@ import streamlit as st
 
 CUSTOM_CSS = """
 <style>
-.block-container { padding-top: 2rem; }
+/* ── Base ──────────────────────────────────────────────────────────────── */
+.block-container { padding-top: 1.5rem; }
 
 h1, h2, h3, h4 { letter-spacing: -0.01em; }
 
-/* KPI metric cards */
+/* ── Top brand bar (replaces sidebar brand) ────────────────────────────── */
+.protocl-top-brand {
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+    padding: 14px 1rem 14px;
+    border-bottom: 1px solid rgba(255,182,18,0.10);
+    /* Streamlit's deploy/share toolbar sits ~36px tall in the top-right.
+       Push the brand down enough that it never tucks under it. */
+    margin: 2.5rem -1rem 1.25rem;
+}
+.protocl-brand {
+    color: #FFB612;
+    font-weight: 800;
+    font-size: 1.25rem;
+    letter-spacing: 0.02em;
+}
+.protocl-tagline {
+    color: #A0A0A0;
+    font-size: 0.78rem;
+    font-style: italic;
+}
+
+/* ── KPI metric cards ──────────────────────────────────────────────────── */
 .metric-card {
     background: #1C1C1C;
     border: 1px solid rgba(255,182,18,0.18);
@@ -42,7 +79,7 @@ h1, h2, h3, h4 { letter-spacing: -0.01em; }
 .metric-delta-pos { color: #4CAF50; font-size: 0.85rem; margin-top: 4px; }
 .metric-delta-neg { color: #F44336; font-size: 0.85rem; margin-top: 4px; }
 
-/* Status badges */
+/* ── Status / tier badges ──────────────────────────────────────────────── */
 .badge-optimal { background: rgba(76,175,80,0.18); color: #4CAF50; border-radius: 4px; padding: 2px 8px; font-size: 0.72rem; font-weight: 600; }
 .badge-monitor { background: rgba(255,152,0,0.18); color: #FF9800; border-radius: 4px; padding: 2px 8px; font-size: 0.72rem; font-weight: 600; }
 .badge-risk    { background: rgba(244,67,54,0.18); color: #F44336; border-radius: 4px; padding: 2px 8px; font-size: 0.72rem; font-weight: 600; }
@@ -54,6 +91,7 @@ h1, h2, h3, h4 { letter-spacing: -0.01em; }
 .tier-t4 { color: #FF9800; font-weight: 600; }
 .tier-t5 { color: #A0A0A0; font-weight: 600; }
 
+/* ── Cards ─────────────────────────────────────────────────────────────── */
 .risk-card {
     background: #1C1C1C;
     border-left: 3px solid #FF9800;
@@ -61,6 +99,8 @@ h1, h2, h3, h4 { letter-spacing: -0.01em; }
     padding: 14px 16px;
     margin-bottom: 10px;
 }
+.risk-card-high { border-left-color: #F44336; }
+.risk-card-low  { border-left-color: #A0A0A0; }
 
 .rec-card {
     background: #1C1C1C;
@@ -71,8 +111,94 @@ h1, h2, h3, h4 { letter-spacing: -0.01em; }
 }
 .rec-card-title { color: #FFB612; font-weight: 600; font-size: 1.05rem; margin-bottom: 6px; }
 
-section[data-testid="stSidebar"] { background: #1C1C1C; border-right: 1px solid rgba(255,182,18,0.10); }
+/* ── Section group headers (single-page-grouped layout) ────────────────── */
+.section-group-header {
+    color: #FFB612;
+    font-weight: 700;
+    font-size: 1.05rem;
+    letter-spacing: 0.01em;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 0;
+}
+.section-group-header .section-group-icon { font-size: 1.1rem; }
+.section-group-header .section-group-count {
+    color: #A0A0A0;
+    font-weight: 500;
+    font-size: 0.82rem;
+}
+.section-status-chip-row {
+    display: inline-flex;
+    gap: 6px;
+    margin-left: 6px;
+}
+.section-status-chip-row .badge-monitor,
+.section-status-chip-row .badge-risk,
+.section-status-chip-row .badge-optimal,
+.section-status-chip-row .badge-unknown {
+    font-size: 0.68rem;
+    padding: 1px 6px;
+}
 
+/* ── Sticky filter bar ─────────────────────────────────────────────────── */
+.sticky-filter-bar {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    background: rgba(16,16,16,0.92);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border-bottom: 1px solid rgba(255,182,18,0.10);
+    padding: 8px 4px;
+    margin: 0 0 14px;
+}
+
+/* ── Home dashboard rows ───────────────────────────────────────────────── */
+.home-row {
+    margin-bottom: 1.25rem;
+}
+.home-row h2, .home-row h3 {
+    margin-top: 0.25rem;
+    margin-bottom: 0.75rem;
+}
+
+/* ── Alert chips (Home Row 2 banner) ───────────────────────────────────── */
+.alert-chip-high     { background: rgba(244,67,54,0.18); color: #F44336; border: 1px solid rgba(244,67,54,0.35); border-radius: 16px; padding: 4px 12px; font-size: 0.78rem; font-weight: 600; display: inline-block; margin-right: 6px; margin-bottom: 6px; }
+.alert-chip-monitor  { background: rgba(255,152,0,0.18); color: #FF9800; border: 1px solid rgba(255,152,0,0.35); border-radius: 16px; padding: 4px 12px; font-size: 0.78rem; font-weight: 600; display: inline-block; margin-right: 6px; margin-bottom: 6px; }
+.alert-chip-resolved { background: rgba(160,160,160,0.18); color: #A0A0A0; border: 1px solid rgba(160,160,160,0.35); border-radius: 16px; padding: 4px 12px; font-size: 0.78rem; font-weight: 500; display: inline-block; margin-right: 6px; margin-bottom: 6px; }
+.alert-banner-nominal {
+    background: rgba(76,175,80,0.12);
+    border: 1px solid rgba(76,175,80,0.30);
+    color: #4CAF50;
+    border-radius: 8px;
+    padding: 12px 16px;
+    font-size: 0.92rem;
+}
+
+/* ── Timeline event rows (Home Row 5) ──────────────────────────────────── */
+.timeline-event-row {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 10px 12px;
+    border-bottom: 1px solid rgba(255,182,18,0.07);
+    font-size: 0.92rem;
+}
+.timeline-event-row:last-child { border-bottom: 0; }
+.timeline-event-icon  { font-size: 1.1rem; width: 1.6rem; text-align: center; }
+.timeline-event-date  { color: #A0A0A0; font-variant-numeric: tabular-nums; min-width: 70px; }
+.timeline-event-text  { color: #F0F0F0; flex: 1; }
+
+/* ── Density modifiers ─────────────────────────────────────────────────── */
+.density-compact .metric-card     { padding: 10px 10px; }
+.density-compact .metric-value    { font-size: 1.6rem; }
+.density-compact .rec-card        { padding: 12px; }
+.density-compact .risk-card       { padding: 10px 12px; }
+.density-compact .timeline-event-row { padding: 6px 10px; }
+.density-comfortable              { /* default — no overrides */ }
+
+/* ── Tables / Streamlit chrome ─────────────────────────────────────────── */
 [data-testid="stDataFrame"] { background: #1C1C1C; }
 
 .stButton > button {
@@ -88,17 +214,10 @@ section[data-testid="stSidebar"] { background: #1C1C1C; border-right: 1px solid 
     color: #FFB612;
 }
 
+section[data-testid="stSidebar"] { background: #1C1C1C; border-right: 1px solid rgba(255,182,18,0.10); }
+
 #MainMenu { visibility: hidden; }
 footer { visibility: hidden; }
-
-.protocl-brand {
-    color: #FFB612;
-    font-weight: 800;
-    font-size: 1.25rem;
-    letter-spacing: 0.02em;
-    margin-bottom: 0.25rem;
-}
-.protocl-tagline { color: #A0A0A0; font-size: 0.78rem; font-style: italic; margin-bottom: 1rem; }
 </style>
 """
 
@@ -108,12 +227,87 @@ def inject_css() -> None:
     st.markdown(CUSTOM_CSS, unsafe_allow_html=True)
 
 
+def render_top_brand(tagline: str = "Your data. Your protocol. Your proof.") -> None:
+    """Render the Protocōl brand bar above the top nav.
+
+    Streamlit renders ``st.navigation`` once per session at the entry point,
+    so this needs to be called from ``app.py`` (not from individual pages).
+    """
+    st.markdown(
+        f'<div class="protocl-top-brand">'
+        f'<span class="protocl-brand">⚗️ Protocōl</span>'
+        f'<span class="protocl-tagline">{tagline}</span>'
+        f'</div>',
+        unsafe_allow_html=True,
+    )
+
+
 def render_sidebar_brand() -> None:
-    """Render the Protocōl brand mark in the sidebar."""
-    with st.sidebar:
-        st.markdown(
-            '<div class="protocl-brand">⚗️ Protocōl</div>'
-            '<div class="protocl-tagline">Your data. Your protocol. Your proof.</div>',
-            unsafe_allow_html=True,
-        )
-        st.divider()
+    """Deprecated in v1.5 — kept as a no-op for backward-compat."""
+    return None
+
+
+def apply_density(density: str) -> None:
+    """Wrap the page in a density class so CSS overrides take effect."""
+    cls = "density-compact" if density == "compact" else "density-comfortable"
+    st.markdown(
+        f'<div class="{cls}" id="protocl-density-root"></div>',
+        unsafe_allow_html=True,
+    )
+
+
+def render_section_header(icon: str, title: str, count_text: str = "",
+                          chips_html: str = "") -> None:
+    """Render a section header for a collapsible group inside ``st.expander``.
+
+    Use directly above (or as the first child of) an ``st.expander`` so the
+    user sees the icon + count + status chips before they collapse the group.
+    """
+    chip_block = f'<span class="section-status-chip-row">{chips_html}</span>' if chips_html else ""
+    count_block = f'<span class="section-group-count">{count_text}</span>' if count_text else ""
+    st.markdown(
+        f'<div class="section-group-header">'
+        f'<span class="section-group-icon">{icon}</span>'
+        f'<span>{title}</span>'
+        f'{count_block}'
+        f'{chip_block}'
+        f'</div>',
+        unsafe_allow_html=True,
+    )
+
+
+def grouped_sections(labels: list[str], *, expanded: bool | list[bool] = True):
+    """Drop-in replacement for ``st.tabs(labels)`` that returns collapsible
+    ``st.expander`` containers instead — one per label.
+
+    Each label may begin with an emoji/icon followed by a space; we split that
+    off and pass it to ``render_section_header`` so users see iconography
+    above each expander.
+
+    Returns: list of expander context managers in the same order as ``labels``.
+    Usage:
+        sections = grouped_sections(["❤️ Cardiovascular", "🩸 Glucose"])
+        with sections[0]:
+            ...
+        with sections[1]:
+            ...
+    """
+    if isinstance(expanded, bool):
+        expanded_flags = [expanded] * len(labels)
+    else:
+        expanded_flags = list(expanded) + [True] * (len(labels) - len(expanded))
+
+    containers = []
+    for label, exp in zip(labels, expanded_flags):
+        # Try to split off a leading icon (one or two non-space tokens then a space)
+        icon, title = "", label
+        if label and " " in label:
+            first, rest = label.split(" ", 1)
+            # Treat the first token as an icon if it's short and non-alphanumeric-heavy
+            if len(first) <= 3 and not first.isalnum():
+                icon, title = first, rest
+        if not icon:
+            icon = "•"
+        render_section_header(icon, title)
+        containers.append(st.expander(title, expanded=exp))
+    return containers
