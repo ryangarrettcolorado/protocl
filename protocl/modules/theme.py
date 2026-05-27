@@ -262,7 +262,7 @@ def inject_css() -> None:
     st.markdown(marker + CUSTOM_CSS, unsafe_allow_html=True)
 
 
-def render_top_brand(tagline: str = "Your data. Your protocol. Your proof.") -> None:
+def render_top_brand(tagline: str = "Precision data. Confident decisions. Verified outcomes.") -> None:
     """Render the Protocōl brand bar above the top nav.
 
     Streamlit renders ``st.navigation`` once per session at the entry point,
