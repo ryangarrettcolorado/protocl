@@ -9,7 +9,8 @@ import plotly.graph_objects as go
 import streamlit as st
 
 from modules.data_loader import load_data, refresh_data
-from modules.charts import COLORS, apply_theme, metric_card_html
+from modules.charts import COLORS, apply_theme, metric_card_html, full_height
+from modules.time_range import render_time_range_selector, filter_by_range
 
 
 from modules.theme import inject_css, grouped_sections
@@ -36,6 +37,17 @@ df = df.sort_values("date").reset_index(drop=True)
 df["week"] = df["date"].dt.to_period("W").dt.start_time
 
 TODAY = pd.Timestamp("2026-05-25")
+
+# Page time range — filters every chart and table below. 7D / 28D KPI cards
+# remain anchored to absolute windows because those are part of the headline
+# definitions and shouldn't shift with the range selector.
+tr_start, tr_end, tr_preset = render_time_range_selector("training_activity", default_preset="1yr")
+df = filter_by_range(df, "date", tr_start, tr_end).sort_values("date").reset_index(drop=True)
+
+if df.empty:
+    st.info("No training sessions in the selected time range.")
+    st.stop()
+df["week"] = df["date"].dt.to_period("W").dt.start_time
 last_7 = df[df["date"] >= TODAY - pd.Timedelta(days=7)]
 last_28 = df[df["date"] >= TODAY - pd.Timedelta(days=28)]
 prev_28 = df[(df["date"] >= TODAY - pd.Timedelta(days=56)) & (df["date"] < TODAY - pd.Timedelta(days=28))]
@@ -141,26 +153,32 @@ with tab_intensity:
 
     # Approximate HR zones based on avg_hr (assume max HR ~178, lthr ~155)
     # Z1: <122, Z2: 122-145, Z3: 146-160, Z4: 161-172, Z5: >172
+    Z1 = "Z1 — Active Recovery (<55% HR max)"
+    Z2 = "Z2 — Aerobic Base (55–70% HR max)"
+    Z3 = "Z3 — Aerobic Tempo (70–80% HR max)"
+    Z4 = "Z4 — Threshold (80–90% HR max)"
+    Z5 = "Z5 — VO₂ Max Effort (90–100% HR max)"
+
     def zone_of(hr):
         if pd.isna(hr): return "Unknown"
-        if hr < 122: return "Z1 Recovery"
-        if hr < 145: return "Z2 Aerobic"
-        if hr < 160: return "Z3 Tempo"
-        if hr < 172: return "Z4 Threshold"
-        return "Z5 VO2"
+        if hr < 122: return Z1
+        if hr < 145: return Z2
+        if hr < 160: return Z3
+        if hr < 172: return Z4
+        return Z5
 
     last_28_z = last_28.copy()
     last_28_z["zone"] = last_28_z["avg_hr_bpm"].apply(zone_of)
     zone_mins = last_28_z.groupby("zone")["duration_min"].sum().reset_index()
-    zone_order = ["Z1 Recovery", "Z2 Aerobic", "Z3 Tempo", "Z4 Threshold", "Z5 VO2", "Unknown"]
+    zone_order = [Z1, Z2, Z3, Z4, Z5, "Unknown"]
     zone_mins["zone"] = pd.Categorical(zone_mins["zone"], categories=zone_order, ordered=True)
     zone_mins = zone_mins.sort_values("zone")
     zone_colors = {
-        "Z1 Recovery": "#80DEEA",
-        "Z2 Aerobic": COLORS["success"],
-        "Z3 Tempo": COLORS["gold"],
-        "Z4 Threshold": COLORS["warning"],
-        "Z5 VO2": COLORS["danger"],
+        Z1: "#80DEEA",
+        Z2: COLORS["success"],
+        Z3: COLORS["gold"],
+        Z4: COLORS["warning"],
+        Z5: COLORS["danger"],
         "Unknown": COLORS["text_faint"],
     }
 
@@ -185,6 +203,12 @@ with tab_intensity:
         apply_theme(fig_pie, height=360)
         fig_pie.update_layout(showlegend=True, legend=dict(orientation="v", y=0.5, x=1.05))
         st.plotly_chart(fig_pie, use_container_width=True)
+
+    st.caption(
+        "**Zone system** — Z1 Active Recovery (<55% HR max), Z2 Aerobic Base (55–70%), "
+        "Z3 Aerobic Tempo (70–80%), Z4 Threshold (80–90%), Z5 VO₂ Max Effort (90–100%). "
+        "Polarized training targets ~75–80% of weekly time in Z1–Z2 and the remainder in Z4–Z5."
+    )
 
     # Power / cadence stats
     st.subheader("Power & Cadence Trends")
@@ -392,23 +416,23 @@ with tab_cycling:
 
             def cycling_zone(hr):
                 if pd.isna(hr): return "Unknown"
-                if hr < 122: return "Z1 Recovery"
-                if hr < 145: return "Z2 Aerobic"
-                if hr < 160: return "Z3 Tempo"
-                if hr < 172: return "Z4 Threshold"
-                return "Z5 VO2"
+                if hr < 122: return Z1
+                if hr < 145: return Z2
+                if hr < 160: return Z3
+                if hr < 172: return Z4
+                return Z5
 
             cyc_hr["zone"] = cyc_hr["avg_hr_bpm"].apply(cycling_zone)
             zone_mins_c = cyc_hr.groupby("zone")["duration_min"].sum().reset_index()
-            zone_order = ["Z1 Recovery", "Z2 Aerobic", "Z3 Tempo", "Z4 Threshold", "Z5 VO2"]
-            zone_mins_c["zone"] = pd.Categorical(zone_mins_c["zone"], categories=zone_order, ordered=True)
+            zone_order_c = [Z1, Z2, Z3, Z4, Z5]
+            zone_mins_c["zone"] = pd.Categorical(zone_mins_c["zone"], categories=zone_order_c, ordered=True)
             zone_mins_c = zone_mins_c.sort_values("zone").dropna(subset=["zone"])
             zone_colors_c = {
-                "Z1 Recovery": "#80DEEA",
-                "Z2 Aerobic": COLORS["success"],
-                "Z3 Tempo": COLORS["gold"],
-                "Z4 Threshold": COLORS["warning"],
-                "Z5 VO2": COLORS["danger"],
+                Z1: "#80DEEA",
+                Z2: COLORS["success"],
+                Z3: COLORS["gold"],
+                Z4: COLORS["warning"],
+                Z5: COLORS["danger"],
             }
             total_min = zone_mins_c["duration_min"].sum()
             zc1, zc2 = st.columns([3, 2])
@@ -424,11 +448,11 @@ with tab_cycling:
                 st.plotly_chart(fig_zc, use_container_width=True)
             with zc2:
                 st.metric("Total cycling time (zones known)", f"{total_min/60:.1f} h")
-                z2_min = zone_mins_c[zone_mins_c["zone"] == "Z2 Aerobic"]["duration_min"].sum()
+                z2_min = zone_mins_c[zone_mins_c["zone"] == Z2]["duration_min"].sum()
                 z2_pct = z2_min / total_min * 100 if total_min else 0
                 st.metric("Z2 aerobic share", f"{z2_pct:.0f}%",
                            help="Polarized training models target ~75-80% Z1-Z2.")
-                hi_min = zone_mins_c[zone_mins_c["zone"].isin(["Z3 Tempo", "Z4 Threshold", "Z5 VO2"])]["duration_min"].sum()
+                hi_min = zone_mins_c[zone_mins_c["zone"].isin([Z3, Z4, Z5])]["duration_min"].sum()
                 st.metric("High-intensity share (Z3+)", f"{hi_min/total_min*100:.0f}%" if total_min else "—")
 
             # Aerobic efficiency trend: mph per heartbeat
@@ -489,11 +513,14 @@ with tab_cycling:
         )
         big["Effort"] = big["tss"].apply(lambda x: f"{int(x)}" if pd.notna(x) else "—")
         big["Title"] = big["notes"].fillna("").str.split("·").str[0].str.strip().str.slice(0, 32)
+        big_show = big[["Date", "Type", "Title", "Distance", "Climbing", "Climb Rate",
+                         "Duration", "Avg Power", "Effort"]]
         st.dataframe(
-            big[["Date", "Type", "Title", "Distance", "Climbing", "Climb Rate",
-                 "Duration", "Avg Power", "Effort"]],
+            big_show,
             use_container_width=True, hide_index=True,
+            height=full_height(len(big_show)),
         )
+        st.caption(f"{len(big_show)} row(s)")
 
         # Ride type mix
         st.subheader("Ride Type Mix (Last 12 Months)")
@@ -508,7 +535,8 @@ with tab_cycling:
         mix_12["Climbing"] = mix_12["Climbing"].fillna(0).round(0).astype(int)
         mix_12["Hours"] = mix_12["Hours"].round(1)
         mix_12 = mix_12.rename(columns={"activity_type": "Type"}).sort_values("Miles", ascending=False)
-        st.dataframe(mix_12, use_container_width=True, hide_index=True)
+        st.dataframe(mix_12, use_container_width=True, hide_index=True,
+                     height=full_height(len(mix_12)))
 
 
 # ── Calendar ────────────────────────────────────────────────────────────────
@@ -553,9 +581,10 @@ with tab_calendar:
         hours=("duration_min", lambda s: s.sum() / 60),
         miles=("distance_miles", "sum"),
     ).reset_index().sort_values("hours", ascending=False)
-    st.dataframe(mix.rename(columns={"activity_type": "Type", "sessions": "Sessions",
-                                       "hours": "Hours", "miles": "Miles"}),
-                  use_container_width=True, hide_index=True)
+    mix_renamed = mix.rename(columns={"activity_type": "Type", "sessions": "Sessions",
+                                      "hours": "Hours", "miles": "Miles"})
+    st.dataframe(mix_renamed, use_container_width=True, hide_index=True,
+                 height=full_height(len(mix_renamed)))
 
 # ── Sessions table ──────────────────────────────────────────────────────────
 with tab_sessions:
@@ -566,4 +595,7 @@ with tab_sessions:
     show["distance_miles"] = show["distance_miles"].round(1)
     show_cols = ["date", "activity_type", "hours", "distance_miles", "elevation_ft",
                  "avg_hr_bpm", "max_hr_bpm", "avg_power_watts", "tss", "zone2_min", "notes"]
-    st.dataframe(show[show_cols], use_container_width=True, hide_index=True)
+    sessions_show = show[show_cols]
+    st.dataframe(sessions_show, use_container_width=True, hide_index=True,
+                 height=full_height(len(sessions_show)))
+    st.caption(f"{len(sessions_show)} row(s)")

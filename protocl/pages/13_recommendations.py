@@ -28,6 +28,28 @@ with col_refresh:
 
 st.markdown(f"**LLM Status:** {llm_badge()}", unsafe_allow_html=True)
 
+with st.expander("📚 How recommendations are generated", expanded=False):
+    st.markdown("""
+**Two layers — rule-based + LLM rationale.**
+
+1. **Rule layer.** Deterministic checks across the last bloodwork draw, wearables
+   summary, training load, and active protocol. Each rule cites the threshold
+   it triggers on (e.g. *"ApoB > 80 mg/dL → consider rosuvastatin titration; ref:
+   Attia 2023"*).
+2. **LLM layer (optional).** With an `OPENAI_API_KEY` set, the model is given
+   the same deterministic facts and asked to synthesize a tighter narrative
+   *without* introducing numbers that aren't in the source data. If no key is
+   configured, the rule output is what you see.
+
+**Sources for the rules.** Same canon as the Bloodwork and Risks & Alerts
+pages — Attia *Outlive* (2023), Endocrine Society 2018, NLA 2024, IFM 2024,
+plus wearables-research thresholds (WHOOP, Oura, Apple HealthKit).
+
+**These are not prescriptions.** Use them as a conversation primer with your
+clinician. The app cannot see your medication interactions, allergies, or
+prior treatment history.
+    """)
+
 data = load_data()
 bw = data.bloodwork.copy()
 ref = load_reference()

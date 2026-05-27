@@ -17,7 +17,7 @@ from modules.data_loader import (
 )
 from modules.charts import (
     COLORS, time_series,
-    status_label, metric_card_html, tier_badge_html,
+    status_label, metric_card_html, tier_badge_html, full_height,
 )
 from modules.reference_ranges import load_reference, panel_label
 from modules.biomarker_aliases import display_name
@@ -43,6 +43,25 @@ with col_refresh:
 data = load_data()
 ref = load_reference()
 bw = data.bloodwork
+
+with st.expander("📚 Sources & reference ranges", expanded=False):
+    st.markdown("""
+**Data sources.** Bloodwork rows are imported from Quest / LabCorp PDFs (parsed via
+the Import Center) or entered manually via the **Add Draw** section below.
+
+**Optimal ranges.** These are tighter than the lab's reference ranges and reflect a
+consensus from longevity / functional-medicine literature:
+
+- **Peter Attia — *Outlive* (2023)** — ApoB <60, hsCRP <1.0, fasting insulin <6
+- **Levine et al. (2018)** — PhenoAge coefficients (Albumin, Creatinine, Glucose, CRP, Lymphs%, MCV, RDW, ALP, WBC)
+- **National Lipid Association 2024** — Lp(a), ApoB cardiovascular risk thresholds
+- **Endocrine Society 2018** — testosterone optimal ranges in middle-aged men
+- **Institute for Functional Medicine ranges (2024)** — micronutrients, thyroid
+
+**Lab ranges** are kept side-by-side for clinical context — they're the population
+"normal" but typically include a wider tail than what's truly optimal for
+healthspan.
+    """)
 
 if bw.empty:
     st.warning("No bloodwork yet. Add a draw in the **Add Draw** section below or import a CSV from the Imports page.")
@@ -218,7 +237,9 @@ if not latest.empty:
                 return f"color: {c}; font-weight: 600"
 
             styled = df.style.map(style_status, subset=["Status"])
-            st.dataframe(styled, use_container_width=True, hide_index=True)
+            st.dataframe(styled, use_container_width=True, hide_index=True,
+                         height=full_height(len(df)))
+            st.caption(f"{len(df)} row(s)")
 
 # ────────────────────────────────────────────────────────────────────────────
 # Biomarker drill-down
@@ -254,15 +275,23 @@ with st.expander("Biomarker drill-down — details", expanded=False):
                 unsafe_allow_html=True,
             )
 
+        # Pull the most recent non-null unit from the actual draws so the
+        # axis label always matches the data even if the reference is sparse.
+        unit_series = sub["unit"].dropna() if "unit" in sub.columns else pd.Series([], dtype=str)
+        latest_unit = str(unit_series.iloc[-1]) if not unit_series.empty else r.get("unit", "")
+
         fig = time_series(
             sub.rename(columns={"date": "date", "value": "value"}),
             x="date", y="value",
             title=None,
             optimal_low=r.get("optimal_low"), optimal_high=r.get("optimal_high"),
             lab_low=r.get("lab_low"), lab_high=r.get("lab_high"),
-            unit=r.get("unit", ""),
+            unit=latest_unit,
             height=420,
         )
+        y_title = f"{display_name(bm)} ({latest_unit})" if latest_unit else display_name(bm)
+        fig.update_xaxes(title_text="Date")
+        fig.update_yaxes(title_text=y_title)
 
         if not data.protocol.empty:
             CAT_COLORS = {"hormone": "#FFB612", "peptide": "#4FC3F7",
@@ -295,9 +324,11 @@ with st.expander("Biomarker drill-down — details", expanded=False):
         st.markdown("##### History")
         hist = sub[["date", "value", "unit", "source_lab", "notes"]].copy()
         hist["date"] = hist["date"].dt.strftime("%Y-%m-%d")
-        st.dataframe(hist.rename(columns={"date": "Date", "value": "Value", "unit": "Unit",
-                                          "source_lab": "Lab", "notes": "Notes"}),
-                     use_container_width=True, hide_index=True)
+        hist_renamed = hist.rename(columns={"date": "Date", "value": "Value", "unit": "Unit",
+                                            "source_lab": "Lab", "notes": "Notes"})
+        st.dataframe(hist_renamed, use_container_width=True, hide_index=True,
+                     height=full_height(len(hist_renamed)))
+        st.caption(f"{len(hist_renamed)} row(s)")
 
 # ────────────────────────────────────────────────────────────────────────────
 # Add Draw

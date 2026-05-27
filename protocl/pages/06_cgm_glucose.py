@@ -7,7 +7,8 @@ import plotly.graph_objects as go
 import streamlit as st
 
 from modules.data_loader import load_data, refresh_data
-from modules.charts import COLORS, apply_theme, metric_card_html
+from modules.charts import COLORS, apply_theme, metric_card_html, full_height
+from modules.time_range import render_time_range_selector, filter_by_range
 
 
 from modules.theme import inject_css, grouped_sections
@@ -22,6 +23,23 @@ with col_title:
 with col_refresh:
     if st.button("🔄 Refresh", use_container_width=True):
         refresh_data()
+
+with st.expander("📚 Sources & methodology", expanded=False):
+    st.markdown("""
+**Data source.** CGM rows are streamed from Dexcom G7 / Stelo / Libre 3 (manual export
+or future API integration). Ketone rows are from finger-stick / breath ketone meters.
+
+**Targets used here**
+- **Time in range (70–140 mg/dL):** ≥85% per Bernstein / Attia metabolic-fitness consensus.
+- **Tight TIR (70–110 mg/dL):** ≥70% — the "metabolic gold" target for non-diabetic adults.
+- **CV%:** <33% per ADA 2023 guideline (a low coefficient of variation reduces both spike and dip risk).
+- **GMI (glucose management indicator):** Bergenstal 2018 formula → eA1c.
+- **Ketone targets:** ≥0.5 mmol/L = nutritional ketosis; GKI ≤9 = therapeutic range per Seyfried.
+
+**Why tighter than ADA?** ADA targets are for managing diabetes, not optimizing
+healthspan. The thresholds here borrow from non-diabetic CGM research (Hall, Dunn,
+Attia podcasts) where lower variability correlates with downstream metabolic markers.
+    """)
 
 data = load_data()
 df = data.cgm_readings.copy()
@@ -38,12 +56,13 @@ df["minute"] = df["datetime"].dt.minute
 df["time_of_day"] = df["hour"] + df["minute"] / 60.0
 
 # ────────────────────────────────────────────────────────────────────────────
-# Sidebar window selector
+# Time range selector (replaces the old sidebar day slider)
 # ────────────────────────────────────────────────────────────────────────────
-window_days = st.sidebar.slider("CGM window (days)", min_value=3, max_value=30, value=14, step=1)
-max_dt = df["datetime"].max()
-start_dt = max_dt - pd.Timedelta(days=window_days)
-win = df[df["datetime"] >= start_dt].copy()
+tr_start, tr_end, tr_preset = render_time_range_selector("cgm_glucose", default_preset="30d")
+win = filter_by_range(df, "datetime", tr_start, tr_end).copy()
+if win.empty:
+    st.info("No CGM readings in the selected time range.")
+    st.stop()
 
 # ────────────────────────────────────────────────────────────────────────────
 # Core metrics: TIR, mean, CV, GMI
@@ -275,9 +294,10 @@ with tab_ketones:
             st.plotly_chart(fig_gki, use_container_width=True)
             st.caption(f"Latest GKI: **{ketones['gki'].iloc[-1]:.1f}**")
 
-        st.dataframe(
-            ketones.assign(datetime=ketones["datetime"].dt.strftime("%Y-%m-%d %H:%M"))[
-                ["datetime", "blood_ketones_mmol_l", "blood_glucose_mg_dl", "gki", "source", "notes"]
-            ].sort_values("datetime", ascending=False),
-            use_container_width=True, hide_index=True,
-        )
+        ketones_show = ketones.assign(
+            datetime=ketones["datetime"].dt.strftime("%Y-%m-%d %H:%M")
+        )[["datetime", "blood_ketones_mmol_l", "blood_glucose_mg_dl", "gki", "source", "notes"]]\
+            .sort_values("datetime", ascending=False)
+        st.dataframe(ketones_show, use_container_width=True, hide_index=True,
+                     height=full_height(len(ketones_show)))
+        st.caption(f"{len(ketones_show)} row(s)")

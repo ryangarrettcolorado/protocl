@@ -79,6 +79,46 @@ for col, (label, value, delta, pos) in zip(cols, kpis):
 
 st.markdown("")
 
+with st.expander("📖 How this number is calculated — Levine PhenoAge methodology",
+                 expanded=False):
+    st.markdown("""
+**PhenoAge (Levine et al., 2018)** estimates biological age from a weighted
+combination of **9 routine clinical biomarkers** + chronological age:
+
+| Biomarker | Role |
+|---|---|
+| Albumin (g/dL) | Liver function, nutritional status |
+| Creatinine (mg/dL) | Kidney function |
+| Glucose (mg/dL) | Metabolic / insulin resistance |
+| C-reactive protein (mg/L) | Systemic inflammation |
+| Lymphocyte % | Immune profile |
+| Mean cell volume (fL) | Red-cell maturity |
+| Red cell distribution width (%) | Heterogeneity of RBC size |
+| Alkaline phosphatase (U/L) | Hepatic / bone turnover |
+| White blood cell count (10³/μL) | Immune activation |
+
+**The math:** each biomarker is multiplied by a coefficient fit to NHANES III
+mortality data. The weighted sum (`xb`) is converted to a 10-year mortality
+score via a Gompertz model, then transformed back into a "biological age in
+years" that matches the chronological age of someone with the same mortality
+risk in the reference population.
+
+**Why use it?** Of the validated bio-age scores (PhenoAge, GrimAge, DunedinPACE),
+PhenoAge is the only one that runs from a standard blood panel — no methylation
+chip required. It tracks all-cause mortality risk better than chronological age
+in independent cohorts.
+
+**How to read it.**
+- **Delta < 0** = you're biologically younger than the calendar. Good.
+- **Delta > 0** = your blood signature is closer to an older population's average.
+- A single point is noise; the **trajectory over time** is the signal.
+
+**Caveats.** PhenoAge was trained on a US population sample and may be less
+accurate for younger / very fit individuals. It's a screening number, not a
+diagnostic. Acute illness or recent training stress can move CRP, WBC, and
+glucose enough to wobble the score by ±2 years.
+    """)
+
 # ────────────────────────────────────────────────────────────────────────────
 # Tabs
 # ────────────────────────────────────────────────────────────────────────────

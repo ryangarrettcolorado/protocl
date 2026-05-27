@@ -8,7 +8,7 @@ import pandas as pd
 import streamlit as st
 
 from modules.data_loader import load_data, refresh_data, append_row, DATA_DIR, DEFAULT_USER
-from modules.charts import COLORS, metric_card_html
+from modules.charts import COLORS, metric_card_html, full_height
 
 
 from modules.theme import inject_css, grouped_sections
@@ -170,7 +170,10 @@ with tab_table:
         show["due_date"] = show["due_date"].dt.strftime("%Y-%m-%d")
         cols_show = ["id", "title", "priority", "category", "status",
                      "due_date", "related_metrics", "source", "created_date"]
-        st.dataframe(show[cols_show], use_container_width=True, hide_index=True)
+        items_show = show[cols_show]
+        st.dataframe(items_show, use_container_width=True, hide_index=True,
+                     height=full_height(len(items_show)))
+        st.caption(f"{len(items_show)} row(s)")
 
 # ── New item ────────────────────────────────────────────────────────────────
 with tab_add:

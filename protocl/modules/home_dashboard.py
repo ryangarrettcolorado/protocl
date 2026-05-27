@@ -82,6 +82,25 @@ def _days_ago(ts: pd.Timestamp | None) -> int | None:
     return int((TODAY - pd.Timestamp(ts)).days)
 
 
+def _human_days_ago(days: int | None) -> str:
+    """Render a day-count as a human-readable months + days string.
+
+    Uses a 30-day month approximation. Examples:
+      237 → "7mo 27d ago"; 45 → "1mo 15d ago"; 30 → "1mo ago"; 20 → "20d ago".
+    """
+    if days is None:
+        return "—"
+    days = int(days)
+    if days < 0:
+        return "today"
+    if days < 30:
+        return f"{days}d ago"
+    months, rem = divmod(days, 30)
+    if rem == 0:
+        return f"{months}mo ago"
+    return f"{months}mo {rem}d ago"
+
+
 def _next_visit() -> dict | None:
     """Load ``data/<user>/next_visit.json`` if it exists."""
     p = DATA_DIR / DEFAULT_USER / "next_visit.json"
@@ -121,24 +140,52 @@ def _last_bloodwork_tile(data: HealthData) -> tuple[str, str, str, bool | None]:
     last = pd.Timestamp(bw["date"].max())
     days = _days_ago(last) or 0
     n_draws = bw["date"].nunique()
-    return ("Last Bloodwork", f"{days}d ago", f"{n_draws} draws on file", days < 180)
+    return ("Last Bloodwork", _human_days_ago(days), f"{n_draws} draws on file", days < 180)
 
 
 def _vo2_tile(data: HealthData) -> tuple[str, str, str, bool | None]:
+    """VO₂ max with cascading fallbacks when the primary signal is missing.
+
+    Fallback priority when VO₂ max is unavailable:
+      1. Active Calories (7d avg)
+      2. Recovery Score (latest)
+      3. Steps (7d avg)
+    """
     w = data.wearables
-    if w.empty or "vo2_max_ml_kg_min" not in w.columns:
-        return ("VO₂ max", "—", "no data", None)
-    latest = w.sort_values("date")["vo2_max_ml_kg_min"].dropna()
-    if latest.empty:
-        return ("VO₂ max", "—", "no data", None)
-    v = float(latest.iloc[-1])
-    # Coarse age-graded percentile bands for a ~40s male.
-    if v >= 53: band = "Elite (95th+)"
-    elif v >= 48: band = "Superior (80th)"
-    elif v >= 42: band = "Above avg (60th)"
-    elif v >= 36: band = "Average"
-    else: band = "Below avg"
-    return ("VO₂ max", f"{v:.1f}", band, v >= 42)
+    if not w.empty and "vo2_max_ml_kg_min" in w.columns:
+        latest = w.sort_values("date")["vo2_max_ml_kg_min"].dropna()
+        if not latest.empty:
+            v = float(latest.iloc[-1])
+            # Coarse age-graded percentile bands for a ~40s male.
+            if v >= 53: band = "Elite (95th+)"
+            elif v >= 48: band = "Superior (80th)"
+            elif v >= 42: band = "Above avg (60th)"
+            elif v >= 36: band = "Average"
+            else: band = "Below avg"
+            return ("VO₂ max", f"{v:.1f}", band, v >= 42)
+
+    # Fallback 1 — Active Calories 7d avg
+    if not w.empty and "active_calories" in w.columns:
+        kcal = w.sort_values("date")["active_calories"].dropna().tail(7)
+        if not kcal.empty:
+            avg = float(kcal.mean())
+            return ("Active Cal (7d)", f"{avg:,.0f}", "VO₂ unavailable · daily avg", avg >= 500)
+
+    # Fallback 2 — Recovery Score (latest)
+    if not w.empty and "recovery_score" in w.columns:
+        rec = w.sort_values("date")["recovery_score"].dropna()
+        if not rec.empty:
+            v = float(rec.iloc[-1])
+            return ("Recovery", f"{v:.0f}", "VO₂ unavailable · latest", v >= 67)
+
+    # Fallback 3 — Steps 7d avg
+    if not w.empty and "steps" in w.columns:
+        steps = w.sort_values("date")["steps"].dropna().tail(7)
+        if not steps.empty:
+            avg = float(steps.mean())
+            return ("Steps (7d)", f"{avg:,.0f}", "VO₂ unavailable · daily avg", avg >= 8000)
+
+    return ("VO₂ max", "—", "no data", None)
 
 
 def _bf_tile(data: HealthData) -> tuple[str, str, str, bool | None]:
@@ -516,20 +563,40 @@ def _hrv_sleep_chart(data: HealthData) -> go.Figure | None:
     if w.empty:
         w = data.wearables.sort_values("date").tail(90)
     fig = go.Figure()
+    # Faint raw daily values as background; prominent 7-day rolling mean on top.
     if "hrv_sdnn_ms" in w.columns:
+        hrv_roll = w["hrv_sdnn_ms"].rolling(7, min_periods=2).mean()
         fig.add_trace(go.Scatter(
             x=w["date"], y=w["hrv_sdnn_ms"],
-            mode="lines", name="HRV (SDNN ms)",
-            line=dict(color=COLORS["gold"], width=2),
-            hovertemplate="%{x|%b %d}<br>HRV %{y:.0f} ms<extra></extra>",
+            mode="lines", name="HRV daily",
+            line=dict(color=COLORS["chart_series"][0], width=1),
+            opacity=0.25,
+            showlegend=False,
+            hoverinfo="skip",
+        ))
+        fig.add_trace(go.Scatter(
+            x=w["date"], y=hrv_roll,
+            mode="lines", name="HRV (7d avg)",
+            line=dict(color=COLORS["chart_series"][0], width=2.5),
+            hovertemplate="%{x|%b %d}<br>HRV 7d %{y:.0f} ms<extra></extra>",
         ))
     if "sleep_duration_hrs" in w.columns:
+        sleep_roll = w["sleep_duration_hrs"].rolling(7, min_periods=2).mean()
         fig.add_trace(go.Scatter(
             x=w["date"], y=w["sleep_duration_hrs"],
-            mode="lines", name="Sleep (hrs)",
-            line=dict(color=COLORS["chart_series"][1], width=1.5, dash="dot"),
+            mode="lines", name="Sleep daily",
+            line=dict(color=COLORS["chart_series"][1], width=1),
+            opacity=0.25,
             yaxis="y2",
-            hovertemplate="%{x|%b %d}<br>Sleep %{y:.1f} h<extra></extra>",
+            showlegend=False,
+            hoverinfo="skip",
+        ))
+        fig.add_trace(go.Scatter(
+            x=w["date"], y=sleep_roll,
+            mode="lines", name="Sleep (7d avg)",
+            line=dict(color=COLORS["chart_series"][1], width=2.5),
+            yaxis="y2",
+            hovertemplate="%{x|%b %d}<br>Sleep 7d %{y:.1f} h<extra></extra>",
         ))
     apply_theme(fig, height=260)
     fig.update_layout(
@@ -566,6 +633,7 @@ def render_row_trends(data: HealthData, prefs: dict) -> None:
             st.caption("No wearables data yet.")
         else:
             st.plotly_chart(fig, use_container_width=True)
+            st.caption("Lines show 7-day rolling average. Faint background = raw daily values.")
     st.markdown('</div>', unsafe_allow_html=True)
 
 

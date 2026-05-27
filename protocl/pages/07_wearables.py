@@ -7,7 +7,8 @@ import plotly.graph_objects as go
 import streamlit as st
 
 from modules.data_loader import load_data, refresh_data
-from modules.charts import COLORS, apply_theme, metric_card_html
+from modules.charts import COLORS, apply_theme, metric_card_html, full_height
+from modules.time_range import render_time_range_selector, filter_by_range
 
 
 from modules.theme import inject_css, grouped_sections
@@ -23,6 +24,25 @@ with col_refresh:
     if st.button("🔄 Refresh", use_container_width=True):
         refresh_data()
 
+with st.expander("📚 Sources & methodology", expanded=False):
+    st.markdown("""
+**Data source.** Daily aggregates pulled from Apple HealthKit (Watch Ultra 2),
+with overlap from WHOOP if connected. One row per calendar day.
+
+**Targets used here**
+- **Sleep ≥7.5h** — Walker, *Why We Sleep* (2017); 7.5h is the lower bound for cognitive + recovery preservation.
+- **Deep sleep ≥1.5h** — ~20% of total sleep; below this hormonal recovery suffers (Van Cauter, 2008).
+- **HRV trend** — interpret vs your own 90-day baseline, not against population norms. SDNN is what Apple reports.
+- **SpO₂ ≥95%** — overnight average; sustained dips can signal sleep apnea.
+- **Sustained RR + skin-temp rise (1–3 days)** — early illness signal (WHOOP / Oura research, 2021–2024).
+- **Step floor 8,000/day** — Paluch et al. (2022) JAMA: mortality reduction plateaus near 8–10k steps for adults <60.
+
+**Caveats.** Optical HRV (Apple, WHOOP) is noisier than chest-strap ECG; treat
+absolute values with skepticism but trust the *direction*. RR and skin temp are
+delta-from-baseline metrics — the calibration window matters more than the
+raw numbers.
+    """)
+
 data = load_data()
 df = data.wearables.copy()
 
@@ -33,6 +53,17 @@ if df.empty:
 df = df.sort_values("date").reset_index(drop=True)
 
 TODAY = pd.Timestamp("2026-05-25")
+
+# Page-level time range — applied to the raw daily table and the activity / sleep
+# charts. The "RHR + HRV — 90 Day Trend" chart explicitly keeps its 90d window
+# because its title and HRV-baseline annotation are anchored to that span.
+tr_start, tr_end, tr_preset = render_time_range_selector("wearables", default_preset="90d")
+df = filter_by_range(df, "date", tr_start, tr_end).sort_values("date").reset_index(drop=True)
+
+if df.empty:
+    st.info("No wearable data in the selected time range.")
+    st.stop()
+
 last_7 = df[df["date"] >= TODAY - pd.Timedelta(days=7)]
 last_28 = df[df["date"] >= TODAY - pd.Timedelta(days=28)]
 prev_28 = df[(df["date"] >= TODAY - pd.Timedelta(days=56)) & (df["date"] < TODAY - pd.Timedelta(days=28))]
@@ -80,34 +111,58 @@ tab_recovery, tab_sleep, tab_activity, tab_table = grouped_sections(
 with tab_recovery:
     st.subheader("Resting HR + HRV — 90 Day Trend")
 
-    df["rhr_7d"] = df["resting_hr_bpm"].rolling(7, min_periods=1).mean()
-    df["hrv_7d"] = df["hrv_sdnn_ms"].rolling(7, min_periods=1).mean()
+    # Restrict to the trailing 90 days so the rolling lines aren't crushed by years of history.
+    recov_cutoff = TODAY - pd.Timedelta(days=90)
+    df_recov = df[df["date"] >= recov_cutoff].copy().sort_values("date")
+    if df_recov.empty:
+        df_recov = df.sort_values("date").tail(90).copy()
+    df_recov["rhr_7d"] = df_recov["resting_hr_bpm"].rolling(7, min_periods=2).mean()
+    df_recov["hrv_7d"] = df_recov["hrv_sdnn_ms"].rolling(7, min_periods=2).mean()
+    hrv_median = float(df_recov["hrv_sdnn_ms"].median()) if df_recov["hrv_sdnn_ms"].notna().any() else None
 
     fig = go.Figure()
+    # Faint raw daily traces as background
     fig.add_trace(go.Scatter(
-        x=df["date"], y=df["resting_hr_bpm"],
-        mode="markers", name="RHR daily",
-        marker=dict(color=COLORS["chart_series"][3], size=5, opacity=0.4),
+        x=df_recov["date"], y=df_recov["resting_hr_bpm"],
+        mode="lines", name="RHR daily",
+        line=dict(color=COLORS["chart_series"][3], width=1),
+        opacity=0.3,
         yaxis="y",
+        showlegend=False,
+        hoverinfo="skip",
     ))
     fig.add_trace(go.Scatter(
-        x=df["date"], y=df["rhr_7d"],
-        mode="lines", name="RHR 7d",
-        line=dict(color=COLORS["danger"], width=3),
+        x=df_recov["date"], y=df_recov["rhr_7d"],
+        mode="lines", name="RHR (7d avg)",
+        line=dict(color=COLORS["chart_series"][3], width=2.5),
         yaxis="y",
+        hovertemplate="%{x|%b %d}<br>RHR 7d %{y:.0f} bpm<extra></extra>",
     ))
     fig.add_trace(go.Scatter(
-        x=df["date"], y=df["hrv_sdnn_ms"],
-        mode="markers", name="HRV daily",
-        marker=dict(color=COLORS["chart_series"][1], size=5, opacity=0.4),
+        x=df_recov["date"], y=df_recov["hrv_sdnn_ms"],
+        mode="lines", name="HRV daily",
+        line=dict(color=COLORS["chart_series"][0], width=1),
+        opacity=0.3,
         yaxis="y2",
+        showlegend=False,
+        hoverinfo="skip",
     ))
     fig.add_trace(go.Scatter(
-        x=df["date"], y=df["hrv_7d"],
-        mode="lines", name="HRV 7d",
-        line=dict(color=COLORS["gold"], width=3),
+        x=df_recov["date"], y=df_recov["hrv_7d"],
+        mode="lines", name="HRV (7d avg)",
+        line=dict(color=COLORS["chart_series"][0], width=2.5),
         yaxis="y2",
+        hovertemplate="%{x|%b %d}<br>HRV 7d %{y:.0f} ms<extra></extra>",
     ))
+    if hrv_median is not None:
+        fig.add_hline(
+            y=hrv_median, yref="y2",
+            line=dict(color=COLORS["chart_series"][0], width=1, dash="dash"),
+            opacity=0.55,
+            annotation_text=f"HRV Baseline ({hrv_median:.0f} ms, 90d median)",
+            annotation_position="bottom right",
+            annotation_font_color=COLORS["chart_series"][0],
+        )
     apply_theme(fig, height=440)
     fig.update_layout(
         yaxis=dict(title="RHR (bpm)", gridcolor="#2A2A2A"),
@@ -116,6 +171,8 @@ with tab_recovery:
         hovermode="x unified",
     )
     st.plotly_chart(fig, use_container_width=True)
+    st.caption("Lines show 7-day rolling average. Faint background = raw daily values. "
+               "Dashed line = 90-day median HRV (your baseline).")
 
     # Respiratory rate + skin temp delta — illness early warning
     st.subheader("Illness Early Warning — RR & Skin Temp Δ")
@@ -243,4 +300,7 @@ with tab_table:
                  "sleep_duration_hrs", "sleep_deep_hrs", "sleep_rem_hrs",
                  "sleep_consistency_pct", "respiratory_rate_brpm", "spo2_pct",
                  "active_calories", "steps", "stand_hrs", "skin_temp_delta_f"]
-    st.dataframe(show[show_cols], use_container_width=True, hide_index=True)
+    wear_show = show[show_cols]
+    st.dataframe(wear_show, use_container_width=True, hide_index=True,
+                 height=full_height(len(wear_show)))
+    st.caption(f"{len(wear_show)} row(s)")

@@ -22,6 +22,7 @@ from modules.preferences import (
 )
 from modules.reference_ranges import load_reference, panel_label
 from modules.theme import inject_css
+from modules.charts import full_height
 
 
 inject_css()
@@ -82,6 +83,21 @@ with st.expander("👤 Profile", expanded=True):
         p["timezone"] = st.selectbox("Timezone", TZ_OPTIONS,
                                       index=TZ_OPTIONS.index(cur_tz))
 
+    # Contact info — used by v2 notifications + clinician handoff export
+    contact_c1, contact_c2 = st.columns(2)
+    with contact_c1:
+        p["email"] = st.text_input(
+            "Email", value=p.get("email", ""),
+            placeholder="you@example.com",
+            help="Used for v2 email digests and clinician handoff exports.",
+        )
+    with contact_c2:
+        p["phone"] = st.text_input(
+            "Phone", value=p.get("phone", ""),
+            placeholder="+1 555 123 4567",
+            help="Used for v2 SMS alerts on critical biomarker shifts.",
+        )
+
     if st.button("Save profile", key="save_profile"):
         _commit_draft("Profile saved.")
 
@@ -95,29 +111,77 @@ with st.expander("🧭 Visible Pages", expanded=True):
         "Persona presets configure visibility and pinned biomarkers together."
     )
 
-    # Persona buttons
-    pc1, pc2, pc3, pc4 = st.columns(4)
+    # Persona selector — multi-select with definitions. Applying multiple
+    # personas unions their visible_pages + pinned_biomarkers.
+    PERSONA_INFO = {
+        "longevity":   ("Longevity",   "Lifespan + healthspan. Bio-age, bloodwork, cardiovascular & metabolic risk."),
+        "performance": ("Performance", "Training-focused. VO₂ max, Zone 2, body composition, hormonal optimization."),
+        "metabolic":   ("Metabolic",   "Glucose, insulin, lipid panel, CGM. Best for pre-diabetic or recomposition focus."),
+        "clinical":    ("Clinical",    "Physician-facing. Bio-age, risks & alerts, clinician summary handoff."),
+        "minimal":     ("Minimal",     "Just the daily essentials — Home, Daily Trackers, Wearables, Settings."),
+    }
+
+    st.markdown("**Personas** — pick one or more; the app unions their page visibility.")
+    with st.expander("What each persona enables", expanded=False):
+        for k, (lbl, desc) in PERSONA_INFO.items():
+            st.markdown(f"- **{lbl}** — {desc}")
+
+    current_persona = draft.get("persona", "custom")
+    if isinstance(current_persona, str):
+        default_personas = [current_persona] if current_persona in PERSONA_INFO else []
+    elif isinstance(current_persona, list):
+        default_personas = [p for p in current_persona if p in PERSONA_INFO]
+    else:
+        default_personas = []
+
+    chosen_personas = st.multiselect(
+        "Active personas",
+        options=list(PERSONA_INFO.keys()),
+        format_func=lambda k: PERSONA_INFO[k][0],
+        default=default_personas,
+        key="persona_multi",
+        help="Combine personas to see the union of recommended pages. Leave empty for full custom control.",
+    )
+
+    pc1, pc2 = st.columns([1, 1])
     with pc1:
-        if st.button("Performance", use_container_width=True):
-            st.session_state.prefs_draft = apply_persona("performance", draft)
-            _commit_draft("Performance persona applied.")
-            st.rerun()
+        if st.button("Apply personas", use_container_width=True, type="primary"):
+            if not chosen_personas:
+                draft["persona"] = "custom"
+                _commit_draft("Persona cleared (custom).")
+            else:
+                merged_visible: set[str] = set()
+                merged_pins: list[str] = []
+                seen = set()
+                for pk in chosen_personas:
+                    preset = PERSONA_PRESETS.get(pk, {})
+                    for pg in preset.get("visible_pages", []):
+                        merged_visible.add(pg)
+                    for bm in preset.get("pinned_biomarkers", []):
+                        if bm not in seen:
+                            merged_pins.append(bm)
+                            seen.add(bm)
+                # Build a deterministic order from the registry
+                pages_in_order = [
+                    p["id"] for p in sorted(registry["pages"], key=lambda p: p.get("order", 99))
+                    if p["id"] in merged_visible or p["id"] == "settings"
+                ]
+                draft["visible_pages"] = pages_in_order
+                home_layout = draft.setdefault("home_layout", {})
+                home_layout["pinned_biomarkers"] = merged_pins[:5]
+                draft["persona"] = chosen_personas if len(chosen_personas) > 1 else chosen_personas[0]
+                _commit_draft(f"Applied: {', '.join(PERSONA_INFO[p][0] for p in chosen_personas)}")
+                st.rerun()
     with pc2:
-        if st.button("Longevity", use_container_width=True):
-            st.session_state.prefs_draft = apply_persona("longevity", draft)
-            _commit_draft("Longevity persona applied.")
-            st.rerun()
-    with pc3:
-        if st.button("Clinical", use_container_width=True):
-            st.session_state.prefs_draft = apply_persona("clinical", draft)
-            _commit_draft("Clinical persona applied.")
-            st.rerun()
-    with pc4:
-        if st.button("Custom (clear preset)", use_container_width=True):
+        if st.button("Clear / Custom", use_container_width=True):
             draft["persona"] = "custom"
             _commit_draft("Persona set to custom.")
 
-    st.caption(f"Current persona: **{draft.get('persona', 'custom').title()}**")
+    cur = draft.get("persona", "custom")
+    cur_label = (", ".join(PERSONA_INFO[p][0] for p in cur if p in PERSONA_INFO)
+                 if isinstance(cur, list) else
+                 PERSONA_INFO.get(cur, ("Custom", ""))[0])
+    st.caption(f"Current: **{cur_label}**")
     st.divider()
 
     # Per-group visibility toggles
@@ -340,7 +404,9 @@ with st.expander("🗄 Data Sources", expanded=False):
             rows.append({"File": f.name, "Rows": rc,
                          "Size (KB)": f"{size/1024:.1f}", "Last modified": mtime})
     if rows:
-        st.dataframe(pd.DataFrame(rows), use_container_width=True, hide_index=True)
+        rows_df = pd.DataFrame(rows)
+        st.dataframe(rows_df, use_container_width=True, hide_index=True,
+                     height=full_height(len(rows_df)))
     else:
         st.caption(f"No data files yet under data/{DEFAULT_USER}/.")
 
@@ -406,24 +472,49 @@ with st.expander("🛡 Privacy & Disclaimer", expanded=False):
         )
 
     st.divider()
-    st.markdown("**Download all my data**")
+    st.markdown("**Download my data**")
+    st.caption("Pick which categories to include. Defaults to everything.")
 
-    def _build_zip() -> bytes:
+    EXPORT_CATEGORIES = {
+        "bloodwork":    ("Bloodwork",        ["bloodwork.csv"]),
+        "daily_log":    ("Daily Log",        ["daily_log.csv"]),
+        "wearables":    ("Wearables",        ["wearables.csv"]),
+        "training":     ("Training",         ["training.csv", "workouts.csv"]),
+        "cgm":          ("CGM & Ketones",    ["cgm_readings.csv", "ketone_readings.csv"]),
+        "body_comp":    ("Body Composition", ["inbody.csv", "body_composition.csv"]),
+        "protocol":     ("Protocol",         ["protocol.csv"]),
+        "experiments":  ("N=1 Experiments",  ["nof1_experiments.json"]),
+        "actions":      ("Action Items",     ["action_items.csv"]),
+        "preferences":  ("Preferences",      ["user_preferences.json"]),
+    }
+    chosen_exports = st.multiselect(
+        "Categories to export",
+        options=list(EXPORT_CATEGORIES.keys()),
+        format_func=lambda k: EXPORT_CATEGORIES[k][0],
+        default=list(EXPORT_CATEGORIES.keys()),
+        key="export_categories",
+    )
+
+    def _build_selective_zip(categories: list[str]) -> bytes:
+        wanted_files: set[str] = set()
+        for c in categories:
+            wanted_files.update(EXPORT_CATEGORIES.get(c, ("", []))[1])
         buf = io.BytesIO()
         with zipfile.ZipFile(buf, "w", zipfile.ZIP_DEFLATED) as zf:
             user_dir = DATA_DIR / DEFAULT_USER
             if user_dir.exists():
                 for f in user_dir.rglob("*"):
-                    if f.is_file():
+                    if f.is_file() and (not categories or f.name in wanted_files):
                         zf.write(f, arcname=f.relative_to(DATA_DIR))
         return buf.getvalue()
 
     st.download_button(
-        "📦 Download data bundle (.zip)",
-        data=_build_zip(),
+        "📦 Download selected (.zip)",
+        data=_build_selective_zip(chosen_exports),
         file_name=f"protocl-data-{DEFAULT_USER}-{date.today().isoformat()}.zip",
         mime="application/zip",
         use_container_width=True,
+        disabled=not chosen_exports,
     )
 
     st.divider()

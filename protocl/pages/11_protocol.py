@@ -9,7 +9,7 @@ import plotly.graph_objects as go
 import streamlit as st
 
 from modules.data_loader import load_data, refresh_data, append_row
-from modules.charts import COLORS, apply_theme, metric_card_html
+from modules.charts import COLORS, apply_theme, metric_card_html, full_height
 from modules.biomarker_aliases import display_name
 
 
@@ -81,33 +81,90 @@ tab_active, tab_timeline, tab_log, tab_effect, tab_add = grouped_sections(
 
 
 # ── Active Protocol ───────────────────────────────────────────────────────
+def _infer_protocol_category(category: str | None, name: str | None) -> str:
+    """Map the raw `category` column to one of the five display buckets.
+
+    Falls back to keyword matching on `name` if the row lacks a recognized
+    category — covers hand-imported rows where `category` is blank.
+    """
+    cat = (category or "").strip().lower()
+    nm = (name or "").strip().lower()
+    if cat in ("hormone", "hormonal"):
+        return "Hormonal"
+    if cat == "peptide":
+        return "Peptides"
+    if cat == "supplement":
+        return "Supplements"
+    if cat in ("medication", "med", "drug", "pharma"):
+        return "Medications"
+    if cat in ("probiotic",):
+        return "Supplements"
+    # Inference from name when category is missing/unknown.
+    hormone_hits = ("testosterone", "estradiol", "anastrozole", "hcg", "progesterone",
+                     "dhea", "thyroid", "t3", "t4", "trt", "cypionate", "enanthate")
+    peptide_hits = ("ipamorelin", "cjc", "bpc", "tb-500", "tb500", "sermorelin",
+                     "ghrp", "ghk", "mots-c", "epitalon", "semax", "selank")
+    med_hits = ("metformin", "rapamycin", "statin", "atorvastatin", "ezetimibe",
+                 "ozempic", "tirzepatide", "semaglutide", "tadalafil", "finasteride",
+                 "sildenafil")
+    if any(k in nm for k in hormone_hits):
+        return "Hormonal"
+    if any(k in nm for k in peptide_hits):
+        return "Peptides"
+    if any(k in nm for k in med_hits):
+        return "Medications"
+    if cat in ("supplement", ""):
+        return "Supplements"
+    return "Other"
+
+
 with tab_active:
     if active.empty:
         st.info("No active items.")
     else:
-        display = active[[
-            "category", "name", "dose", "unit", "frequency", "route",
-            "timing", "reason", "prescriber", "adherence_pct", "start_date"
-        ]].copy()
-        display["start_date"] = pd.to_datetime(display["start_date"]).dt.strftime("%Y-%m-%d")
-        display["days_on"] = (TODAY - pd.to_datetime(active["start_date"])).dt.days.values
-        display = display.rename(columns={
-            "category": "Category", "name": "Name", "dose": "Dose", "unit": "Unit",
-            "frequency": "Frequency", "route": "Route", "timing": "Timing",
-            "reason": "Reason", "prescriber": "Prescriber",
-            "adherence_pct": "Adherence %", "start_date": "Started", "days_on": "Days On",
-        })
-        st.dataframe(
-            display,
-            use_container_width=True,
-            hide_index=True,
-            column_config={
-                "Adherence %": st.column_config.ProgressColumn(
-                    "Adherence %", format="%d%%", min_value=0, max_value=100
-                ),
-                "Days On": st.column_config.NumberColumn("Days On", format="%d"),
-            },
+        active_display = active.copy()
+        active_display["_bucket"] = active_display.apply(
+            lambda r: _infer_protocol_category(r.get("category"), r.get("name")), axis=1
         )
+
+        CATEGORY_TABS = ["Hormonal", "Peptides", "Supplements", "Medications", "Other"]
+        # Show counts in tab labels so empty buckets are obvious.
+        counts = active_display["_bucket"].value_counts().to_dict()
+        cat_tabs = st.tabs([f"{c} ({counts.get(c, 0)})" for c in CATEGORY_TABS])
+
+        for tab, cat_name in zip(cat_tabs, CATEGORY_TABS):
+            with tab:
+                sub = active_display[active_display["_bucket"] == cat_name]
+                if sub.empty:
+                    st.caption(f"No active {cat_name.lower()} items.")
+                    continue
+                display = sub[[
+                    "category", "name", "dose", "unit", "frequency", "route",
+                    "timing", "reason", "prescriber", "adherence_pct", "start_date"
+                ]].copy()
+                display["start_date"] = pd.to_datetime(display["start_date"]).dt.strftime("%Y-%m-%d")
+                display["days_on"] = (TODAY - pd.to_datetime(sub["start_date"])).dt.days.values
+                display = display.rename(columns={
+                    "category": "Category", "name": "Name", "dose": "Dose", "unit": "Unit",
+                    "frequency": "Frequency", "route": "Route", "timing": "Timing",
+                    "reason": "Reason", "prescriber": "Prescriber",
+                    "adherence_pct": "Adherence %", "start_date": "Started", "days_on": "Days On",
+                })
+                # Fixed row height of 35px + 38px header keeps every row visible without scroll.
+                row_h = 35 * len(display) + 38
+                st.dataframe(
+                    display,
+                    use_container_width=True,
+                    hide_index=True,
+                    height=min(row_h, 1200),
+                    column_config={
+                        "Adherence %": st.column_config.ProgressColumn(
+                            "Adherence %", format="%d%%", min_value=0, max_value=100
+                        ),
+                        "Days On": st.column_config.NumberColumn("Days On", format="%d"),
+                    },
+                )
+                st.caption(f"{len(display)} row(s)")
 
         # Cycle tracker for hormones / peptides
         st.markdown("#### Cycle Tracker")
@@ -210,14 +267,17 @@ with tab_log:
                 })
         events_df = pd.DataFrame(events).sort_values("date", ascending=False)
         events_df["date"] = events_df["date"].dt.strftime("%Y-%m-%d")
+        events_renamed = events_df.rename(columns={
+            "date": "Date", "event": "Event", "name": "Item",
+            "category": "Category", "dose": "Dose", "reason": "Reason / Notes",
+        })
         st.dataframe(
-            events_df.rename(columns={
-                "date": "Date", "event": "Event", "name": "Item",
-                "category": "Category", "dose": "Dose", "reason": "Reason / Notes",
-            }),
+            events_renamed,
             use_container_width=True,
             hide_index=True,
+            height=full_height(len(events_renamed)),
         )
+        st.caption(f"{len(events_renamed)} row(s)")
 
 
 # ── Effectiveness panel ───────────────────────────────────────────────────
@@ -288,7 +348,9 @@ with tab_effect:
         st.info("Not enough data on either side of the start date to compute deltas.")
     else:
         delta_df = pd.DataFrame(deltas).drop(columns=["_pct"])
-        st.dataframe(delta_df, use_container_width=True, hide_index=True)
+        st.dataframe(delta_df, use_container_width=True, hide_index=True,
+                     height=full_height(len(delta_df)))
+        st.caption(f"{len(delta_df)} row(s)")
 
 
 # ── Add item form ─────────────────────────────────────────────────────────
