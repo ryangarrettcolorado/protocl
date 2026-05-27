@@ -14,3 +14,5 @@ timestamp,source_type,filename,rows_imported,rows_skipped_duplicate,errors,impor
 2026-05-27T01:41:23,training_gpx,route_2022-08-23_5.59pm.gpx,1,0,,add_new_gpx.py
 2026-05-27T01:41:23,training_gpx,route_2023-03-30_1.39pm.gpx,1,0,,add_new_gpx.py
 2026-05-27T01:41:23,training_gpx,route_2025-09-17_3.17pm.gpx,1,0,,add_new_gpx.py
+2026-05-27T01:47:37,apple_healthkit_connector,rhr+hrv+steps+energy+bodymass,365,0,,load_apple_health.py
+2026-05-27T01:47:37,apple_healthkit_connector,sleep+workouts+distance+flights,81,0,,load_apple_health.py
