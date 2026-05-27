@@ -24,6 +24,25 @@ with col_refresh:
     if st.button("🔄 Refresh", use_container_width=True):
         refresh_data()
 
+with st.expander("📚 Sources & methodology", expanded=False):
+    st.markdown("""
+**Data source.** Daily aggregates pulled from Apple HealthKit (Watch Ultra 2),
+with overlap from WHOOP if connected. One row per calendar day.
+
+**Targets used here**
+- **Sleep ≥7.5h** — Walker, *Why We Sleep* (2017); 7.5h is the lower bound for cognitive + recovery preservation.
+- **Deep sleep ≥1.5h** — ~20% of total sleep; below this hormonal recovery suffers (Van Cauter, 2008).
+- **HRV trend** — interpret vs your own 90-day baseline, not against population norms. SDNN is what Apple reports.
+- **SpO₂ ≥95%** — overnight average; sustained dips can signal sleep apnea.
+- **Sustained RR + skin-temp rise (1–3 days)** — early illness signal (WHOOP / Oura research, 2021–2024).
+- **Step floor 8,000/day** — Paluch et al. (2022) JAMA: mortality reduction plateaus near 8–10k steps for adults <60.
+
+**Caveats.** Optical HRV (Apple, WHOOP) is noisier than chest-strap ECG; treat
+absolute values with skepticism but trust the *direction*. RR and skin temp are
+delta-from-baseline metrics — the calibration window matters more than the
+raw numbers.
+    """)
+
 data = load_data()
 df = data.wearables.copy()
 

@@ -24,6 +24,23 @@ with col_refresh:
     if st.button("🔄 Refresh", use_container_width=True):
         refresh_data()
 
+with st.expander("📚 Sources & methodology", expanded=False):
+    st.markdown("""
+**Data source.** CGM rows are streamed from Dexcom G7 / Stelo / Libre 3 (manual export
+or future API integration). Ketone rows are from finger-stick / breath ketone meters.
+
+**Targets used here**
+- **Time in range (70–140 mg/dL):** ≥85% per Bernstein / Attia metabolic-fitness consensus.
+- **Tight TIR (70–110 mg/dL):** ≥70% — the "metabolic gold" target for non-diabetic adults.
+- **CV%:** <33% per ADA 2023 guideline (a low coefficient of variation reduces both spike and dip risk).
+- **GMI (glucose management indicator):** Bergenstal 2018 formula → eA1c.
+- **Ketone targets:** ≥0.5 mmol/L = nutritional ketosis; GKI ≤9 = therapeutic range per Seyfried.
+
+**Why tighter than ADA?** ADA targets are for managing diabetes, not optimizing
+healthspan. The thresholds here borrow from non-diabetic CGM research (Hall, Dunn,
+Attia podcasts) where lower variability correlates with downstream metabolic markers.
+    """)
+
 data = load_data()
 df = data.cgm_readings.copy()
 ketones = data.ketone_readings.copy()

@@ -24,6 +24,30 @@ with col_refresh:
     if st.button("🔄 Refresh", use_container_width=True):
         refresh_data()
 
+with st.expander("📚 Sources & methodology", expanded=False):
+    st.markdown("""
+**How risks are detected**
+- **Out-of-range (red):** value falls outside the **lab reference range** for the panel.
+- **Suboptimal (amber):** value is inside lab range but outside the **optimal range**
+  (functional-medicine / longevity consensus — Attia *Outlive*, Levine PhenoAge,
+  IFM 2024 ranges).
+- **Adverse trend:** any biomarker that has moved >15% in the wrong direction across
+  the tracked window, or has moved >25% in any direction.
+- **Interactions:** simple rule-based — TRT + hematocrit, hsCRP elevation, sustained
+  RHR jump vs baseline. These are flagged for your attention, not auto-diagnosed.
+
+**Sources for the rules**
+- **Hematocrit / TRT phlebotomy threshold ≈ 52%** — Endocrine Society 2018; many TRT
+  clinicians act earlier at 50–51%.
+- **hsCRP > 2.0 mg/L** — AHA 2018 CV-risk threshold ("high inflammatory risk").
+- **RHR Δ +4 bpm vs baseline** — generic recovery signal threshold from WHOOP /
+  Oura literature (no formal cut-off in academic studies).
+
+**Important.** These flags are *cues for a conversation*, not diagnoses. Acute
+illness, recent training, alcohol, or even a poor night of sleep can move
+several of these markers transiently.
+    """)
+
 data = load_data()
 bw = data.bloodwork.copy()
 ref = load_reference()

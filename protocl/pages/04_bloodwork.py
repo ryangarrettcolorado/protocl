@@ -44,6 +44,25 @@ data = load_data()
 ref = load_reference()
 bw = data.bloodwork
 
+with st.expander("📚 Sources & reference ranges", expanded=False):
+    st.markdown("""
+**Data sources.** Bloodwork rows are imported from Quest / LabCorp PDFs (parsed via
+the Import Center) or entered manually via the **Add Draw** section below.
+
+**Optimal ranges.** These are tighter than the lab's reference ranges and reflect a
+consensus from longevity / functional-medicine literature:
+
+- **Peter Attia — *Outlive* (2023)** — ApoB <60, hsCRP <1.0, fasting insulin <6
+- **Levine et al. (2018)** — PhenoAge coefficients (Albumin, Creatinine, Glucose, CRP, Lymphs%, MCV, RDW, ALP, WBC)
+- **National Lipid Association 2024** — Lp(a), ApoB cardiovascular risk thresholds
+- **Endocrine Society 2018** — testosterone optimal ranges in middle-aged men
+- **Institute for Functional Medicine ranges (2024)** — micronutrients, thyroid
+
+**Lab ranges** are kept side-by-side for clinical context — they're the population
+"normal" but typically include a wider tail than what's truly optimal for
+healthspan.
+    """)
+
 if bw.empty:
     st.warning("No bloodwork yet. Add a draw in the **Add Draw** section below or import a CSV from the Imports page.")
     st.stop()
