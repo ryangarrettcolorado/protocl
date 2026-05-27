@@ -111,8 +111,8 @@ def _render_card(integ: Integration, lookup: dict[str, pd.Timestamp]) -> None:
         display:flex; flex-direction:column;
         opacity:{opacity};
     ">
-      <div style="display:flex; align-items:flex-start; gap:0.85rem; margin-bottom:0.7rem;">
-        <div style="flex-shrink:0; width:44px; height:44px;
+      <div style="display:flex; align-items:flex-start; gap:1rem; margin-bottom:0.8rem;">
+        <div style="flex-shrink:0; width:64px; height:64px;
                     display:flex; align-items:center; justify-content:center;">
           {integ.svg}
         </div>

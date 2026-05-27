@@ -25,7 +25,7 @@ MUTED = "#6B6B70"
 
 _SVG_BOX = (
     '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 56 56" '
-    'width="44" height="44" style="display:block">{inner}</svg>'
+    'width="64" height="64" style="display:block">{inner}</svg>'
 )
 
 
