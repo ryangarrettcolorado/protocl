@@ -8,6 +8,7 @@ import streamlit as st
 
 from modules.data_loader import load_data, refresh_data
 from modules.charts import COLORS, apply_theme, metric_card_html, full_height
+from modules.time_range import render_time_range_selector, filter_by_range
 
 
 from modules.theme import inject_css, grouped_sections
@@ -33,6 +34,17 @@ if df.empty:
 df = df.sort_values("date").reset_index(drop=True)
 
 TODAY = pd.Timestamp("2026-05-25")
+
+# Page-level time range — applied to the raw daily table and the activity / sleep
+# charts. The "RHR + HRV — 90 Day Trend" chart explicitly keeps its 90d window
+# because its title and HRV-baseline annotation are anchored to that span.
+tr_start, tr_end, tr_preset = render_time_range_selector("wearables", default_preset="90d")
+df = filter_by_range(df, "date", tr_start, tr_end).sort_values("date").reset_index(drop=True)
+
+if df.empty:
+    st.info("No wearable data in the selected time range.")
+    st.stop()
+
 last_7 = df[df["date"] >= TODAY - pd.Timedelta(days=7)]
 last_28 = df[df["date"] >= TODAY - pd.Timedelta(days=28)]
 prev_28 = df[(df["date"] >= TODAY - pd.Timedelta(days=56)) & (df["date"] < TODAY - pd.Timedelta(days=28))]

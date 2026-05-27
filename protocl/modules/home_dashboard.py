@@ -144,20 +144,48 @@ def _last_bloodwork_tile(data: HealthData) -> tuple[str, str, str, bool | None]:
 
 
 def _vo2_tile(data: HealthData) -> tuple[str, str, str, bool | None]:
+    """VO₂ max with cascading fallbacks when the primary signal is missing.
+
+    Fallback priority when VO₂ max is unavailable:
+      1. Active Calories (7d avg)
+      2. Recovery Score (latest)
+      3. Steps (7d avg)
+    """
     w = data.wearables
-    if w.empty or "vo2_max_ml_kg_min" not in w.columns:
-        return ("VO₂ max", "—", "no data", None)
-    latest = w.sort_values("date")["vo2_max_ml_kg_min"].dropna()
-    if latest.empty:
-        return ("VO₂ max", "—", "no data", None)
-    v = float(latest.iloc[-1])
-    # Coarse age-graded percentile bands for a ~40s male.
-    if v >= 53: band = "Elite (95th+)"
-    elif v >= 48: band = "Superior (80th)"
-    elif v >= 42: band = "Above avg (60th)"
-    elif v >= 36: band = "Average"
-    else: band = "Below avg"
-    return ("VO₂ max", f"{v:.1f}", band, v >= 42)
+    if not w.empty and "vo2_max_ml_kg_min" in w.columns:
+        latest = w.sort_values("date")["vo2_max_ml_kg_min"].dropna()
+        if not latest.empty:
+            v = float(latest.iloc[-1])
+            # Coarse age-graded percentile bands for a ~40s male.
+            if v >= 53: band = "Elite (95th+)"
+            elif v >= 48: band = "Superior (80th)"
+            elif v >= 42: band = "Above avg (60th)"
+            elif v >= 36: band = "Average"
+            else: band = "Below avg"
+            return ("VO₂ max", f"{v:.1f}", band, v >= 42)
+
+    # Fallback 1 — Active Calories 7d avg
+    if not w.empty and "active_calories" in w.columns:
+        kcal = w.sort_values("date")["active_calories"].dropna().tail(7)
+        if not kcal.empty:
+            avg = float(kcal.mean())
+            return ("Active Cal (7d)", f"{avg:,.0f}", "VO₂ unavailable · daily avg", avg >= 500)
+
+    # Fallback 2 — Recovery Score (latest)
+    if not w.empty and "recovery_score" in w.columns:
+        rec = w.sort_values("date")["recovery_score"].dropna()
+        if not rec.empty:
+            v = float(rec.iloc[-1])
+            return ("Recovery", f"{v:.0f}", "VO₂ unavailable · latest", v >= 67)
+
+    # Fallback 3 — Steps 7d avg
+    if not w.empty and "steps" in w.columns:
+        steps = w.sort_values("date")["steps"].dropna().tail(7)
+        if not steps.empty:
+            avg = float(steps.mean())
+            return ("Steps (7d)", f"{avg:,.0f}", "VO₂ unavailable · daily avg", avg >= 8000)
+
+    return ("VO₂ max", "—", "no data", None)
 
 
 def _bf_tile(data: HealthData) -> tuple[str, str, str, bool | None]:

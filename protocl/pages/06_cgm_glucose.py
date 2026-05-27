@@ -8,6 +8,7 @@ import streamlit as st
 
 from modules.data_loader import load_data, refresh_data
 from modules.charts import COLORS, apply_theme, metric_card_html, full_height
+from modules.time_range import render_time_range_selector, filter_by_range
 
 
 from modules.theme import inject_css, grouped_sections
@@ -38,12 +39,13 @@ df["minute"] = df["datetime"].dt.minute
 df["time_of_day"] = df["hour"] + df["minute"] / 60.0
 
 # ────────────────────────────────────────────────────────────────────────────
-# Sidebar window selector
+# Time range selector (replaces the old sidebar day slider)
 # ────────────────────────────────────────────────────────────────────────────
-window_days = st.sidebar.slider("CGM window (days)", min_value=3, max_value=30, value=14, step=1)
-max_dt = df["datetime"].max()
-start_dt = max_dt - pd.Timedelta(days=window_days)
-win = df[df["datetime"] >= start_dt].copy()
+tr_start, tr_end, tr_preset = render_time_range_selector("cgm_glucose", default_preset="30d")
+win = filter_by_range(df, "datetime", tr_start, tr_end).copy()
+if win.empty:
+    st.info("No CGM readings in the selected time range.")
+    st.stop()
 
 # ────────────────────────────────────────────────────────────────────────────
 # Core metrics: TIR, mean, CV, GMI

@@ -10,6 +10,7 @@ import streamlit as st
 
 from modules.data_loader import load_data, refresh_data
 from modules.charts import COLORS, apply_theme, metric_card_html, full_height
+from modules.time_range import render_time_range_selector, filter_by_range
 
 
 from modules.theme import inject_css, grouped_sections
@@ -36,6 +37,17 @@ df = df.sort_values("date").reset_index(drop=True)
 df["week"] = df["date"].dt.to_period("W").dt.start_time
 
 TODAY = pd.Timestamp("2026-05-25")
+
+# Page time range — filters every chart and table below. 7D / 28D KPI cards
+# remain anchored to absolute windows because those are part of the headline
+# definitions and shouldn't shift with the range selector.
+tr_start, tr_end, tr_preset = render_time_range_selector("training_activity", default_preset="1yr")
+df = filter_by_range(df, "date", tr_start, tr_end).sort_values("date").reset_index(drop=True)
+
+if df.empty:
+    st.info("No training sessions in the selected time range.")
+    st.stop()
+df["week"] = df["date"].dt.to_period("W").dt.start_time
 last_7 = df[df["date"] >= TODAY - pd.Timedelta(days=7)]
 last_28 = df[df["date"] >= TODAY - pd.Timedelta(days=28)]
 prev_28 = df[(df["date"] >= TODAY - pd.Timedelta(days=56)) & (df["date"] < TODAY - pd.Timedelta(days=28))]

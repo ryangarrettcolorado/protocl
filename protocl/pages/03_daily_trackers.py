@@ -8,6 +8,7 @@ import streamlit as st
 
 from modules.data_loader import load_data, refresh_data, append_row
 from modules.charts import COLORS, apply_theme, metric_card_html, full_height
+from modules.time_range import render_time_range_selector, filter_by_range
 
 
 from modules.theme import inject_css, grouped_sections
@@ -26,15 +27,21 @@ with col_refresh:
 data = load_data()
 df = data.daily_log.copy()
 
-IS_EMPTY = df.empty
-if not IS_EMPTY:
-    df = df.sort_values("date").reset_index(drop=True)
-
 TODAY = pd.Timestamp("2026-05-25")
+
+if not df.empty:
+    df = df.sort_values("date").reset_index(drop=True)
+    tr_start, tr_end, tr_preset = render_time_range_selector("daily_trackers", default_preset="30d")
+    df = filter_by_range(df, "date", tr_start, tr_end).sort_values("date").reset_index(drop=True)
+
+IS_EMPTY = df.empty
 if IS_EMPTY:
     last_7 = df
     last_28 = df
 else:
+    # `last_7` / `last_28` stay relative to TODAY regardless of the page time
+    # range so the headline KPI windows remain meaningful (and aren't widened
+    # when the user picks "All time").
     last_7 = df[df["date"] >= TODAY - pd.Timedelta(days=7)]
     last_28 = df[df["date"] >= TODAY - pd.Timedelta(days=28)]
 
