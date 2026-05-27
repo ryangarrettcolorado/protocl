@@ -298,29 +298,57 @@ def _summary_pdf_bytes(md_text: str) -> bytes:
     pdf.add_page()
     pdf.set_margins(54, 54, 54)
 
+    # Map common unicode glyphs to latin-1 safe equivalents BEFORE encode/replace,
+    # so they render as readable characters instead of '?'.
+    _GLYPH_MAP = {
+        "·": "-", "—": "-", "–": "-", "→": "->", "←": "<-",
+        "•": "*", "●": "*", "◦": "o",
+        "’": "'", "‘": "'", "“": '"', "”": '"',
+        "≥": ">=", "≤": "<=", "≠": "!=", "±": "+/-",
+        "µ": "u", "μ": "u", "\u00a0": " ", "\u200b": "",
+    }
+
+    def _safe(s: str) -> str:
+        for k, v in _GLYPH_MAP.items():
+            s = s.replace(k, v)
+        return s.encode("latin-1", "replace").decode("latin-1")
+
+    def _write(height: float, text: str) -> None:
+        # wrapmode="CHAR" breaks inside long unbreakable tokens (URLs, hashes)
+        # so fpdf2 never raises 'Not enough horizontal space to render a single character'.
+        try:
+            pdf.multi_cell(0, height, _safe(text), wrapmode="CHAR")
+        except Exception:
+            # Final safety net: hard-wrap manually if anything still slips through.
+            safe = _safe(text)
+            for chunk in [safe[i:i + 80] for i in range(0, len(safe), 80)] or [""]:
+                try:
+                    pdf.multi_cell(0, height, chunk, wrapmode="CHAR")
+                except Exception:
+                    pass
+
     for raw_line in md_text.splitlines():
-        line = raw_line.replace("·", "-").replace("—", "-").replace("→", "->")
         # Strip basic markdown markers for plain rendering
-        clean = line.replace("**", "").replace("`", "")
+        clean = raw_line.replace("**", "").replace("`", "")
         if clean.startswith("# "):
             pdf.set_font("Helvetica", "B", 18)
-            pdf.multi_cell(0, 22, clean[2:].encode("latin-1", "replace").decode("latin-1"))
+            _write(22, clean[2:])
             pdf.ln(4)
         elif clean.startswith("## "):
             pdf.set_font("Helvetica", "B", 13)
             pdf.ln(6)
-            pdf.multi_cell(0, 16, clean[3:].encode("latin-1", "replace").decode("latin-1"))
+            _write(16, clean[3:])
             pdf.ln(2)
         elif clean.startswith("---"):
             pdf.ln(6)
         elif clean.strip().startswith("- "):
             pdf.set_font("Helvetica", "", 10)
-            pdf.multi_cell(0, 14, ("• " + clean.strip()[2:]).encode("latin-1", "replace").decode("latin-1"))
+            _write(14, "* " + clean.strip()[2:])
         elif clean.strip() == "":
             pdf.ln(4)
         else:
             pdf.set_font("Helvetica", "", 10)
-            pdf.multi_cell(0, 13, clean.encode("latin-1", "replace").decode("latin-1"))
+            _write(13, clean)
 
     return bytes(pdf.output(dest="S"))
 
