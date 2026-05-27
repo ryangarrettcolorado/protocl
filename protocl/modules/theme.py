@@ -256,24 +256,26 @@ def render_top_brand(tagline: str = "Your data. Your protocol. Your proof.") -> 
     Streamlit renders ``st.navigation`` once per session at the entry point,
     so this needs to be called from ``app.py`` (not from individual pages).
     """
-    # Custom inline SVG mark: hexagonal molecular node (data + biology) with
-    # an inner double-helix curve. Echoes the macron-O in "Protocōl".
+    # Custom inline SVG mark (Chevron Shield): heraldic shield containing
+    # three ascending chevrons that compound in opacity. Reads as ranking up,
+    # leveling up, compounding gains — aligned with a biomarker-scoring OS.
     mark_svg = (
         '<svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" '
         'aria-hidden="true" role="img">'
-        # outer hexagon
-        '<path d="M32 3.5 L57 17.75 L57 46.25 L32 60.5 L7 46.25 L7 17.75 Z" '
+        # shield outline
+        '<path d="M32 4 L56 12 L56 32 Q56 50 32 60 Q8 50 8 32 L8 12 Z" '
         'fill="none" stroke="#FFB612" stroke-width="2.5" stroke-linejoin="round"/>'
-        # inner ring (data node)
-        '<circle cx="32" cy="32" r="6" fill="#FFB612"/>'
-        # helix-style arcs through the node
-        '<path d="M16 22 Q32 32 48 22" fill="none" stroke="#FFB612" '
-        'stroke-width="2" stroke-linecap="round" opacity="0.85"/>'
-        '<path d="M16 42 Q32 32 48 42" fill="none" stroke="#FFB612" '
-        'stroke-width="2" stroke-linecap="round" opacity="0.85"/>'
-        # vertex accents
-        '<circle cx="32" cy="3.5" r="1.8" fill="#FFB612"/>'
-        '<circle cx="32" cy="60.5" r="1.8" fill="#FFB612"/>'
+        # bottom chevron (faintest — baseline)
+        '<path d="M18 44 L32 30 L46 44" fill="none" stroke="#FFB612" '
+        'stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" opacity="0.4"/>'
+        # middle chevron (mid — progress)
+        '<path d="M18 36 L32 22 L46 36" fill="none" stroke="#FFB612" '
+        'stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" opacity="0.7"/>'
+        # top chevron (full — current peak)
+        '<path d="M18 28 L32 14 L46 28" fill="none" stroke="#FFB612" '
+        'stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"/>'
+        # summit marker
+        '<circle cx="32" cy="14" r="2.8" fill="#FFB612"/>'
         '</svg>'
     )
     st.markdown(
