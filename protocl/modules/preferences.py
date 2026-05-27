@@ -36,7 +36,7 @@ PERSONA_PRESETS: dict[str, dict[str, Any]] = {
             "bloodwork", "body_composition", "cgm_glucose", "wearables",
             "training_activity", "zone2_vo2max",
             "protocol", "nof1_experiments", "recommendations",
-            "timeline", "imports", "settings",
+            "timeline", "imports", "settings", "integrations",
         ],
         "pinned_biomarkers": [
             "apob_mg_dl", "hscrp_mg_l", "testosterone_free_pg_ml",
@@ -50,7 +50,7 @@ PERSONA_PRESETS: dict[str, dict[str, Any]] = {
             "biological_age",
             "training_activity", "zone2_vo2max",
             "protocol", "nof1_experiments", "recommendations", "risks_alerts",
-            "clinician_summary", "timeline", "imports", "settings",
+            "clinician_summary", "timeline", "imports", "settings", "integrations",
         ],
         "pinned_biomarkers": [
             "apob_mg_dl", "hba1c_pct", "lp_a_nmol_l",
@@ -63,7 +63,7 @@ PERSONA_PRESETS: dict[str, dict[str, Any]] = {
             "bloodwork", "body_composition", "cgm_glucose", "wearables",
             "biological_age",
             "protocol", "recommendations", "risks_alerts", "clinician_summary",
-            "timeline", "imports", "settings",
+            "timeline", "imports", "settings", "integrations",
         ],
         "pinned_biomarkers": [
             "apob_mg_dl", "hba1c_pct", "egfr_ml_min", "alt_u_l", "hscrp_mg_l",

@@ -24,6 +24,7 @@
     { "id": "clinician_summary",  "title": "Clinician Summary",  "icon": "📋", "module": "pages/15_clinician_summary.py",  "group": "protocol_insights", "order": 15, "default_visible": true, "personas": ["clinical"] },
     { "id": "timeline",           "title": "Timeline",           "icon": "📅", "module": "pages/16_timeline.py",           "group": "data_settings",     "order": 16, "default_visible": true, "personas": ["longevity", "clinical"] },
     { "id": "imports",            "title": "Import Center",      "icon": "📥", "module": "pages/17_imports.py",            "group": "data_settings",     "order": 17, "default_visible": true, "personas": ["performance", "longevity", "clinical"] },
-    { "id": "settings",           "title": "Settings",           "icon": "⚙",  "module": "pages/18_settings.py",           "group": "data_settings",     "order": 18, "default_visible": true, "personas": ["performance", "longevity", "clinical"] }
+    { "id": "settings",           "title": "Settings",           "icon": "⚙",  "module": "pages/18_settings.py",           "group": "data_settings",     "order": 18, "default_visible": true, "personas": ["performance", "longevity", "clinical"] },
+    { "id": "integrations",       "title": "Integrations",       "icon": "🔌", "module": "pages/19_integrations.py",       "group": "data_settings",     "order": 19, "default_visible": true, "personas": ["performance", "longevity", "clinical"] }
   ]
 }

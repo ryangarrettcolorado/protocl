@@ -25,7 +25,8 @@
     "clinician_summary",
     "timeline",
     "imports",
-    "settings"
+    "settings",
+    "integrations"
   ],
   "home_layout": {
     "rows_visible": [
@@ -64,7 +65,10 @@
     "density": "comfortable"
   },
   "notifications_v2_stub": {
-    "channels": ["in_app", "email"],
+    "channels": [
+      "in_app",
+      "email"
+    ],
     "severity_threshold": "warning",
     "digest_cadence": "weekly"
   },
