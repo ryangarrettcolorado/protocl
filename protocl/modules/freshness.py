@@ -22,6 +22,7 @@ SOURCE_LABELS = {
     "protocol_md": "Protocol",
     "apple_health_ecg": "ECG",
     "training_gpx": "Training",
+    "strava_api": "Strava",
     "apple_healthkit_connector": "Wearables",
     "manual_entry": "Daily Log",
 }
@@ -34,6 +35,7 @@ THRESHOLDS = {
     "Protocol":   (45, 90),
     "ECG":        (90, 180),
     "Training":   (3, 7),
+    "Strava":     (2, 7),       # daily cron — amber after 2d, red after 1wk
     "Wearables":  (2, 5),
     "Daily Log":  (2, 5),
 }

@@ -1,93 +1,165 @@
 date,activity_type,source,duration_min,distance_miles,elevation_ft,avg_hr_bpm,max_hr_bpm,avg_power_watts,avg_cadence_rpm,calories,tss,zone2_min,notes
-2020-04-04,ride,apple_health_gpx,,11.22,0,,,,,,,,duration unavailable in GPX · 898 GPS points
-2022-04-27,walk,apple_health_gpx,79.6,4.21,310,,,,,,,,avg speed 3.2 mph · 4778 GPS points
-2022-07-20,walk,apple_health_gpx,5.0,0.08,6,,,,,,,,avg speed 1.0 mph · 304 GPS points
-2022-08-23,walk,apple_health_gpx,9.0,0.41,28,,,,,,,,avg speed 2.7 mph · 389 GPS points
-2023-03-30,walk,apple_health_gpx,17.4,0.65,49,,,,,,,,avg speed 2.2 mph · 1008 GPS points
-2023-07-27,walk,apple_health_gpx,32.5,1.15,138,,,,,,,,avg speed 2.1 mph · 1768 GPS points
-2024-08-28,walk,apple_health_gpx,13.6,0.93,113,,,,,,,,avg speed 4.1 mph · 818 GPS points
-2024-09-15,walk,apple_health_gpx,18.6,1.2,98,,,,,,,,avg speed 3.9 mph · 1110 GPS points
-2025-04-13,ride,apple_health_gpx,,10.21,0,,,,,,,,duration unavailable in GPX · 971 GPS points
-2025-04-22,ride,apple_health_gpx,,6.0,0,,,,,,,,duration unavailable in GPX · 809 GPS points
+2020-04-04,ride,apple_health_gpx,,11.22,0.0,,,,,,,,duration unavailable in GPX · 898 GPS points
+2022-04-27,walk,apple_health_gpx,79.6,4.21,310.0,,,,,,,,avg speed 3.2 mph · 4778 GPS points
+2022-07-20,walk,apple_health_gpx,5.0,0.08,6.0,,,,,,,,avg speed 1.0 mph · 304 GPS points
+2022-08-23,walk,apple_health_gpx,9.0,0.41,28.0,,,,,,,,avg speed 2.7 mph · 389 GPS points
+2023-03-30,walk,apple_health_gpx,17.4,0.65,49.0,,,,,,,,avg speed 2.2 mph · 1008 GPS points
+2023-07-27,walk,apple_health_gpx,32.5,1.15,138.0,,,,,,,,avg speed 2.1 mph · 1768 GPS points
+2024-08-28,walk,apple_health_gpx,13.6,0.93,113.0,,,,,,,,avg speed 4.1 mph · 818 GPS points
+2024-09-15,walk,apple_health_gpx,18.6,1.2,98.0,,,,,,,,avg speed 3.9 mph · 1110 GPS points
+2025-04-13,ride,apple_health_gpx,,10.21,0.0,,,,,,,,duration unavailable in GPX · 971 GPS points
+2025-04-22,ride,apple_health_gpx,,6.0,0.0,,,,,,,,duration unavailable in GPX · 809 GPS points
+2025-05-01,yoga,strava,76.0,,,118.4,157.0,,,,23.0,,Lunch Yoga · indoor · dev:Apple Watch Ultra 2 · strava_id:14347742704
+2025-05-01,mtb,strava,37.1,7.98,968.0,,,,,,,,Evening Mountain Bike Ride · dev:Strava App · strava_id:14349650301
+2025-05-01,ebike,strava,34.2,6.69,911.0,,,134.6,53.5,276.0,,,Evening Ride · strava_id:14349649555
+2025-05-01,ebike,strava,2.0,0.21,,,,,,,,,Evening Ride · strava_id:14440106784
+2025-05-03,workout,strava,95.9,,,135.7,178.0,,,,75.0,,Morning Workout · indoor · dev:Apple Watch Ultra 2 · strava_id:14367388918
+2025-05-08,yoga,strava,65.3,,,107.0,147.0,,,,12.0,,Lunch Yoga · indoor · dev:Apple Watch Ultra 2 · strava_id:14419026006
+2025-05-10,mtb,strava,67.4,7.66,1020.0,,,,,,,,Evening Mountain Bike Ride · dev:Strava App · strava_id:14441026473
+2025-05-13,run,strava,7.5,0.48,,177.1,184.0,,,,29.0,,Evening Run · indoor · dev:Apple Watch Ultra 2 · strava_id:14473378642
+2025-05-13,workout,strava,31.9,,,157.3,182.0,,,,61.0,,Evening Workout · indoor · dev:Apple Watch Ultra 2 · strava_id:14473404589
+2025-05-15,yoga,strava,63.0,,,105.6,140.0,,,,11.0,,Lunch Yoga · indoor · dev:Apple Watch Ultra 2 · strava_id:14491778190
+2025-05-17,workout,strava,93.7,,,135.6,179.0,,,,77.0,,Morning Workout · indoor · dev:Apple Watch Ultra 2 · strava_id:14511094761
+2025-05-20,workout,strava,93.2,,,146.9,184.0,,,,120.0,,Evening Workout · indoor · dev:Apple Watch Ultra 2 · strava_id:14546329703
+2025-05-24,swim,strava,27.9,0.8,,115.7,153.0,,,,12.0,,Lunch Swim · indoor · dev:Apple Watch Ultra 2 · strava_id:14583442745
 2025-05-29,walk,apple_healthkit,36.6,0.66,,,,,,80.0,,,raw type: Walking
+2025-05-29,walk,strava,16.0,0.66,14.0,94.0,102.0,,,,2.0,,Evening Walk · dev:Apple Watch Ultra 2 · strava_id:14637335905
 2025-05-31,basketball,apple_healthkit,140.7,3.78,,,,,,1650.0,,,raw type: Basketball
+2025-05-31,workout,strava,140.7,,,147.9,184.0,,,,178.0,,Morning Workout · indoor · dev:Apple Watch Ultra 2 · strava_id:14654731564
 2025-06-07,basketball,apple_healthkit,123.8,4.06,,,,,,1450.0,,,raw type: Basketball
+2025-06-07,workout,strava,124.0,,,152.4,180.0,,,,199.0,,Morning Workout · indoor · dev:Apple Watch Ultra 2 · strava_id:14781951856
 2025-06-14,ride,apple_healthkit,109.6,22.33,,,,,,942.0,,,raw type: Cycling
 2025-06-14,ride,apple_healthkit,279.1,24.41,,,,,,,,,raw type: Cycling
+2025-06-14,mtb,strava,137.8,24.41,6158.0,,,,,,355.0,,Winter Park Trestles Day1 · dev:Strava App · strava_id:14800566640
 2025-06-25,ride,apple_healthkit,88.8,10.32,,,,,,,,,raw type: Cycling
+2025-06-25,mtb,strava,52.0,10.32,733.0,,,,,,,,Evening Mountain Bike Ride · dev:Strava App · strava_id:14917565653
 2025-06-28,basketball,apple_healthkit,61.6,1.33,,,,,,616.0,,,raw type: Basketball
+2025-06-28,workout,strava,61.6,,,145.9,183.0,,,,80.0,,Morning Workout · indoor · dev:Apple Watch Ultra 2 · strava_id:14944405259
 2025-06-29,walk,apple_healthkit,71.2,2.16,,,,,,232.0,,,raw type: Walking
+2025-06-29,walk,strava,41.4,2.16,77.0,99.2,111.0,,,,6.0,,Evening Walk · dev:Apple Watch Ultra 2 · strava_id:14958659525
 2025-07-02,ride,apple_healthkit,227.4,22.77,,,,,,,,,raw type: Cycling
+2025-07-02,mtb,strava,119.9,22.77,5854.0,,,,,,,,Afternoon Mountain Bike Ride · dev:Strava App · strava_id:14988156911
 2025-07-04,ride,apple_healthkit,164.8,24.99,,,,,,,,,raw type: Cycling
+2025-07-04,mtb,strava,106.7,24.99,465.0,,,,,,,,Morning Road Bike ride · dev:Strava App · strava_id:15007118394
 2025-07-05,basketball,apple_healthkit,126.6,3.33,,,,,,1441.0,,,raw type: Basketball
-2025-07-05,walk,apple_healthkit,23.6,0.73,,,,,,71.0,,,raw type: Walking
+2025-07-05,walk,apple_healthkit+strava,23.6,0.73,23.0,93.5,101.0,,,71.0,2.0,,raw type: Walking · strava_id:15021813598
+2025-07-05,workout,strava,126.6,,,151.0,183.0,,,,187.0,,Morning Workout · indoor · dev:Apple Watch Ultra 2 · strava_id:15017665829
 2025-07-08,ride,apple_healthkit,113.3,20.45,,,,,,,,,raw type: Cycling
+2025-07-08,mtb,strava,83.3,20.45,1477.0,,,,,,143.0,,Morning Road Bike Ride · dev:Strava App · strava_id:15046301781
 2025-07-10,basketball,apple_healthkit,30.7,0.21,,,,,,153.0,,,raw type: Basketball
 2025-07-10,walk,apple_healthkit,39.9,1.43,,,,,,172.0,,,raw type: Walking
-2025-07-17,ride,apple_healthkit,63.9,15.32,,,,,,586.0,,,raw type: Cycling
+2025-07-10,workout,strava,30.7,,,80.8,106.0,,,,3.0,,Morning Workout · indoor · dev:Apple Watch Ultra 2 · strava_id:15068758034
+2025-07-10,walk,strava,26.3,1.43,25.0,106.0,120.0,,,,4.0,,Evening Walk · dev:Apple Watch Ultra 2 · strava_id:15074416131
+2025-07-17,ride,apple_healthkit+strava,63.9,15.32,556.0,,,158.2,,586.0,87.0,,raw type: Cycling · strava_id:15150413524
 2025-07-21,walk,apple_healthkit,124.4,5.21,,,,,,526.0,,,raw type: Walking
+2025-07-21,walk,strava,96.2,5.21,297.0,108.5,125.0,,,,17.0,,Afternoon Walk · dev:Apple Watch Ultra 2 · strava_id:15193326387
 2025-08-02,basketball,apple_healthkit,83.8,2.64,,,,,,899.0,,,raw type: Basketball
+2025-08-02,workout,strava,83.8,,,148.7,182.0,,,,113.0,,Morning Workout · indoor · dev:Apple Watch Ultra 2 · strava_id:15321869782
 2025-08-09,basketball,apple_healthkit,135.3,3.89,,,,,,1534.0,,,raw type: Basketball
+2025-08-09,workout,strava,135.3,,,151.9,188.0,,,,218.0,,Morning Workout · indoor · dev:Apple Watch Ultra 2 · strava_id:15401818260
 2025-08-14,walk,apple_healthkit,42.3,1.51,,,,,,181.0,,,raw type: Walking
 2025-08-14,walk,apple_healthkit,45.0,1.7,,,,,,168.0,,,raw type: Walking
+2025-08-14,walk,strava,33.0,1.51,51.0,98.8,111.0,,,,4.0,,Evening Walk · dev:Apple Watch Ultra 2 · strava_id:15462530958
+2025-08-14,walk,strava,29.9,1.7,43.0,103.0,109.0,,,,4.0,,Evening Walk · dev:Apple Watch Ultra 2 · strava_id:15462920440
 2025-08-19,basketball,apple_healthkit,2.6,,,,,,,11.0,,,raw type: Basketball
+2025-08-19,workout,strava,2.5,,,88.5,96.0,,,,0.0,,Night Workout · indoor · dev:Apple Watch Ultra 2 · strava_id:15519970243
 2025-08-23,basketball,apple_healthkit,131.4,3.99,,,,,,1414.0,,,raw type: Basketball
 2025-08-27,basketball,apple_healthkit,41.2,0.04,,,,,,200.0,,,raw type: Basketball
+2025-08-27,workout,strava,41.2,,,79.8,107.0,,,,4.0,,Afternoon Workout · indoor · dev:Apple Watch Ultra 2 · strava_id:15609325234
 2025-08-31,walk,apple_healthkit,31.2,0.82,,,,,,88.0,,,raw type: Walking
+2025-08-31,walk,strava,12.1,0.82,,94.1,111.0,,,,1.0,,Evening Walk · dev:Apple Watch Ultra 2 · strava_id:15654735837
 2025-09-04,basketball,apple_healthkit,2.0,0.03,,,,,,14.0,,,raw type: Basketball
 2025-09-04,tennis,apple_healthkit,60.5,1.0,,,,,,531.0,,,raw type: Tennis
 2025-09-04,basketball,apple_healthkit,3.7,,,,,,,17.0,,,raw type: Basketball
+2025-09-04,workout,strava,2.0,,,100.8,117.0,,,,0.0,,Morning Workout · indoor · dev:Apple Watch Ultra 2 · strava_id:15694447944
+2025-09-04,workout,strava,3.7,,,82.9,93.0,,,,0.0,,Evening Workout · indoor · dev:Apple Watch Ultra 2 · strava_id:15701415800
 2025-09-06,basketball,apple_healthkit,74.4,1.66,,,,,,733.0,,,raw type: Basketball
+2025-09-06,workout,strava,74.4,,,141.0,181.0,,,,80.0,,Morning Workout · indoor · dev:Apple Watch Ultra 2 · strava_id:15719986302
 2025-09-15,basketball,apple_healthkit,58.9,0.18,,,,,,286.0,,,raw type: Basketball
-2025-09-17,walk,apple_health_gpx,115.0,2.91,176,,,,,,,,avg speed 1.5 mph · 6829 GPS points
+2025-09-15,workout,strava,58.9,,,88.8,108.0,,,,7.0,,Evening Workout · indoor · dev:Apple Watch Ultra 2 · strava_id:15825228430
+2025-09-17,walk,apple_health_gpx,115.0,2.91,176.0,,,,,,,,avg speed 1.5 mph · 6829 GPS points
 2025-09-17,rowing,apple_healthkit,115.0,2.89,,,,,,449.0,,,raw type: Rowing
 2025-09-17,basketball,apple_healthkit,18.9,0.11,,,,,,91.0,,,raw type: Basketball
+2025-09-17,row,strava,79.8,2.91,22.0,101.7,122.0,,,,12.0,,Afternoon Row · dev:Apple Watch Ultra 2 · strava_id:15847270136
+2025-09-17,workout,strava,18.9,,,85.9,101.0,,,,2.0,,Night Workout · indoor · dev:Apple Watch Ultra 2 · strava_id:15849200754
 2025-09-19,walk,apple_healthkit,19.3,0.6,,,,,,71.0,,,raw type: Walking
 2025-09-19,tennis,apple_healthkit,61.1,0.66,,,,,,475.0,,,raw type: Tennis
+2025-09-19,walk,strava,10.2,0.6,14.0,110.3,121.0,,,,1.0,,Morning Walk · dev:Apple Watch Ultra 2 · strava_id:15864950023
 2025-09-20,walk,apple_healthkit,18.1,0.69,,,,,,61.0,,,raw type: Walking
 2025-09-20,walk,apple_healthkit,43.3,1.26,,,,,,133.0,,,raw type: Walking
 2025-09-20,walk,apple_healthkit,31.0,0.55,,,,,,68.0,,,raw type: Walking
 2025-09-20,walk,apple_healthkit,31.4,1.16,,,,,,99.0,,,raw type: Walking
-2025-09-21,walk,apple_healthkit,6.1,0.13,,,,,,17.0,,,raw type: Walking
+2025-09-20,walk,strava,12.4,0.69,51.0,101.9,107.0,,,,1.0,,Lunch Walk · dev:Apple Watch Ultra 2 · strava_id:15879011785
+2025-09-20,walk,strava,23.2,1.26,133.0,85.4,95.0,,,,2.0,,Afternoon Walk · dev:Apple Watch Ultra 2 · strava_id:15880712230
+2025-09-20,walk,strava,6.3,0.55,61.0,90.9,99.0,,,,0.0,,Evening Walk · dev:Apple Watch Ultra 2 · strava_id:15881648407
+2025-09-21,walk,apple_healthkit+strava,6.1,0.13,8.0,83.8,98.0,,,17.0,0.0,,raw type: Walking · strava_id:15888877082
 2025-10-11,basketball,apple_healthkit,102.6,2.24,,,,,,1109.0,,,raw type: Basketball
-2025-10-16,ride,apple_healthkit,44.6,7.86,,,,,,300,,,raw type: Cycling
+2025-10-11,workout,strava,102.6,,,150.3,186.0,,,,152.0,,Morning Workout · indoor · dev:Apple Watch Ultra 2 · strava_id:16108920330
+2025-10-16,ride,apple_healthkit,44.6,7.86,,,,,,300.0,,,raw type: Cycling
+2025-10-16,mtb,strava,37.9,7.86,535.0,,,118.5,,269.0,,,Quick South Table Loop with Georgia · dev:Strava App · strava_id:16165190101
 2025-11-01,basketball,apple_healthkit,132.6,2.91,,,,,,1405.0,,,raw type: Basketball
-2025-11-08,ride,apple_healthkit,116.7,13.22,,,,,,1334,,,raw type: Cycling
+2025-11-01,workout,strava,132.6,,,148.8,184.0,,,,189.0,,Morning Workout · indoor · dev:Apple Watch Ultra 2 · strava_id:16323954148
+2025-11-08,ride,apple_healthkit,116.7,13.22,,,,,,1334.0,,,raw type: Cycling
+2025-11-08,mtb,strava,95.6,13.22,2404.0,,,208.5,,1196.0,,,Lunch Mountain Bike Ride · dev:Strava App · strava_id:16397160991
 2025-11-15,basketball,apple_healthkit,98.2,2.31,,,,,,1130.0,,,raw type: Basketball
+2025-11-15,workout,strava,98.2,,,151.1,182.0,,,,141.0,,Morning Workout · indoor · dev:Apple Watch Ultra 2 · strava_id:16467977582
 2025-11-21,basketball,apple_healthkit,49.1,0.43,,,,,,242.0,,,raw type: Basketball
+2025-11-21,workout,strava,49.1,,,86.4,114.0,,,,5.0,,Afternoon Workout · indoor · dev:Apple Watch Ultra 2 · strava_id:16527587323
 2025-11-22,basketball,apple_healthkit,8.5,,,,,,,40.0,,,raw type: Basketball
+2025-11-22,workout,strava,8.5,,,86.4,98.0,,,,0.0,,Lunch Workout · indoor · dev:Apple Watch Ultra 2 · strava_id:16536756296
 2025-11-23,basketball,apple_healthkit,40.9,0.01,,,,,,197.0,,,raw type: Basketball
+2025-11-23,workout,strava,40.9,,,82.4,103.0,,,,4.0,,Afternoon Workout · indoor · dev:Apple Watch Ultra 2 · strava_id:16549069954
 2025-11-28,basketball,apple_healthkit,2.0,,,,,,,10.0,,,raw type: Basketball
+2025-11-28,workout,strava,2.0,,,99.8,117.0,,,,0.0,,Afternoon Workout · indoor · dev:Apple Watch Ultra 2 · strava_id:16595809749
 2025-11-29,basketball,apple_healthkit,106.5,2.9,,,,,,1110.0,,,raw type: Basketball
+2025-11-29,workout,strava,106.5,,,146.3,175.0,,,,120.0,,Morning Workout · indoor · dev:Apple Watch Ultra 2 · strava_id:16603010166
 2025-11-30,basketball,apple_healthkit,52.4,0.04,,,,,,253.0,,,raw type: Basketball
+2025-11-30,workout,strava,52.4,,,90.0,104.0,,,,6.0,,Evening Workout · indoor · dev:Apple Watch Ultra 2 · strava_id:16615605321
 2025-12-17,basketball,apple_healthkit,13.3,0.15,,,,,,87.0,,,raw type: Basketball
 2025-12-22,cardio dance,apple_healthkit,46.3,,,,,,,249.0,,,raw type: Cardio Dance
-2025-12-27,run,apple_healthkit,13.9,0.6,,,,,,144.0,,,raw type: Running
+2025-12-22,workout,strava,46.3,,,121.1,163.0,,,,14.0,,Night Workout · indoor · dev:Apple Watch Ultra 2 · strava_id:16822358409
+2025-12-27,run,apple_healthkit+strava,13.9,0.6,,171.5,179.0,,,144.0,48.0,,raw type: Running · strava_id:16866552197
 2026-01-04,basketball,apple_healthkit,6.5,0.02,,,,,,32.0,,,raw type: Basketball
+2026-01-04,workout,strava,6.5,,,76.3,92.0,,,,0.0,,Morning Workout · indoor · dev:Apple Watch Ultra 2 · strava_id:16935591872
 2026-01-05,traditional strength training,apple_healthkit,86.2,,,,,,,777.0,,,raw type: Traditional Strength Training
+2026-01-05,strength,strava,86.2,,,133.9,166.0,,,,43.0,,Afternoon Weight Training · indoor · dev:Apple Watch Ultra 2 · strava_id:16951595538
 2026-01-10,traditional strength training,apple_healthkit,130.6,,,,,,,1106.0,,,raw type: Traditional Strength Training
-2026-01-15,elliptical,apple_healthkit,3.2,,,,,,,19.0,,,raw type: Elliptical
+2026-01-10,strength,strava,130.6,,,129.8,166.0,,,,52.0,,Morning Weight Training · indoor · dev:Apple Watch Ultra 2 · strava_id:17003907618
+2026-01-15,elliptical,apple_healthkit+strava,3.2,,,146.7,160.0,,,19.0,2.0,,raw type: Elliptical · strava_id:17063235375
 2026-01-15,traditional strength training,apple_healthkit,136.1,,,,,,,1205.0,,,raw type: Traditional Strength Training
-2026-01-19,elliptical,apple_healthkit,3.2,,,,,,,13.0,,,raw type: Elliptical
+2026-01-15,strength,strava,136.1,,,132.2,169.0,,,,61.0,,Afternoon Weight Training · indoor · dev:Apple Watch Ultra 2 · strava_id:17064436827
+2026-01-19,elliptical,apple_healthkit+strava,3.2,,,132.1,145.0,,,13.0,1.0,,raw type: Elliptical · strava_id:17105622543
 2026-01-24,traditional strength training,apple_healthkit,118.2,,,,,,,988.0,,,raw type: Traditional Strength Training
+2026-01-24,strength,strava,118.2,,,129.0,162.0,,,,46.0,,Morning Weight Training · indoor · dev:Apple Watch Ultra 2 · strava_id:17164418656
 2026-01-30,basketball,apple_healthkit,3.7,0.04,,,,,,19.0,,,raw type: Basketball
+2026-01-30,workout,strava,3.7,,,104.7,113.0,,,,0.0,,Afternoon Workout · indoor · dev:Apple Watch Ultra 2 · strava_id:17232499658
 2026-01-31,basketball,apple_healthkit,100.4,3.16,,,,,,1066.0,,,raw type: Basketball
+2026-01-31,workout,strava,100.4,,,155.2,182.0,,,,164.0,,Morning Workout · indoor · dev:Apple Watch Ultra 2 · strava_id:17242119224
 2026-02-01,basketball,apple_healthkit,75.5,0.72,,,,,,418.0,,,raw type: Basketball
+2026-02-01,workout,strava,75.5,,,88.0,129.0,,,,8.0,,Morning Workout · indoor · dev:Apple Watch Ultra 2 · strava_id:17251747624
 2026-02-14,basketball,apple_healthkit,106.9,2.93,,,,,,1255.0,,,raw type: Basketball
+2026-02-14,workout,strava,106.9,,,158.8,181.0,,,,206.0,,Morning Workout · indoor · dev:Apple Watch Ultra 2 · strava_id:17398359377
 2026-02-16,basketball,apple_healthkit,53.5,0.63,,,,,,357.0,,,raw type: Basketball
+2026-02-16,workout,strava,53.5,,,104.7,154.0,,,,9.0,,Lunch Workout · indoor · dev:Apple Watch Ultra 2 · strava_id:17461005581
+2026-02-22,basketball,strava,515.8,,,61.9,103.0,,,,30.0,,Night Basketball · indoor · dev:Apple Watch Ultra 2 · strava_id:17495108084
 2026-02-23,basketball,apple_healthkit,515.8,0.09,,,,,,2759.0,,,raw type: Basketball
 2026-03-01,ride,apple_healthkit,21.7,1.88,,,,,,67.0,,,raw type: Cycling
-2026-03-08,basketball,apple_healthkit,2.8,0.01,,,,,,15.0,,,raw type: Basketball
+2026-03-08,basketball,apple_healthkit+strava,2.8,0.01,,99.6,113.0,,,15.0,0.0,,raw type: Basketball · strava_id:17655728927
 2026-03-09,ride,apple_healthkit,48.9,10.97,,,,,,641.0,,,raw type: Cycling
-2026-03-09,ride,apple_healthkit,56.8,8.3,,,,,,229,,,raw type: Cycling
-2026-03-13,ride,apple_healthkit,110.2,6.54,,,,,,558,,,raw type: Cycling
-2026-03-19,ride,apple_healthkit,51.5,12.27,,,,,,318,,,raw type: Cycling
-2026-03-19,ride,apple_healthkit,74.5,12.26,,,,,,318,,,raw type: Cycling
-2026-03-19,ride,apple_healthkit,77.0,12.34,,,,,,603,,,raw type: Cycling
-2026-04-08,ride,apple_healthkit,136.8,13.92,,,,,,419,,,raw type: Cycling
-2026-04-11,basketball,apple_healthkit,78.3,1.95,,,,,,851.0,,,raw type: Basketball
-2026-04-19,ride,apple_healthkit,131.1,10.85,,,,,,330,,,raw type: Cycling
-2026-05-10,ride,apple_healthkit,128.1,14.88,,,,,,534,,,raw type: Cycling
-2026-05-13,ride,apple_healthkit,75.3,17.76,,,,,,541,,,raw type: Cycling
+2026-03-09,ride,apple_healthkit,56.8,8.3,,,,,,229.0,,,raw type: Cycling
+2026-03-09,mtb,strava,35.5,8.3,351.0,,,96.6,,206.0,,,Afternoon Mountain Bike Ride · dev:Strava App · strava_id:17666842079
+2026-03-13,ride,apple_healthkit,110.2,6.54,,,,,,558.0,,,raw type: Cycling
+2026-03-13,mtb,strava,46.0,6.54,1292.0,,,181.2,,500.0,,,Lunch Mountain Bike Ride · dev:Strava App · strava_id:17712440405
+2026-03-19,ride,apple_healthkit+strava,51.5,12.27,984.0,128.4,155.0,151.6,53.2,318.0,19.0,,raw type: Cycling · strava_id:17785683220 · strava_id:17785681368
+2026-03-19,ride,apple_healthkit,74.5,12.26,,,,,,318.0,,,raw type: Cycling
+2026-03-19,ride,apple_healthkit,77.0,12.34,,,,,,603.0,,,raw type: Cycling
+2026-04-08,ride,apple_healthkit,136.8,13.92,,,,,,419.0,,,raw type: Cycling
+2026-04-08,ride,strava,76.1,13.92,490.0,,,82.4,,376.0,,,Lunch Cruise with a newbie · dev:Strava App · strava_id:18033005895
+2026-04-11,basketball,apple_healthkit+strava,78.3,1.95,,159.7,191.0,,,851.0,157.0,,raw type: Basketball · strava_id:18069628153
+2026-04-19,ride,apple_healthkit,131.1,10.85,,,,,,330.0,,,raw type: Cycling
+2026-04-19,ride,strava,53.8,10.85,374.0,,,91.5,,296.0,,,Sunny day cruise · dev:Strava App · strava_id:18178588696
+2026-05-10,ride,apple_healthkit,128.1,14.88,,,,,,534.0,,,raw type: Cycling
+2026-05-10,ride,strava,65.4,14.88,594.0,,,122.1,,479.0,,,Hollies first ride! · dev:Strava App · strava_id:18458127469
+2026-05-13,ride,apple_healthkit+strava,75.3,17.76,387.0,,,116.4,,541.0,,,raw type: Cycling · strava_id:18495758146
 2026-05-23,ride,apple_healthkit,18.4,6.36,,,,,,222.0,,,raw type: Cycling
-2026-05-23,ride,apple_healthkit,90.9,20.46,,,,,,821,,,raw type: Cycling
+2026-05-23,ride,apple_healthkit+strava,90.9,20.46,1466.0,158.6,180.0,156.9,,821.0,157.0,,raw type: Cycling · strava_id:18624370803

@@ -46,3 +46,6 @@ data/backups/
 build/
 dist/
 *.egg
+
+# Strava raw API dump (reproducible, large)
+protocl/data/ryan/_strava_raw.json
