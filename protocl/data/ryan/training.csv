@@ -29,23 +29,18 @@ date,activity_type,source,duration_min,distance_miles,elevation_ft,avg_hr_bpm,ma
 2025-06-07,basketball,apple_healthkit,123.8,4.06,,,,,,1450.0,,,raw type: Basketball
 2025-06-07,workout,strava,124.0,,,152.4,180.0,,,,199.0,,Morning Workout · indoor · dev:Apple Watch Ultra 2 · strava_id:14781951856
 2025-06-14,ride,apple_healthkit,109.6,22.33,,,,,,942.0,,,raw type: Cycling
-2025-06-14,ride,apple_healthkit,279.1,24.41,,,,,,,,,raw type: Cycling
-2025-06-14,mtb,strava,137.8,24.41,6158.0,,,,,,355.0,,Winter Park Trestles Day1 · dev:Strava App · strava_id:14800566640
-2025-06-25,ride,apple_healthkit,88.8,10.32,,,,,,,,,raw type: Cycling
-2025-06-25,mtb,strava,52.0,10.32,733.0,,,,,,,,Evening Mountain Bike Ride · dev:Strava App · strava_id:14917565653
+2025-06-14,mtb,strava+apple_healthkit,137.8,24.41,6158.0,,,,,,355.0,,Winter Park Trestles Day1 · dev:Strava App · strava_id:14800566640
+2025-06-25,mtb,strava+apple_healthkit,52.0,10.32,733.0,,,,,,,,Evening Mountain Bike Ride · dev:Strava App · strava_id:14917565653
 2025-06-28,basketball,apple_healthkit,61.6,1.33,,,,,,616.0,,,raw type: Basketball
 2025-06-28,workout,strava,61.6,,,145.9,183.0,,,,80.0,,Morning Workout · indoor · dev:Apple Watch Ultra 2 · strava_id:14944405259
 2025-06-29,walk,apple_healthkit,71.2,2.16,,,,,,232.0,,,raw type: Walking
 2025-06-29,walk,strava,41.4,2.16,77.0,99.2,111.0,,,,6.0,,Evening Walk · dev:Apple Watch Ultra 2 · strava_id:14958659525
-2025-07-02,ride,apple_healthkit,227.4,22.77,,,,,,,,,raw type: Cycling
-2025-07-02,mtb,strava,119.9,22.77,5854.0,,,,,,,,Afternoon Mountain Bike Ride · dev:Strava App · strava_id:14988156911
-2025-07-04,ride,apple_healthkit,164.8,24.99,,,,,,,,,raw type: Cycling
-2025-07-04,mtb,strava,106.7,24.99,465.0,,,,,,,,Morning Road Bike ride · dev:Strava App · strava_id:15007118394
+2025-07-02,mtb,strava+apple_healthkit,119.9,22.77,5854.0,,,,,,,,Afternoon Mountain Bike Ride · dev:Strava App · strava_id:14988156911
+2025-07-04,mtb,strava+apple_healthkit,106.7,24.99,465.0,,,,,,,,Morning Road Bike ride · dev:Strava App · strava_id:15007118394
 2025-07-05,basketball,apple_healthkit,126.6,3.33,,,,,,1441.0,,,raw type: Basketball
 2025-07-05,walk,apple_healthkit+strava,23.6,0.73,23.0,93.5,101.0,,,71.0,2.0,,raw type: Walking · strava_id:15021813598
 2025-07-05,workout,strava,126.6,,,151.0,183.0,,,,187.0,,Morning Workout · indoor · dev:Apple Watch Ultra 2 · strava_id:15017665829
-2025-07-08,ride,apple_healthkit,113.3,20.45,,,,,,,,,raw type: Cycling
-2025-07-08,mtb,strava,83.3,20.45,1477.0,,,,,,143.0,,Morning Road Bike Ride · dev:Strava App · strava_id:15046301781
+2025-07-08,mtb,strava+apple_healthkit,83.3,20.45,1477.0,,,,,,143.0,,Morning Road Bike Ride · dev:Strava App · strava_id:15046301781
 2025-07-10,basketball,apple_healthkit,30.7,0.21,,,,,,153.0,,,raw type: Basketball
 2025-07-10,walk,apple_healthkit,39.9,1.43,,,,,,172.0,,,raw type: Walking
 2025-07-10,workout,strava,30.7,,,80.8,106.0,,,,3.0,,Morning Workout · indoor · dev:Apple Watch Ultra 2 · strava_id:15068758034
@@ -95,12 +90,10 @@ date,activity_type,source,duration_min,distance_miles,elevation_ft,avg_hr_bpm,ma
 2025-09-21,walk,apple_healthkit+strava,6.1,0.13,8.0,83.8,98.0,,,17.0,0.0,,raw type: Walking · strava_id:15888877082
 2025-10-11,basketball,apple_healthkit,102.6,2.24,,,,,,1109.0,,,raw type: Basketball
 2025-10-11,workout,strava,102.6,,,150.3,186.0,,,,152.0,,Morning Workout · indoor · dev:Apple Watch Ultra 2 · strava_id:16108920330
-2025-10-16,ride,apple_healthkit,44.6,7.86,,,,,,300.0,,,raw type: Cycling
-2025-10-16,mtb,strava,37.9,7.86,535.0,,,118.5,,269.0,,,Quick South Table Loop with Georgia · dev:Strava App · strava_id:16165190101
+2025-10-16,mtb,strava+apple_healthkit,37.9,7.86,535.0,,,118.5,,269.0,,,Quick South Table Loop with Georgia · dev:Strava App · strava_id:16165190101
 2025-11-01,basketball,apple_healthkit,132.6,2.91,,,,,,1405.0,,,raw type: Basketball
 2025-11-01,workout,strava,132.6,,,148.8,184.0,,,,189.0,,Morning Workout · indoor · dev:Apple Watch Ultra 2 · strava_id:16323954148
-2025-11-08,ride,apple_healthkit,116.7,13.22,,,,,,1334.0,,,raw type: Cycling
-2025-11-08,mtb,strava,95.6,13.22,2404.0,,,208.5,,1196.0,,,Lunch Mountain Bike Ride · dev:Strava App · strava_id:16397160991
+2025-11-08,mtb,strava+apple_healthkit,95.6,13.22,2404.0,,,208.5,,1196.0,,,Lunch Mountain Bike Ride · dev:Strava App · strava_id:16397160991
 2025-11-15,basketball,apple_healthkit,98.2,2.31,,,,,,1130.0,,,raw type: Basketball
 2025-11-15,workout,strava,98.2,,,151.1,182.0,,,,141.0,,Morning Workout · indoor · dev:Apple Watch Ultra 2 · strava_id:16467977582
 2025-11-21,basketball,apple_healthkit,49.1,0.43,,,,,,242.0,,,raw type: Basketball
@@ -146,20 +139,14 @@ date,activity_type,source,duration_min,distance_miles,elevation_ft,avg_hr_bpm,ma
 2026-03-01,ride,apple_healthkit,21.7,1.88,,,,,,67.0,,,raw type: Cycling
 2026-03-08,basketball,apple_healthkit+strava,2.8,0.01,,99.6,113.0,,,15.0,0.0,,raw type: Basketball · strava_id:17655728927
 2026-03-09,ride,apple_healthkit,48.9,10.97,,,,,,641.0,,,raw type: Cycling
-2026-03-09,ride,apple_healthkit,56.8,8.3,,,,,,229.0,,,raw type: Cycling
-2026-03-09,mtb,strava,35.5,8.3,351.0,,,96.6,,206.0,,,Afternoon Mountain Bike Ride · dev:Strava App · strava_id:17666842079
-2026-03-13,ride,apple_healthkit,110.2,6.54,,,,,,558.0,,,raw type: Cycling
-2026-03-13,mtb,strava,46.0,6.54,1292.0,,,181.2,,500.0,,,Lunch Mountain Bike Ride · dev:Strava App · strava_id:17712440405
+2026-03-09,mtb,strava+apple_healthkit,35.5,8.3,351.0,,,96.6,,206.0,,,Afternoon Mountain Bike Ride · dev:Strava App · strava_id:17666842079
+2026-03-13,mtb,strava+apple_healthkit,46.0,6.54,1292.0,,,181.2,,500.0,,,Lunch Mountain Bike Ride · dev:Strava App · strava_id:17712440405
 2026-03-19,ride,apple_healthkit+strava,51.5,12.27,984.0,128.4,155.0,151.6,53.2,318.0,19.0,,raw type: Cycling · strava_id:17785683220 · strava_id:17785681368
-2026-03-19,ride,apple_healthkit,74.5,12.26,,,,,,318.0,,,raw type: Cycling
 2026-03-19,ride,apple_healthkit,77.0,12.34,,,,,,603.0,,,raw type: Cycling
-2026-04-08,ride,apple_healthkit,136.8,13.92,,,,,,419.0,,,raw type: Cycling
-2026-04-08,ride,strava,76.1,13.92,490.0,,,82.4,,376.0,,,Lunch Cruise with a newbie · dev:Strava App · strava_id:18033005895
+2026-04-08,ride,strava+apple_healthkit,76.1,13.92,490.0,,,82.4,,376.0,,,Lunch Cruise with a newbie · dev:Strava App · strava_id:18033005895
 2026-04-11,basketball,apple_healthkit+strava,78.3,1.95,,159.7,191.0,,,851.0,157.0,,raw type: Basketball · strava_id:18069628153
-2026-04-19,ride,apple_healthkit,131.1,10.85,,,,,,330.0,,,raw type: Cycling
-2026-04-19,ride,strava,53.8,10.85,374.0,,,91.5,,296.0,,,Sunny day cruise · dev:Strava App · strava_id:18178588696
-2026-05-10,ride,apple_healthkit,128.1,14.88,,,,,,534.0,,,raw type: Cycling
-2026-05-10,ride,strava,65.4,14.88,594.0,,,122.1,,479.0,,,Hollies first ride! · dev:Strava App · strava_id:18458127469
+2026-04-19,ride,strava+apple_healthkit,53.8,10.85,374.0,,,91.5,,296.0,,,Sunny day cruise · dev:Strava App · strava_id:18178588696
+2026-05-10,ride,strava+apple_healthkit,65.4,14.88,594.0,,,122.1,,479.0,,,Hollies first ride! · dev:Strava App · strava_id:18458127469
 2026-05-13,ride,apple_healthkit+strava,75.3,17.76,387.0,,,116.4,,541.0,,,raw type: Cycling · strava_id:18495758146
 2026-05-23,ride,apple_healthkit,18.4,6.36,,,,,,222.0,,,raw type: Cycling
 2026-05-23,ride,apple_healthkit+strava,90.9,20.46,1466.0,158.6,180.0,156.9,,821.0,157.0,,raw type: Cycling · strava_id:18624370803

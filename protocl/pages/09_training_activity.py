@@ -70,8 +70,8 @@ st.markdown("")
 # ────────────────────────────────────────────────────────────────────────────
 # Tabs
 # ────────────────────────────────────────────────────────────────────────────
-tab_load, tab_intensity, tab_calendar, tab_sessions = grouped_sections(
-    ["📈 Load & Volume", "🔥 Intensity", "🗓️ Calendar", "📋 Sessions"]
+tab_load, tab_intensity, tab_cycling, tab_calendar, tab_sessions = grouped_sections(
+    ["📈 Load & Volume", "🔥 Intensity", "🚵 Cycling & MTB", "🗓️ Calendar", "📋 Sessions"]
 )
 
 # ── Load & Volume ───────────────────────────────────────────────────────────
@@ -210,6 +210,217 @@ with tab_intensity:
             legend=dict(orientation="h", y=1.1, x=0),
         )
         st.plotly_chart(fig_pwr, use_container_width=True)
+
+# ── Cycling & MTB ───────────────────────────────────────────────────────────
+with tab_cycling:
+    CYCLING_TYPES = ["mtb", "ride", "ebike"]
+    cyc = df[df["activity_type"].isin(CYCLING_TYPES)].copy()
+    cyc = cyc.sort_values("date")
+
+    if cyc.empty:
+        st.info("No cycling activities logged yet.")
+    else:
+        cyc["ft_per_mi"] = cyc["elevation_ft"] / cyc["distance_miles"]
+        cyc["mph"] = cyc["distance_miles"] / (cyc["duration_min"] / 60)
+        cyc["month"] = cyc["date"].dt.to_period("M").dt.start_time
+
+        # 12-month headline KPIs
+        win_start = TODAY - pd.Timedelta(days=365)
+        c12 = cyc[cyc["date"] >= win_start]
+        mtb_12 = c12[c12["activity_type"] == "mtb"]
+        road_12 = c12[c12["activity_type"] == "ride"]
+
+        kpi_cards = [
+            ("12M RIDES", f"{len(c12)}", f"{len(mtb_12)} MTB · {len(road_12)} road", None),
+            ("12M MILES", f"{c12['distance_miles'].sum():.0f}", "all bikes", None),
+            ("12M CLIMBING", f"{c12['elevation_ft'].sum():,.0f} ft",
+             f"{c12['elevation_ft'].sum()/5280:.1f} mi of vertical", None),
+            ("AVG MTB RIDE",
+             f"{mtb_12['distance_miles'].mean():.1f} mi" if len(mtb_12) else "—",
+             f"{mtb_12['elevation_ft'].mean():.0f} ft · {mtb_12['ft_per_mi'].mean():.0f} ft/mi"
+             if len(mtb_12) else "", None),
+            ("AVG MTB SPEED",
+             f"{mtb_12['mph'].mean():.1f} mph" if len(mtb_12) else "—",
+             "climbing-heavy terrain", None),
+            ("AVG ROAD POWER",
+             f"{road_12['avg_power_watts'].mean():.0f} W" if road_12['avg_power_watts'].notna().any() else "—",
+             f"{road_12['avg_power_watts'].notna().sum()} rides w/ power", None),
+        ]
+        cols = st.columns(6)
+        for col, (label, value, delta, pos) in zip(cols, kpi_cards):
+            with col:
+                st.markdown(metric_card_html(label, value, delta, pos), unsafe_allow_html=True)
+
+        st.markdown("")
+
+        # Monthly volume — stacked bar (miles) + climb line
+        st.subheader("Monthly Volume")
+        st.caption("Bars = miles by ride type · Line = total feet climbed")
+
+        m_pivot = cyc.pivot_table(
+            index="month", columns="activity_type", values="distance_miles",
+            aggfunc="sum", fill_value=0,
+        )
+        elev_by_month = cyc.groupby("month")["elevation_ft"].sum()
+
+        type_colors = {
+            "mtb":   COLORS["gold"],
+            "ride":  COLORS["chart_series"][1],
+            "ebike": COLORS["chart_series"][2],
+        }
+        type_labels = {"mtb": "MTB", "ride": "Road", "ebike": "E-bike"}
+
+        fig_vol = go.Figure()
+        for atype in ["mtb", "ride", "ebike"]:
+            if atype not in m_pivot.columns:
+                continue
+            fig_vol.add_trace(go.Bar(
+                x=m_pivot.index, y=m_pivot[atype],
+                name=type_labels[atype],
+                marker=dict(color=type_colors[atype]),
+            ))
+        fig_vol.add_trace(go.Scatter(
+            x=elev_by_month.index, y=elev_by_month.values,
+            name="Climbing (ft)",
+            mode="lines+markers",
+            line=dict(color=COLORS["warning"], width=3),
+            marker=dict(size=8),
+            yaxis="y2",
+        ))
+        apply_theme(fig_vol, height=380)
+        fig_vol.update_layout(
+            barmode="stack",
+            yaxis=dict(title="Miles", gridcolor="#2A2A2A"),
+            yaxis2=dict(title="Elevation (ft)", overlaying="y", side="right",
+                         gridcolor="rgba(0,0,0,0)"),
+            legend=dict(orientation="h", y=1.1, x=0),
+            hovermode="x unified",
+        )
+        st.plotly_chart(fig_vol, use_container_width=True)
+
+        # Climb rate per ride (terrain-difficulty fingerprint)
+        st.subheader("Climb Rate by Ride")
+        st.caption(
+            "Feet of climbing per mile. 100–150 ft/mi = rolling · 150–250 = hilly · >250 = punchy MTB. "
+            "Bubble size = ride distance."
+        )
+        cyc_elev = cyc[cyc["elevation_ft"].notna() & (cyc["distance_miles"] >= 1)].copy()
+        if not cyc_elev.empty:
+            fig_climb = go.Figure()
+            for atype in ["mtb", "ride", "ebike"]:
+                sub = cyc_elev[cyc_elev["activity_type"] == atype]
+                if sub.empty:
+                    continue
+                fig_climb.add_trace(go.Scatter(
+                    x=sub["date"], y=sub["ft_per_mi"],
+                    mode="markers",
+                    name=type_labels[atype],
+                    marker=dict(
+                        color=type_colors[atype],
+                        size=(sub["distance_miles"] * 1.6).clip(6, 28),
+                        line=dict(color="#0E0E10", width=1),
+                        opacity=0.85,
+                    ),
+                    customdata=sub[["distance_miles", "elevation_ft", "duration_min"]].values,
+                    hovertemplate=(
+                        "<b>%{x|%b %d, %Y}</b><br>"
+                        "%{customdata[0]:.1f} mi · %{customdata[1]:.0f} ft · %{customdata[2]:.0f} min<br>"
+                        "<b>%{y:.0f} ft/mi</b><extra></extra>"
+                    ),
+                ))
+            fig_climb.add_hrect(y0=100, y1=150, fillcolor="rgba(63,191,127,0.06)",
+                                 line=dict(width=0))
+            fig_climb.add_hrect(y0=150, y1=250, fillcolor="rgba(255,182,18,0.06)",
+                                 line=dict(width=0))
+            fig_climb.add_hrect(y0=250, y1=600, fillcolor="rgba(255,90,90,0.06)",
+                                 line=dict(width=0))
+            apply_theme(fig_climb, height=380)
+            fig_climb.update_layout(
+                yaxis=dict(title="Feet per mile",
+                            range=[0, max(cyc_elev["ft_per_mi"].max() * 1.1, 300)]),
+                legend=dict(orientation="h", y=1.1, x=0),
+            )
+            st.plotly_chart(fig_climb, use_container_width=True)
+        else:
+            st.info("No rides with elevation data yet.")
+
+        # Power vs Speed scatter
+        st.subheader("Power vs Speed")
+        st.caption("Each dot = one ride with power data. Up-and-right = stronger output. Bubble size = ride distance.")
+        power_rides = cyc[cyc["avg_power_watts"].notna() & cyc["mph"].notna()].copy()
+        if len(power_rides) >= 2:
+            fig_pwr2 = go.Figure()
+            for atype in ["mtb", "ride", "ebike"]:
+                sub = power_rides[power_rides["activity_type"] == atype]
+                if sub.empty:
+                    continue
+                fig_pwr2.add_trace(go.Scatter(
+                    x=sub["avg_power_watts"], y=sub["mph"],
+                    mode="markers",
+                    name=type_labels[atype],
+                    marker=dict(
+                        color=type_colors[atype],
+                        size=(sub["distance_miles"] * 1.6).clip(8, 28),
+                        line=dict(color="#0E0E10", width=1),
+                        opacity=0.85,
+                    ),
+                    customdata=sub[["date", "distance_miles", "ft_per_mi"]].values,
+                    hovertemplate=(
+                        "<b>%{customdata[0]|%b %d, %Y}</b><br>"
+                        "Power: %{x:.0f} W · Speed: %{y:.1f} mph<br>"
+                        "%{customdata[1]:.1f} mi · %{customdata[2]:.0f} ft/mi<extra></extra>"
+                    ),
+                ))
+            apply_theme(fig_pwr2, height=340)
+            fig_pwr2.update_layout(
+                xaxis=dict(title="Avg Power (W)"),
+                yaxis=dict(title="Avg Speed (mph)"),
+                legend=dict(orientation="h", y=1.1, x=0),
+            )
+            st.plotly_chart(fig_pwr2, use_container_width=True)
+        else:
+            st.info(f"Need 2+ rides with power data. Currently {len(power_rides)} ride(s).")
+
+        # Biggest rides leaderboard
+        st.subheader("Biggest Rides")
+        st.caption("Sorted by elevation gain — your biggest days on the bike.")
+        big = cyc[cyc["elevation_ft"].notna()].nlargest(8, "elevation_ft").copy()
+        big["Date"] = big["date"].dt.strftime("%b %d, %Y")
+        big["Type"] = big["activity_type"].map(type_labels)
+        big["Distance"] = big["distance_miles"].round(1).astype(str) + " mi"
+        big["Climbing"] = big["elevation_ft"].apply(lambda x: f"{int(x):,} ft")
+        big["Duration"] = big["duration_min"].apply(
+            lambda x: f"{int(x // 60)}h {int(x % 60):02d}m" if pd.notna(x) else "—"
+        )
+        big["Climb Rate"] = big["ft_per_mi"].apply(
+            lambda x: f"{int(x)} ft/mi" if pd.notna(x) else "—"
+        )
+        big["Avg Power"] = big["avg_power_watts"].apply(
+            lambda x: f"{x:.0f} W" if pd.notna(x) else "—"
+        )
+        big["Effort"] = big["tss"].apply(lambda x: f"{int(x)}" if pd.notna(x) else "—")
+        big["Title"] = big["notes"].fillna("").str.split("·").str[0].str.strip().str.slice(0, 32)
+        st.dataframe(
+            big[["Date", "Type", "Title", "Distance", "Climbing", "Climb Rate",
+                 "Duration", "Avg Power", "Effort"]],
+            use_container_width=True, hide_index=True,
+        )
+
+        # Ride type mix
+        st.subheader("Ride Type Mix (Last 12 Months)")
+        mix_12 = c12.groupby("activity_type").agg(
+            Rides=("date", "count"),
+            Miles=("distance_miles", "sum"),
+            Climbing=("elevation_ft", "sum"),
+            Hours=("duration_min", lambda s: s.sum() / 60),
+        ).reset_index()
+        mix_12["activity_type"] = mix_12["activity_type"].map(type_labels)
+        mix_12["Miles"] = mix_12["Miles"].round(1)
+        mix_12["Climbing"] = mix_12["Climbing"].fillna(0).round(0).astype(int)
+        mix_12["Hours"] = mix_12["Hours"].round(1)
+        mix_12 = mix_12.rename(columns={"activity_type": "Type"}).sort_values("Miles", ascending=False)
+        st.dataframe(mix_12, use_container_width=True, hide_index=True)
+
 
 # ── Calendar ────────────────────────────────────────────────────────────────
 with tab_calendar:
