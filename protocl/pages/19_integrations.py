@@ -19,6 +19,7 @@ import streamlit as st
 from modules.freshness import LOG_PATH, _read_log
 from modules.integrations import CATALOG, Integration, by_status
 from modules.theme import inject_css
+from modules.llm import llm_badge
 
 
 inject_css()
@@ -233,13 +234,16 @@ def _render_grid(items: list[Integration], lookup: dict[str, pd.Timestamp],
 # Page
 # ────────────────────────────────────────────────────────────────────────────
 
-col_title, col_reload = st.columns([6, 1])
+col_title, col_badge, col_reload = st.columns([6, 1.2, 1])
 with col_title:
     st.title("Integrations")
     st.caption(
         "Every data source feeding Protocōl. Connect APIs, upload files, "
         "and queue up what's coming next."
     )
+with col_badge:
+    st.markdown(f"<div style='padding-top:18px;text-align:right;'>{llm_badge()}</div>",
+                unsafe_allow_html=True)
 with col_reload:
     if st.button("↻ Reload", use_container_width=True):
         st.cache_data.clear()
