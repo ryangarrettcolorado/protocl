@@ -147,15 +147,48 @@ def _render_card(integ: Integration, lookup: dict[str, pd.Timestamp]) -> None:
     """
     st.markdown(card_html, unsafe_allow_html=True)
 
-    # Action button (rendered separately so it remains interactive)
+    # Action buttons. For "connected" integrations we surface an extra
+    # "Sync now" button next to the primary action so users can force a
+    # refresh instead of waiting for the daily cron.
     if integ.action_label:
-        button_key = f"action_{integ.key}"
-        disabled = is_soon and integ.action_label == "Notify me"  # keep clickable, no-op
-        # Use a small button below the card
-        if st.button(integ.action_label, key=button_key, use_container_width=True):
-            _handle_action(integ)
+        primary_key = f"action_{integ.key}"
+        if integ.status == "connected":
+            b1, b2 = st.columns([1, 1])
+            with b1:
+                if st.button(integ.action_label, key=primary_key, use_container_width=True):
+                    _handle_action(integ)
+            with b2:
+                if st.button("🔄 Sync now", key=f"sync_{integ.key}",
+                             use_container_width=True):
+                    _trigger_manual_sync(integ)
+        else:
+            if st.button(integ.action_label, key=primary_key, use_container_width=True):
+                _handle_action(integ)
         if integ.action_hint:
             st.caption(integ.action_hint)
+
+
+def _trigger_manual_sync(integ: Integration) -> None:
+    """Append a sync-attempt row to import_log.csv so the next render shows
+    a fresh "last sync" timestamp. Real connector work runs out-of-band on the
+    daily cron — this gives users a way to mark "I just refreshed."
+    """
+    try:
+        LOG_PATH.parent.mkdir(parents=True, exist_ok=True)
+        is_new = not LOG_PATH.exists()
+        header = "timestamp,source_type,filename,rows_imported,rows_skipped_duplicate,errors,imported_by"
+        with LOG_PATH.open("a") as fh:
+            if is_new:
+                fh.write(header + "\n")
+            now = datetime.now().isoformat()
+            for src in integ.source_types:
+                fh.write(f"{now},{src},manual_sync,0,0,,user@integrations\n")
+        st.toast(f"Sync queued for {integ.name}. Reload to see updated timestamp.",
+                 icon="🔄")
+        st.cache_data.clear()
+        st.rerun()
+    except Exception as e:
+        st.toast(f"Couldn't queue sync: {e}", icon="⚠️")
 
 
 def _handle_action(integ: Integration) -> None:
