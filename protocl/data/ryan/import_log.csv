@@ -4,3 +4,13 @@ timestamp,source_type,filename,rows_imported,rows_skipped_duplicate,errors,impor
 2026-05-27T01:35:20,protocol_md,weekly_peptide_supplement_protocol_v3.md,29,0,,migrate_real_data.py
 2026-05-27T01:35:20,apple_health_gpx,route_*.gpx (6 files),6,0,,migrate_real_data.py
 2026-05-27T01:35:20,apple_health_ecg,ecg_*.csv (4 files),4,0,,migrate_real_data.py
+2026-05-27T01:40:43,bloodwork_pdf,Labtest3.pdf,52,0,,add_3_more_draws.py
+2026-05-27T01:40:43,bloodwork_pdf,Labtest4.pdf,53,0,,add_3_more_draws.py
+2026-05-27T01:40:43,bloodwork_pdf,Labtest5.pdf,53,0,,add_3_more_draws.py
+2026-05-27T01:40:43,bloodwork_pdf,Labtest1.pdf,0,53,,add_3_more_draws.py
+2026-05-27T01:40:43,bloodwork_pdf,Labtest2.pdf,0,53,,add_3_more_draws.py
+2026-05-27T01:41:23,training_gpx,route_2020-04-04_1.39pm.gpx,1,0,,add_new_gpx.py
+2026-05-27T01:41:23,training_gpx,route_2022-07-20_3.42pm.gpx,1,0,,add_new_gpx.py
+2026-05-27T01:41:23,training_gpx,route_2022-08-23_5.59pm.gpx,1,0,,add_new_gpx.py
+2026-05-27T01:41:23,training_gpx,route_2023-03-30_1.39pm.gpx,1,0,,add_new_gpx.py
+2026-05-27T01:41:23,training_gpx,route_2025-09-17_3.17pm.gpx,1,0,,add_new_gpx.py

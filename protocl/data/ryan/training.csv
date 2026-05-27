@@ -1,7 +1,12 @@
 date,activity_type,source,duration_min,distance_miles,elevation_ft,avg_hr_bpm,max_hr_bpm,avg_power_watts,avg_cadence_rpm,calories,tss,zone2_min,notes
+2020-04-04,ride,apple_health_gpx,,11.22,0,,,,,,,,duration unavailable in GPX · 898 GPS points
 2022-04-27,walk,apple_health_gpx,79.6,4.21,310,,,,,,,,avg speed 3.2 mph · 4778 GPS points
+2022-07-20,walk,apple_health_gpx,5.0,0.08,6,,,,,,,,avg speed 1.0 mph · 304 GPS points
+2022-08-23,walk,apple_health_gpx,9.0,0.41,28,,,,,,,,avg speed 2.7 mph · 389 GPS points
+2023-03-30,walk,apple_health_gpx,17.4,0.65,49,,,,,,,,avg speed 2.2 mph · 1008 GPS points
 2023-07-27,walk,apple_health_gpx,32.5,1.15,138,,,,,,,,avg speed 2.1 mph · 1768 GPS points
 2024-08-28,walk,apple_health_gpx,13.6,0.93,113,,,,,,,,avg speed 4.1 mph · 818 GPS points
 2024-09-15,walk,apple_health_gpx,18.6,1.2,98,,,,,,,,avg speed 3.9 mph · 1110 GPS points
 2025-04-13,ride,apple_health_gpx,,10.21,0,,,,,,,,duration unavailable in GPX · 971 GPS points
 2025-04-22,ride,apple_health_gpx,,6.0,0,,,,,,,,duration unavailable in GPX · 809 GPS points
+2025-09-17,walk,apple_health_gpx,115.0,2.91,176,,,,,,,,avg speed 1.5 mph · 6829 GPS points
