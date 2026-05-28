@@ -170,6 +170,28 @@ Page 17 supports CSV / TSV / XLSX upload for all 8 source types:
 
 Template downloads available for every source on the Templates tab.
 
+### Importing Function Health Results
+
+Function Health doesn't offer a public API, but they provide a *Lab result of
+record* PDF that contains all of your tested biomarkers.
+
+1. Sign in to <https://my.functionhealth.com/documents> and download the most
+   recent **Lab result of record** PDF.
+2. In Protocōl, open **Function Health Import** (page 19b).
+3. Drop the PDF onto the uploader. The parser runs **locally inside the
+   Streamlit process** — nothing leaves your machine.
+4. Review the preview. You'll see total biomarkers parsed, how many were
+   matched against the canonical alias table, and the detected collection
+   date.
+5. Click **Import to Bloodwork**. Rows are appended to `bloodwork.csv` with
+   `source_lab = "Function Health"`. Duplicates (same canonical biomarker +
+   collection date) are skipped; unrecognized names are imported under their
+   raw label and flagged in the `notes` column.
+
+See `DECISIONS.md → Function Health PDF Import` for parser internals,
+canonical name map, and the open follow-ups (optimal-range band, additional
+aliases) to address once a real PDF is available for validation.
+
 ### Live-API scaffolds
 
 `modules/ingest/` ships three scaffolds:

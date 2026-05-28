@@ -301,3 +301,88 @@ panel mapping would land on `Other` but the biomarker has a clearer home):
 Anything not matched above falls to **Other**. Performance category will
 generally only see flags once VO₂max and HRV start showing up in the
 bloodwork table; until then it stays empty by design.
+
+---
+
+## Function Health PDF Import
+
+### Why a PDF importer at all
+Function Health offers **no public API**. The only supported export of a
+member's biomarker data is the *Lab result of record* PDF, downloadable
+from `my.functionhealth.com/documents`. Empirical Health and several other
+consumer-health apps already ingest the same PDF, confirming the layout
+is reliably parseable.
+
+### Parser approach — `protocl/modules/function_health_pdf.py`
+Two-stage extraction, both feeding the same row-normalizer:
+
+1. **Table-first** via `pdfplumber.Page.extract_tables()`. We detect column
+   semantics from the header row (`biomarker | result | unit | reference
+   range | flag`); if the header isn't recognized we fall back to
+   positional `(name, value, unit, range)` for the first four columns.
+2. **Text fallback** — `pdfplumber.Page.extract_text()` is split into
+   lines and matched against a regex:
+   `<name> <value> <unit>? <range>?`. The range supports `X - Y`, `< X`,
+   and `> X`.
+
+Collection date is harvested from the first two pages by matching
+`Collected:`, `Collection Date:`, or `Date:` patterns; if absent we fall
+back to the PDF's `CreationDate` metadata field.
+
+### Canonical name map
+The page reuses `modules.biomarker_aliases.canonicalize()` first, then
+overlays `FUNCTION_EXTRA_ALIASES` in the parser module for Function-specific
+phrasings (`"Apo B"`, `"Hemoglobin A1c"`, `"25-OH Vitamin D"`, etc.).
+Unrecognized names are kept verbatim, flagged as `unrecognized_name` in
+the bloodwork `notes` column, and logged so they can be folded into the
+alias table later.
+
+### Page placement — separate file vs. tab
+Added as a **new page** (`pages/19b_function_health_import.py`) rather
+than folded into `19_integrations.py`. Reasoning:
+- The integrations page is a status/dashboard view; a multi-step upload +
+  preview + import flow doesn't fit cleanly as a card.
+- Function-specific UI elements (PDF uploader, recognized/unrecognized
+  counts, post-import diff) keep the integrations page lean.
+- Future Function-specific features (auto-classify by panel,
+  optimal-range comparison vs. Function's own bands) have an obvious
+  home.
+A small "Open Function Health Import" entry should be added to the
+integrations page later if Function reaches "connected/file-based" status.
+
+### Flag logic
+- `value > reference_high` → `High`
+- `value < reference_low`  → `Low`
+- otherwise                → `Optimal`
+
+Function's PDFs reportedly include an "optimal" band tighter than the
+lab reference range. The current parser only models the wider
+`reference_low / reference_high` pair; a follow-up should detect the
+optimal band column and emit `Suboptimal` for in-range-but-outside-
+optimal results.
+
+### Dedupe rule on import
+Composite key = `(biomarker_canonical, collection_date)`. If a row with
+the same canonical key and date already exists, the new row is skipped.
+Rows whose name isn't in the alias table fall back to the raw biomarker
+string for the dedupe key, so re-uploading the same PDF still de-dupes
+correctly even before alias additions.
+
+### Audit log
+A row is appended to `data/<user>/import_log.csv` with
+`source_type=function_health_pdf`, matching the schema written by
+`migrate_real_data.py` and the manual-entry path in `data_loader.py`.
+
+### To revisit when a real Function PDF arrives
+1. Confirm the column order assumed in `_rows_from_table` (currently we
+   detect by header keywords; positional fallback may be wrong).
+2. Detect and surface the "optimal" band — add `optimal_low` /
+   `optimal_high` to the parser output and wire a `Suboptimal` flag.
+3. Extend `FUNCTION_EXTRA_ALIASES` with any names that show up as
+   `unrecognized` in the real export.
+4. Confirm the collection-date regex matches the real PDF's wording (the
+   Function PDF may say e.g. *"Specimen collected on Jan 15, 2026"* —
+   `_normalize_date` already supports the long-form variants).
+5. Decide whether Function-specific "optimal" ranges should override
+   Protocōl's own `reference_ranges.csv` for the same biomarkers, or be
+   stored alongside as a parallel column.
