@@ -106,10 +106,83 @@ sleep_avg = wear_30[sleep_col].mean() if sleep_col and not wear_30.empty else No
 rhr_avg   = wear_30["resting_hr_bpm"].mean() if "resting_hr_bpm" in wear_30.columns and not wear_30.empty else None
 hrv_avg   = wear_30[hrv_col].mean() if hrv_col and not wear_30.empty else None
 
-# Training 30d Z2 minutes
+# Training 30d Z2 minutes + distance + climb
 train_30 = data.training[data.training["date"] >= TODAY - pd.Timedelta(days=30)] if not data.training.empty else pd.DataFrame()
 z2_min_30 = train_30["zone2_min"].sum() if "zone2_min" in train_30.columns and not train_30.empty else None
 z2_per_wk = (z2_min_30 / 4.3) if z2_min_30 is not None else None
+distance_30 = train_30["distance_miles"].sum() if "distance_miles" in train_30.columns and not train_30.empty else None
+climb_30 = train_30["elevation_ft"].sum() if "elevation_ft" in train_30.columns and not train_30.empty else None
+vo2_latest = None
+if not data.wearables.empty and "vo2_max_ml_kg_min" in data.wearables.columns:
+    vo2_series = data.wearables.sort_values("date")["vo2_max_ml_kg_min"].dropna()
+    if not vo2_series.empty:
+        vo2_latest = float(vo2_series.iloc[-1])
+
+# Recovery score / sleep consistency (extra wearables fields for Vital Signs block)
+recovery_col = _wcol("recovery_score", "recovery_pct")
+sleep_consistency_avg = (
+    wear_30["sleep_consistency_pct"].mean()
+    if "sleep_consistency_pct" in wear_30.columns and not wear_30.empty
+    else None
+)
+recovery_avg = (
+    wear_30[recovery_col].mean()
+    if recovery_col and not wear_30.empty
+    else None
+)
+
+# Medications — pulled from protocol via the same keyword-inference logic 11_protocol uses.
+_MED_HITS = (
+    "metformin", "rapamycin", "statin", "atorvastatin", "ezetimibe",
+    "ozempic", "tirzepatide", "semaglutide", "tadalafil", "finasteride",
+    "sildenafil",
+)
+def _is_medication(category: str | None, name: str | None) -> bool:
+    cat = (category or "").strip().lower()
+    nm = (name or "").strip().lower()
+    if cat in ("medication", "med", "drug", "pharma", "medications"):
+        return True
+    return any(k in nm for k in _MED_HITS)
+
+if not active_prot.empty:
+    med_mask = active_prot.apply(
+        lambda r: _is_medication(r.get("category"), r.get("name")), axis=1
+    )
+    active_meds = active_prot[med_mask]
+else:
+    active_meds = pd.DataFrame()
+
+# Risks & Alerts — simple out-of-range + suboptimal flag count from current draw.
+def _gather_risk_flags(bw_df: pd.DataFrame) -> tuple[list[dict], list[dict]]:
+    """Return (out_of_range_rows, suboptimal_rows) for the latest draw."""
+    if bw_df.empty:
+        return [], []
+    try:
+        from modules.reference_ranges import load_reference
+        ref = load_reference()
+    except Exception:
+        return [], []
+    out_oor, out_sub = [], []
+    for _, row in bw_df.iterrows():
+        canonical = row.get("biomarker_canonical")
+        r = ref.get(canonical) if canonical else None
+        if r is None:
+            continue
+        val = row.get("value")
+        try:
+            val = float(val)
+        except (TypeError, ValueError):
+            continue
+        lab_low, lab_high = r.get("lab_low"), r.get("lab_high")
+        opt_low, opt_high = r.get("optimal_low"), r.get("optimal_high")
+        entry = {"name": canonical, "value": val, "unit": r.get("unit", "")}
+        if (lab_low is not None and val < lab_low) or (lab_high is not None and val > lab_high):
+            out_oor.append(entry)
+        elif (opt_low is not None and val < opt_low) or (opt_high is not None and val > opt_high):
+            out_sub.append(entry)
+    return out_oor, out_sub
+
+oor_flags, sub_flags = _gather_risk_flags(latest_bw)
 
 # Open action items
 open_actions = data.action_items[data.action_items["status"].isin(["open", "in_progress"])] \
@@ -237,6 +310,56 @@ recovery_block = (
 if not recovery_block:
     recovery_block = "- (no wearables / training data in last 30d)"
 
+# Split into the spec's two sub-blocks.
+vitals_block = (
+    (f"- **Avg sleep (30d):** {sleep_avg:.2f} hrs  \n" if sleep_avg is not None else "")
+    + (f"- **Avg resting HR (30d):** {rhr_avg:.1f} bpm  \n" if rhr_avg is not None else "")
+    + (f"- **Avg HRV (30d):** {hrv_avg:.1f} ms  \n" if hrv_avg is not None else "")
+    + (f"- **Avg recovery score (30d):** {recovery_avg:.0f}%  \n" if recovery_avg is not None else "")
+    + (f"- **Sleep consistency (30d):** {sleep_consistency_avg:.0f}%" if sleep_consistency_avg is not None else "")
+)
+if not vitals_block:
+    vitals_block = "- (no wearables data in last 30d)"
+
+training_block = (
+    (f"- **Zone 2 (30d):** {z2_min_30:.0f} min total · ~{z2_per_wk:.0f} min/wk  \n" if z2_per_wk is not None else "")
+    + (f"- **Distance (30d):** {distance_30:.1f} miles  \n" if distance_30 is not None else "")
+    + (f"- **Elevation gain (30d):** {climb_30:.0f} ft  \n" if climb_30 is not None else "")
+    + (f"- **Latest VO₂max:** {vo2_latest:.1f} mL/kg/min" if vo2_latest is not None else "")
+)
+if not training_block:
+    training_block = "- (no training data in last 30d)"
+
+# Medications block — dedicated section pulled from active_meds.
+def _fmt_medications(p: pd.DataFrame) -> str:
+    if p.empty:
+        return "- (no active medications)"
+    lines = []
+    for _, row in p.iterrows():
+        dose = f"{row.get('dose', '')} {row.get('unit', '')}".strip()
+        freq = row.get("frequency", "")
+        lines.append(f"- **{row.get('name', '')}** — {dose}, {freq}")
+    return "\n".join(lines)
+
+# Risks & Alerts summary block.
+def _fmt_risks(oor: list[dict], sub: list[dict]) -> str:
+    if not oor and not sub:
+        return "- (no flagged biomarkers — all in optimal range)"
+    lines = []
+    if oor:
+        lines.append(f"**🔴 Out of lab range ({len(oor)}):**")
+        for f in oor[:12]:
+            lines.append(f"- {f['name']}: {f['value']:.2f} {f['unit']}")
+        if len(oor) > 12:
+            lines.append(f"- … and {len(oor) - 12} more")
+    if sub:
+        lines.append(f"\n**🟡 Suboptimal ({len(sub)}):**")
+        for f in sub[:12]:
+            lines.append(f"- {f['name']}: {f['value']:.2f} {f['unit']}")
+        if len(sub) > 12:
+            lines.append(f"- … and {len(sub) - 12} more")
+    return "\n".join(lines)
+
 header_md = (
     f"# Clinician Summary — Ryan Garrett\n"
     f"**Generated:** {TODAY.strftime('%b %d, %Y')}  \n"
@@ -250,14 +373,30 @@ footer_md = (
     "standard laboratory reference ranges. Use as a discussion aid; not a clinical diagnosis.*\n"
 )
 
+# Patient notes — free text, defaults to empty. Flows into both markdown and PDF outputs.
+st.markdown("**Patient notes** (free text — included in exports when 'Patient Notes' section is selected)")
+patient_notes = st.text_area(
+    "Patient notes",
+    value="",
+    height=120,
+    placeholder="Symptoms, recent changes, questions for the clinician…",
+    label_visibility="collapsed",
+    key="patient_notes_text",
+)
+notes_block = patient_notes.strip() if patient_notes else "_(no notes entered)_"
+
 SECTIONS = {
-    "bio_age":    ("Biological Age",                    f"## Biological Age\n{bio_block}\n"),
-    "biomarkers": ("Key Biomarkers",                    "## Key Biomarkers (latest vs prior draw)\n" + chr(10).join(_fmt_marker(r) for r in key_rows) + "\n"),
-    "body_comp":  ("Body Composition",                  f"## Body Composition\n{body_block}\n"),
-    "recovery":   ("Recovery & Cardio Dose (30d)",      f"## Recovery & Cardio Dose (last 30 days)\n{recovery_block}\n"),
-    "protocol":   ("Active Protocol",                    f"## Active Protocol\n{_fmt_protocol(active_prot)}\n"),
-    "nof1":       ("Active N=1 Experiments",            f"## Active N=1 Experiments\n{_fmt_nof1(active_nof1)}\n"),
-    "actions":    ("Open High-Priority Items",          f"## Open High-Priority Items\n{_fmt_actions(open_actions if high_pri_open.empty else high_pri_open)}\n"),
+    "bio_age":      ("Biological Age",                    f"## Biological Age\n{bio_block}\n"),
+    "biomarkers":   ("Key Biomarkers",                    "## Key Biomarkers (latest vs prior draw)\n" + chr(10).join(_fmt_marker(r) for r in key_rows) + "\n"),
+    "body_comp":    ("Body Composition",                  f"## Body Composition\n{body_block}\n"),
+    "vitals":       ("Vital Signs & Wearables",           f"## Vital Signs & Wearables (last 30 days)\n{vitals_block}\n"),
+    "training":     ("Training & Performance",            f"## Training & Performance (last 30 days)\n{training_block}\n"),
+    "protocol":     ("Active Protocol",                    f"## Active Protocol\n{_fmt_protocol(active_prot)}\n"),
+    "medications":  ("Medications",                        f"## Medications\n{_fmt_medications(active_meds)}\n"),
+    "risks":        ("Risks & Alerts",                     f"## Risks & Alerts\n{_fmt_risks(oor_flags, sub_flags)}\n"),
+    "nof1":         ("Active N=1 Experiments",            f"## Active N=1 Experiments\n{_fmt_nof1(active_nof1)}\n"),
+    "actions":      ("Open High-Priority Items",          f"## Open High-Priority Items\n{_fmt_actions(open_actions if high_pri_open.empty else high_pri_open)}\n"),
+    "notes":        ("Patient Notes",                     f"## Patient Notes\n{notes_block}\n"),
 }
 
 st.markdown("**Sections to include**")

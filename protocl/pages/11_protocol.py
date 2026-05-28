@@ -391,3 +391,20 @@ with tab_add:
                 "notes": "",
             })
             st.success(f"Added {name}.")
+
+
+with st.expander("📚 Sources Informing Design", expanded=False):
+    st.markdown("""
+- **Examine.com Supplement Evidence Database** — independent, citation-graded reviews of
+  supplement efficacy and safety. [examine.com](https://examine.com)
+- **Attia, P.** *Outlive*, Ch. 16 — framework for evaluating supplementation: bias toward
+  evidence-backed compounds, avoid stacking, monitor with bloodwork.
+- **Endocrine Society Clinical Practice Guideline** — *Testosterone Therapy in Men With
+  Hypogonadism* (Bhasin et al., 2018). Guidance for TRT initiation, monitoring (hematocrit,
+  PSA, estradiol), and phlebotomy thresholds.
+  [academic.oup.com/jcem/article/103/5/1715/4939465](https://academic.oup.com/jcem/article/103/5/1715/4939465)
+- **FDA / regulatory caveat on peptides** — many peptides listed in protocol tabs (BPC-157,
+  CJC-1295, etc.) are **not** FDA-approved for human therapeutic use and are research-grade.
+  Use only under qualified clinical supervision; the regulatory landscape is shifting and
+  some compounds may be re-scheduled or restricted by compounding pharmacies.
+""")

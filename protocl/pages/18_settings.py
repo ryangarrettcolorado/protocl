@@ -23,6 +23,7 @@ from modules.preferences import (
 from modules.reference_ranges import load_reference, panel_label
 from modules.theme import inject_css
 from modules.charts import full_height
+from modules.llm import llm_badge
 
 
 inject_css()
@@ -30,10 +31,13 @@ inject_css()
 # ────────────────────────────────────────────────────────────────────────────
 # Header
 # ────────────────────────────────────────────────────────────────────────────
-col_title, col_reset = st.columns([6, 1])
+col_title, col_badge, col_reset = st.columns([6, 1.2, 1])
 with col_title:
     st.title("Settings")
     st.caption("Profile · visible pages · home layout · ranges · data · privacy")
+with col_badge:
+    st.markdown(f"<div style='padding-top:18px;text-align:right;'>{llm_badge()}</div>",
+                unsafe_allow_html=True)
 with col_reset:
     if st.button("↻ Reload", use_container_width=True):
         st.rerun()
@@ -123,8 +127,10 @@ with st.expander("🧭 Visible Pages", expanded=True):
 
     st.markdown("**Personas** — pick one or more; the app unions their page visibility.")
     with st.expander("What each persona enables", expanded=False):
-        for k, (lbl, desc) in PERSONA_INFO.items():
-            st.markdown(f"- **{lbl}** — {desc}")
+        persona_table = pd.DataFrame(
+            [{"Persona": lbl, "Focus": desc} for _, (lbl, desc) in PERSONA_INFO.items()]
+        )
+        st.table(persona_table)
 
     current_persona = draft.get("persona", "custom")
     if isinstance(current_persona, str):
@@ -487,13 +493,25 @@ with st.expander("🛡 Privacy & Disclaimer", expanded=False):
         "actions":      ("Action Items",     ["action_items.csv"]),
         "preferences":  ("Preferences",      ["user_preferences.json"]),
     }
-    chosen_exports = st.multiselect(
+    ALL_DATA_KEY = "__all__"
+    multiselect_options = [ALL_DATA_KEY] + list(EXPORT_CATEGORIES.keys())
+
+    def _fmt_export(k: str) -> str:
+        return "📦 All data" if k == ALL_DATA_KEY else EXPORT_CATEGORIES[k][0]
+
+    raw_selection = st.multiselect(
         "Categories to export",
-        options=list(EXPORT_CATEGORIES.keys()),
-        format_func=lambda k: EXPORT_CATEGORIES[k][0],
+        options=multiselect_options,
+        format_func=_fmt_export,
         default=list(EXPORT_CATEGORIES.keys()),
         key="export_categories",
+        help="Select 'All data' to include every category in the export.",
     )
+    # Selecting "All data" expands to every category.
+    if ALL_DATA_KEY in raw_selection:
+        chosen_exports = list(EXPORT_CATEGORIES.keys())
+    else:
+        chosen_exports = [k for k in raw_selection if k in EXPORT_CATEGORIES]
 
     def _build_selective_zip(categories: list[str]) -> bytes:
         wanted_files: set[str] = set()
@@ -516,6 +534,50 @@ with st.expander("🛡 Privacy & Disclaimer", expanded=False):
         use_container_width=True,
         disabled=not chosen_exports,
     )
+
+    # Per-category individual CSV download buttons. One button per category,
+    # producing a single CSV (the first file in the category's file list).
+    st.caption("Or download an individual category as CSV:")
+    export_dir = DATA_DIR / DEFAULT_USER
+    cat_keys = list(EXPORT_CATEGORIES.keys())
+    n_per_row = 3
+    for i in range(0, len(cat_keys), n_per_row):
+        row_keys = cat_keys[i:i + n_per_row]
+        cols = st.columns(n_per_row)
+        for col, ck in zip(cols, row_keys):
+            label, files = EXPORT_CATEGORIES[ck]
+            primary = files[0] if files else ""
+            file_path = export_dir / primary
+            if file_path.exists() and primary.endswith(".csv"):
+                with col:
+                    st.download_button(
+                        f"⬇ {label}",
+                        data=file_path.read_bytes(),
+                        file_name=primary,
+                        mime="text/csv",
+                        key=f"dl_csv_{ck}",
+                        use_container_width=True,
+                    )
+            elif file_path.exists():
+                # Non-CSV (json) categories still get an individual download.
+                with col:
+                    st.download_button(
+                        f"⬇ {label}",
+                        data=file_path.read_bytes(),
+                        file_name=primary,
+                        mime="application/octet-stream",
+                        key=f"dl_csv_{ck}",
+                        use_container_width=True,
+                    )
+            else:
+                with col:
+                    st.button(
+                        f"⬇ {label}",
+                        key=f"dl_csv_{ck}_missing",
+                        use_container_width=True,
+                        disabled=True,
+                        help=f"{primary} not present in data/{DEFAULT_USER}/",
+                    )
 
     st.divider()
     st.markdown("**Delete account** — disabled in v1.5 (single-user, no auth).")

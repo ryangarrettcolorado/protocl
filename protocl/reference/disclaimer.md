@@ -52,6 +52,39 @@ The intent is to give your physician one page of structured context for a
 30-minute visit. The LLM-rewrite mode rewrites that same handout into
 clinical-narrative voice without inventing values.
 
+#### AI / LLM caveats
+
+The optional LLM rewrite (Recommendations, Clinician Summary, Imports) is a
+language model and can produce **incorrect, hallucinated, or invented values**
+— including numbers that look authoritative but were never in your data. The
+**deterministic markdown summary is always the source of truth.** Before
+sharing an LLM-generated narrative with a clinician, or before acting on any
+number you see in the LLM tab, verify it against the underlying Bloodwork,
+Wearables, CGM, or Body Composition pages. If a value disagrees between the
+LLM narrative and the deterministic tab, trust the deterministic tab.
+
+#### Experimental nature of longevity optimization
+
+Several of the foundations of this app are **evolving research, not
+standard-of-care**:
+
+- **PhenoAge** is calibrated on US population data and has known limits for
+  younger, unusually fit, or non-Western individuals. Treat the absolute number
+  with skepticism; trust the trend over multiple draws.
+- **Zone 2 dose targets** (≥150–180 min/week) are a synthesis of athletic and
+  longevity literature, not a clinical guideline.
+- **"Optimal" ranges** throughout the app come from functional-medicine and
+  longevity sources (Attia *Outlive*, Levine, IFM, NLA) that are tighter than
+  the standard lab reference ranges your physician will use. They are not a
+  consensus position of mainstream clinical medicine.
+- **Protocol elements such as TRT and peptides** are off-label or research-grade
+  for many of the use cases discussed here. They should only be initiated,
+  dosed, or changed under the care of a qualified clinician.
+
+Discuss any meaningful change in care — adding a supplement, starting TRT,
+adjusting medications — with your physician before acting on what Protocōl
+shows you.
+
 #### Limits & known gaps
 
 - Wearable HRV (Apple, WHOOP) is optical and noisier than ECG. Treat absolute

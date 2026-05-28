@@ -240,3 +240,20 @@ drug. Top-decile vs bottom-decile is even more pronounced.
 Most "zone 2" rides are actually Z3 — you ride too hard. **Slow down.**
 The point is volume of low-intensity mitochondrial stimulus, not feeling worked.
 """)
+
+
+with st.expander("📚 Sources Informing Design", expanded=False):
+    st.markdown("""
+- **Seiler, S. & Tønnessen, E.** *Intervals, Thresholds, and Long Slow Distance: the Role of
+  Intensity and Duration in Endurance Training* (Sportscience, 2014) — foundational case for
+  Z2 volume + sparse high-intensity work.
+- **MacInnis, M. J. & Gibala, M. J.** *Physiological adaptations to interval training and the
+  role of exercise intensity* (J Physiol, 2017) — comparative adaptations from HIIT vs LSD.
+  [pubmed.ncbi.nlm.nih.gov/27748956](https://pubmed.ncbi.nlm.nih.gov/27748956/)
+- **Mandsager, K. et al.** *Association of Cardiorespiratory Fitness With Long-term Mortality
+  Among Adults Undergoing Exercise Treadmill Testing* (JAMA Network Open, 2018) — VO₂max as
+  the single largest modifiable predictor of all-cause mortality.
+  [jamanetwork.com/journals/jamanetworkopen/fullarticle/2707428](https://jamanetwork.com/journals/jamanetworkopen/fullarticle/2707428)
+- **Attia, P.** *Outlive*, Ch. 11 — VO₂max as "the most important number" and the cardiovascular
+  case for Z2 volume.
+""")

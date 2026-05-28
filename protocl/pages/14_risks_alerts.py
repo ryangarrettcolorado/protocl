@@ -62,6 +62,61 @@ latest_df = latest_bloodwork_draw(bw)
 prev_df = previous_bloodwork_draw(bw)
 
 # ────────────────────────────────────────────────────────────────────────────
+# Canonical category taxonomy
+# ────────────────────────────────────────────────────────────────────────────
+# Spec calls for grouping flags under a stable category taxonomy independent of
+# the source panel string. Mapping below maps biomarker_reference panels and
+# specific biomarker canonical codes onto the six spec categories.
+CANON_CATEGORIES = [
+    "Cardiovascular", "Metabolic", "Hormonal",
+    "Inflammatory", "Performance", "Other",
+]
+
+_PANEL_TO_CANON = {
+    "lipids":            "Cardiovascular",
+    "cardiovascular":    "Cardiovascular",
+    "glucose_insulin":   "Metabolic",
+    "hormones":          "Hormonal",
+    "thyroid":           "Hormonal",
+    "inflammation":      "Inflammatory",
+}
+
+_BIOMARKER_TO_CANON = {
+    # Cardiovascular
+    "ldl_c_mg_dl": "Cardiovascular", "hdl_c_mg_dl": "Cardiovascular",
+    "apob_mg_dl": "Cardiovascular", "lp_a_nmol_l": "Cardiovascular",
+    "triglycerides_mg_dl": "Cardiovascular", "total_cholesterol_mg_dl": "Cardiovascular",
+    # Metabolic
+    "glucose_mg_dl": "Metabolic", "hba1c_pct": "Metabolic",
+    "fasting_insulin_uiu_ml": "Metabolic", "homa_ir": "Metabolic",
+    # Hormonal
+    "testosterone_total_ng_dl": "Hormonal", "testosterone_free_pg_ml": "Hormonal",
+    "estradiol_pg_ml": "Hormonal", "cortisol_ug_dl": "Hormonal",
+    "tsh_uiu_ml": "Hormonal", "free_t3_pg_ml": "Hormonal", "free_t4_ng_dl": "Hormonal",
+    "dhea_s_ug_dl": "Hormonal", "shbg_nmol_l": "Hormonal", "progesterone_ng_ml": "Hormonal",
+    # Inflammatory
+    "hscrp_mg_l": "Inflammatory", "il_6_pg_ml": "Inflammatory",
+    "ferritin_ng_ml": "Inflammatory",
+    # Performance
+    "vo2max_ml_kg_min": "Performance", "hrv_sdnn_ms": "Performance",
+    "resting_hr_bpm": "Performance",
+}
+
+
+def canonical_category(canonical: str, panel: str | None) -> str:
+    """Return the canonical spec category for a biomarker.
+
+    Looks up the biomarker code first (most specific), then the panel, then
+    falls back to 'Other'.
+    """
+    if canonical in _BIOMARKER_TO_CANON:
+        return _BIOMARKER_TO_CANON[canonical]
+    if panel and panel.lower() in _PANEL_TO_CANON:
+        return _PANEL_TO_CANON[panel.lower()]
+    return "Other"
+
+
+# ────────────────────────────────────────────────────────────────────────────
 # Detect risks
 # ────────────────────────────────────────────────────────────────────────────
 def classify(row, ref_entry):
@@ -111,12 +166,22 @@ def trend_alert(canonical, bw_df):
 
 
 risks = []
+optimal_count = 0
+informational_count = 0
 for _, row in latest_df.iterrows():
     canonical = row["biomarker_canonical"]
     r = ref.get(canonical)
     if r is None:
+        # No reference range — count as informational so user can see they exist.
+        informational_count += 1
         continue
     status, color = classify(row, r)
+    if status == "optimal":
+        optimal_count += 1
+        continue
+    if status == "unknown":
+        informational_count += 1
+        continue
     if status in ("out_of_range_low", "out_of_range_high",
                   "suboptimal_low", "suboptimal_high"):
         # Find delta vs prior draw
@@ -137,6 +202,7 @@ for _, row in latest_df.iterrows():
             "prior": prior_val,
             "delta": delta,
             "tier": r.get("tier"),
+            "category": canonical_category(canonical, r.get("panel")),
         })
 
 # Sort: critical first, then by tier
@@ -193,29 +259,21 @@ high_severity_int = [i for i in interactions if i["severity"] == "high"]
 if "risks_filter" not in st.session_state:
     st.session_state["risks_filter"] = "all"
 
+# Spec calls for four severity tiles. All four render even when N=0.
 FILTERS = [
-    ("all",         "TOTAL FLAGS",       len(risks) + len(trend_alerts) + len(interactions),
-     "across all sources"),
-    ("critical",    "OUT OF LAB RANGE",  len(critical),    "needs clinical attention"),
-    ("suboptimal",  "SUBOPTIMAL",        len(suboptimal),  "within lab, outside optimal"),
-    ("trends",      "ADVERSE TRENDS",    len(trend_alerts), ">15% move wrong way"),
-    ("interactions", "INTERACTIONS",     len(interactions),
-     f"{len(high_severity_int)} high severity"),
-    ("latest",      "LATEST DRAW",
-     latest_df["date"].iloc[0].strftime("%b %d") if not latest_df.empty else "—",
-     f"{(pd.Timestamp('2026-05-25') - latest_df['date'].iloc[0]).days}d ago"
-     if not latest_df.empty else ""),
+    ("critical",      f"🔴 Out of Range ({len(critical)})",    len(critical)),
+    ("suboptimal",    f"🟡 Suboptimal ({len(suboptimal)})",    len(suboptimal)),
+    ("optimal",       f"🟢 Optimal ({optimal_count})",          optimal_count),
+    ("informational", f"ℹ️ Informational ({informational_count})", informational_count),
 ]
 
-cols = st.columns(6)
-for col, (fid, label, value, delta) in zip(cols, FILTERS):
+cols = st.columns(4)
+for col, (fid, label, value) in zip(cols, FILTERS):
     with col:
         active = (st.session_state["risks_filter"] == fid)
-        btn_label = f"{'● ' if active else ''}{label}\n{value}\n{delta}"
+        btn_label = f"{'● ' if active else ''}{label}"
         if st.button(btn_label, key=f"risks_kpi_{fid}", use_container_width=True):
-            st.session_state["risks_filter"] = (
-                "all" if active and fid != "latest" else fid
-            )
+            st.session_state["risks_filter"] = "all" if active else fid
             st.rerun()
 
 active_filter = st.session_state["risks_filter"]
@@ -224,8 +282,8 @@ if active_filter != "all":
     tab_hint = {
         "critical": "🚩 Out-of-Range",
         "suboptimal": "🚩 Out-of-Range",
-        "trends": "📈 Adverse Trends",
-        "interactions": "⚠️ Interactions",
+        "optimal": "🚩 Out-of-Range",
+        "informational": "🚩 Out-of-Range",
     }.get(active_filter, "")
     msg = f"Filtered to **{label_map.get(active_filter, active_filter)}**"
     if tab_hint:
@@ -248,20 +306,29 @@ with tab_oor:
         oor_view = critical
     elif active_filter == "suboptimal":
         oor_view = suboptimal
+    elif active_filter in ("optimal", "informational"):
+        oor_view = []  # Optimal / Informational have no flag rows to enumerate here.
     else:
         oor_view = risks
 
     if not oor_view:
-        st.success("All measured biomarkers are within optimal range for this filter.")
+        if active_filter == "optimal":
+            st.success(f"{optimal_count} biomarker(s) are within optimal range. Click the tile again to view all flags.")
+        elif active_filter == "informational":
+            st.info(f"{informational_count} biomarker(s) lack a defined reference range — informational only.")
+        else:
+            st.success("All measured biomarkers are within optimal range for this filter.")
     else:
-        # Group by panel (category) — collapsible sections with count badge
-        by_panel: dict[str, list] = {}
+        # Group by canonical spec category — Cardiovascular / Metabolic / Hormonal /
+        # Inflammatory / Performance / Other — independent of source CSV panel strings.
+        by_category: dict[str, list] = {}
         for r in oor_view:
-            by_panel.setdefault(r["panel"] or "Other", []).append(r)
-        panel_order = sorted(by_panel.keys(), key=lambda p: -len(by_panel[p]))
+            by_category.setdefault(r["category"], []).append(r)
+        # Render in spec order, but skip empties.
+        category_order = [c for c in CANON_CATEGORIES if c in by_category]
 
-        for panel_name in panel_order:
-            panel_risks = by_panel[panel_name]
+        for panel_name in category_order:
+            panel_risks = by_category[panel_name]
             with st.expander(f"**{panel_name}** — {len(panel_risks)} flag(s)", expanded=True):
                 for r in panel_risks:
                     severity_color = COLORS["danger"] if "out_of_range" in r["status"] else COLORS["warning"]

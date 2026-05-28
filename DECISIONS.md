@@ -225,3 +225,79 @@ These are recorded so future contributors stay consistent:
 
 *Generated as part of the `feat/protocl-v2-revisions` branch — see the PR for
 the full implementation diff.*
+
+
+---
+
+## v2.0 remediation (feat/protocl-v2-remediation)
+
+Focused follow-up to PR #2 (squash 4022b9f) closing the seven ⚠️ partial items
+called out in `protocl_v2_audit.md`. Scope was intentionally narrow — label/
+content drift from spec + missing coverage inside already-implemented
+features. No new dependencies; no behavioral changes outside the seven
+audited items.
+
+### Fix list
+
+1. **Risks & Alerts tile labels + canonical taxonomy** — replaced 6 KPI
+   tiles with the spec's 4 (`🔴 Out of Range / 🟡 Suboptimal / 🟢 Optimal /
+   ℹ️ Informational`) rendered with emoji + count, all four shown even when
+   N=0. Flag grouping now uses a stable canonical taxonomy independent of
+   source CSV `panel` strings.
+2. **LLM badge on Settings + Integrations** — `llm_badge()` added to both
+   page headers.
+3. **Data export "All data" + per-CSV downloads** — added "📦 All data"
+   sentinel to the multiselect (auto-selects every category) and a row of
+   per-category download buttons below the ZIP button.
+4. **Clinician summary — three missing sections + split recovery** — added
+   Medications, Risks & Alerts, and Patient Notes sections; split the
+   merged "Recovery & Cardio Dose" into spec's "Vital Signs & Wearables"
+   and "Training & Performance".
+5. **Sources Informing Design expanders** — added to the bottom of
+   `09_training_activity.py`, `10_zone2_vo2max.py`, and `11_protocol.py`
+   with real, page-specific citations.
+6. **Persona definitions as a table** — `st.table` with `Persona | Focus`
+   columns in `18_settings.py`.
+7. **Privacy disclaimer — AI/LLM + experimental-science callouts** — added
+   two short sections to `reference/disclaimer.md` covering hallucination
+   risk and the research-grade status of PhenoAge / Z2 / optimal ranges /
+   TRT / peptides.
+
+### Risks & Alerts — canonical category mapping
+
+This mapping is the authoritative panel-or-biomarker → spec category lookup
+used by `protocl/pages/14_risks_alerts.py`. It is intentionally lookup-based
+rather than CSV-driven so the page does not silently drift if a lab vendor
+relabels a panel.
+
+**Panel → category**
+
+| Source panel       | Canonical category |
+|--------------------|--------------------|
+| `lipids`           | Cardiovascular     |
+| `cardiovascular`   | Cardiovascular     |
+| `glucose_insulin`  | Metabolic          |
+| `hormones`         | Hormonal           |
+| `thyroid`          | Hormonal           |
+| `inflammation`     | Inflammatory       |
+| `liver`            | Other              |
+| `kidney`           | Other              |
+| `hematology`       | Other              |
+| `vitamins_minerals`| Other              |
+
+**Specific biomarker overrides** (applied first; covers any case where the
+panel mapping would land on `Other` but the biomarker has a clearer home):
+
+- **Cardiovascular** — `ldl_c_mg_dl`, `hdl_c_mg_dl`, `apob_mg_dl`,
+  `lp_a_nmol_l`, `triglycerides_mg_dl`, `total_cholesterol_mg_dl`
+- **Metabolic** — `glucose_mg_dl`, `hba1c_pct`, `fasting_insulin_uiu_ml`,
+  `homa_ir`
+- **Hormonal** — `testosterone_total_ng_dl`, `testosterone_free_pg_ml`,
+  `estradiol_pg_ml`, `cortisol_ug_dl`, `tsh_uiu_ml`, `free_t3_pg_ml`,
+  `free_t4_ng_dl`, `dhea_s_ug_dl`, `shbg_nmol_l`, `progesterone_ng_ml`
+- **Inflammatory** — `hscrp_mg_l`, `il_6_pg_ml`, `ferritin_ng_ml`
+- **Performance** — `vo2max_ml_kg_min`, `hrv_sdnn_ms`, `resting_hr_bpm`
+
+Anything not matched above falls to **Other**. Performance category will
+generally only see flags once VO₂max and HRV start showing up in the
+bloodwork table; until then it stays empty by design.
