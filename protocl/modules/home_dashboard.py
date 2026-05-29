@@ -851,7 +851,114 @@ def render_row_clinician(data: HealthData, prefs: dict) -> None:
 # Orchestrator
 # ────────────────────────────────────────────────────────────────────────────
 
+def render_row_watchlist(data: HealthData, prefs: dict) -> None:
+    """v3.1 — Today's Watchlist (top-of-Home alerts banner).
+
+    Groups by severity and shows top 5; deep-links to full alerts page.
+    """
+    from modules.alerts import (
+        SEVERITY_CRITICAL,
+        SEVERITY_WARNING,
+        SEVERITY_INFO,
+        dismiss_alert,
+        evaluate_all_alerts,
+        group_by_severity,
+        snooze_alert,
+    )
+
+    overrides = ((prefs or {}).get("alerts") or {}).get("thresholds") or {}
+    toggles = ((prefs or {}).get("alerts") or {}).get("categories") or {}
+
+    alerts = evaluate_all_alerts(overrides=overrides, category_toggles=toggles)
+    grouped = group_by_severity(alerts)
+    total = sum(len(v) for v in grouped.values())
+
+    st.markdown('<div class="home-row">', unsafe_allow_html=True)
+    st.markdown("#### Today's Watchlist")
+
+    if total == 0:
+        st.markdown(
+            '<div class="alert-banner-nominal">✓ All systems clear — no active alerts.</div>',
+            unsafe_allow_html=True,
+        )
+        st.markdown('</div>', unsafe_allow_html=True)
+        return
+
+    sev_color = {
+        SEVERITY_CRITICAL: COLORS["danger"],
+        SEVERITY_WARNING:  COLORS["warning"],
+        SEVERITY_INFO:     COLORS["chart_series"][0],
+    }
+    shown = 0
+    for sev in (SEVERITY_CRITICAL, SEVERITY_WARNING, SEVERITY_INFO):
+        for a in grouped.get(sev, []):
+            if shown >= 5:
+                break
+            shown += 1
+            color = sev_color[sev]
+            cols = st.columns([0.4, 5, 1, 1])
+            with cols[0]:
+                st.markdown(
+                    f"<div style='width:14px;height:14px;border-radius:50%;"
+                    f"background:{color};margin-top:8px;'></div>",
+                    unsafe_allow_html=True,
+                )
+            with cols[1]:
+                st.markdown(f"**{a.title}** — {a.body}")
+            with cols[2]:
+                if st.button("Snooze 1d", key=f"watch_sn_{a.id}"):
+                    snooze_alert(a.id, days=1); st.rerun()
+            with cols[3]:
+                if st.button("Dismiss", key=f"watch_dis_{a.id}"):
+                    dismiss_alert(a.id); st.rerun()
+            if shown >= 5: break
+
+    if total > 5:
+        page_link("alerts", label=f"See all ({total}) →")
+    st.markdown('</div>', unsafe_allow_html=True)
+
+
+def render_row_morning_journal(data: HealthData, prefs: dict) -> None:
+    """v3.0 A10 — 3-tap morning subjective journal (Mood/Fatigue/Soreness).
+
+    Only renders 5am–noon local time; collapses to a checkmark once today's
+    entry is logged.
+    """
+    from datetime import datetime
+    from modules.sleep_data import has_journal_entry_today, write_journal_entry
+
+    hour = datetime.now().hour
+    if hour < 5 or hour >= 12:
+        return  # outside morning window
+
+    today_iso = datetime.now().date().isoformat()
+    st.markdown('<div class="home-row">', unsafe_allow_html=True)
+    st.markdown("#### Morning check-in")
+
+    if has_journal_entry_today(today_iso):
+        st.success("Today's check-in logged ✓")
+        st.markdown('</div>', unsafe_allow_html=True)
+        return
+
+    with st.form("morning_journal"):
+        c1, c2, c3 = st.columns(3)
+        with c1:
+            mood = st.slider("Mood", 1, 5, 3)
+        with c2:
+            fatigue = st.slider("Fatigue", 1, 5, 3)
+        with c3:
+            soreness = st.slider("Soreness", 1, 5, 3)
+        notes = st.text_input("Notes (optional)")
+        if st.form_submit_button("Log check-in"):
+            write_journal_entry(today_iso, mood, fatigue, soreness, notes)
+            st.success("Logged.")
+            st.rerun()
+    st.markdown('</div>', unsafe_allow_html=True)
+
+
 ROW_RENDERERS: dict[str, Callable[[HealthData, dict], None]] = {
+    "watchlist":       render_row_watchlist,
+    "morning_journal": render_row_morning_journal,
     "status":          render_row_status,
     "alerts":          render_row_alerts,
     "attention":       render_row_attention,
