@@ -47,6 +47,78 @@ time via **Actions → Protocōl — Nightly data snapshot → Run workflow**.
 
 ---
 
+## v3.0 + v3.1 features
+
+### 🌙 Sleep (v3.0)
+
+Bevel-quality sleep coaching tuned to Ryan's TRT + peptide + Anavar +
+Retatrutide protocol. The new **Sleep** nav group hosts a single page
+with:
+
+- **Today's verdict** — transparent 0–100 sleep score with a "see formula"
+  expander showing the weighted blend (Duration 40 / Depth-Quality 30 /
+  HRV 20 / Consistency 10) and the verdict thresholds.
+- **Sleep need calculator** — personalized 8h baseline adjusted by
+  training strain, HRV trend, illness signals, travel, and carryover
+  debt; the UI explains every adjustment.
+- **7-night score trend + sleep-debt accumulator** running 7d cumulative
+  deficit vs. need.
+- **Stage breakdown** for last night + multi-line stage trends across
+  the selected window, HRV / RHR overnight charts with 7d rolling mean +
+  28d baseline reference line, consistency scatter.
+- **Hypnogram drilldown** in an expander (HealthKit ships per-night stage
+  durations; the page renders an approximate cyclic pattern with a
+  clearly-labeled caveat).
+- **Wind-down plan** with peptide-aware timing (CJC-1295+Ipam 30 min
+  before bed empty stomach) and caffeine cutoff derived from a 5.5h
+  half-life curve.
+- **Smart-alarm window** — 90-min cycle approximation, ±18/12 min wake band.
+- **Stress-Sleep correlation view** — Pearson r vs next-day HRV across
+  sleep components and subjective journal fields.
+- **Protocol overlays** — sleep score on TRT days vs non-TRT days,
+  Retatrutide-day cycle, etc.
+- **3-tap morning journal** on Home (5am–noon local) — Mood / Fatigue /
+  Soreness sliders persisted to `data/<user>/sleep_journal.csv`.
+
+Data sources: `wearables.csv` (Apple Health), `sleep_journal.csv`,
+`caffeine_log.csv`. All formulas live in `modules/sleep_score.py`,
+`modules/sleep_need.py`, `modules/sleep_data.py`, `modules/caffeine.py`
+and are unit-tested.
+
+### 🚨 Alerts (v3.1)
+
+A dedicated alerts engine + dispatcher:
+
+- **Home banner** — "Today's Watchlist" strip at the top of Home with
+  the top 5 active alerts grouped by severity (Critical / Warning /
+  Info), inline snooze + dismiss.
+- **Alerts page** under the 🚨 Alerts nav group — full active list +
+  30-day history tab, per-alert evidence view.
+- **Evaluator catalog** (`modules/alerts.py`): bloodwork cadence (Q1
+  panel, quarterly draw, Anavar mid-cycle ALT/AST, Lp(a) one-shot),
+  biomarker thresholds (Hct, ALT, AST, ApoB, hs-CRP, sensitive E2),
+  supplement reorder days-remaining, protocol scheduling, data
+  freshness, sleep-specific (rolling debt, HRV z-score), calendar-aware.
+- **Inventory page** — `data/<user>/supplement_inventory.csv` editor +
+  decay logic; "Bootstrap from protocol.csv" pre-populates from the
+  active supplement stack.
+- **Settings → Alerts** — master toggle per category, per-biomarker
+  threshold overrides, digest cadence + day/time, bloodwork cadence
+  configuration.
+- **Weekly email digest** (`modules/notifications.py`) — Sunday 6pm MT,
+  markdown rendered to clean HTML, Gmail SMTP. **Safety gate:** the
+  inaugural digest is created as a Gmail draft via `create_draft()`
+  rather than sent; flip `first_digest_sent` in
+  `data/<user>/notifications_state.json` (or call
+  `mark_first_digest_reviewed()`) after reviewing.
+- **Urgent alert path** — `send_urgent_alert()` fires same-day for new
+  critical alerts, with 12h dedupe.
+
+Cron registration is reproducible from `scripts/schedule_weekly_digest.py`.
+Run it from Perplexity Computer manually after reviewing this PR.
+
+---
+
 ## Pages
 
 | # | Page | What it does |

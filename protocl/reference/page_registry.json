@@ -1,10 +1,13 @@
 {
   "groups": [
     { "id": "today",              "label": "Today",                 "icon": "🎯", "order": 1 },
-    { "id": "health_signals",     "label": "Health Signals",        "icon": "🧬", "order": 2 },
-    { "id": "performance",        "label": "Performance",           "icon": "💪", "order": 3 },
-    { "id": "protocol_insights",  "label": "Protocol & Insights",   "icon": "⚗️", "order": 4 },
-    { "id": "data_settings",      "label": "Data & Settings",       "icon": "🛠",  "order": 5 }
+    { "id": "sleep",              "label": "Sleep",                 "icon": "🌙", "order": 2 },
+    { "id": "health_signals",     "label": "Health Signals",        "icon": "🧬", "order": 3 },
+    { "id": "performance",        "label": "Performance",           "icon": "💪", "order": 4 },
+    { "id": "protocol_insights",  "label": "Protocol & Insights",   "icon": "⚗️", "order": 5 },
+    { "id": "inventory",          "label": "Inventory",             "icon": "📦", "order": 6 },
+    { "id": "alerts_group",       "label": "Alerts",                "icon": "🚨", "order": 7 },
+    { "id": "data_settings",      "label": "Data & Settings",       "icon": "🛠",  "order": 8 }
   ],
   "pages": [
     { "id": "home",               "title": "Home",               "icon": "🏠", "module": "pages/01_home.py",               "group": "today",             "order": 1,  "default_visible": true, "personas": ["performance", "longevity", "clinical"] },
@@ -26,6 +29,9 @@
     { "id": "timeline",           "title": "Timeline",           "icon": "📅", "module": "pages/16_timeline.py",           "group": "data_settings",     "order": 16, "default_visible": true, "personas": ["longevity", "clinical"] },
     { "id": "imports",            "title": "Import Center",      "icon": "📥", "module": "pages/17_imports.py",            "group": "data_settings",     "order": 17, "default_visible": true, "personas": ["performance", "longevity", "clinical"] },
     { "id": "settings",           "title": "Settings",           "icon": "⚙",  "module": "pages/18_settings.py",           "group": "data_settings",     "order": 18, "default_visible": true, "personas": ["performance", "longevity", "clinical"] },
-    { "id": "integrations",       "title": "Integrations",       "icon": "🔌", "module": "pages/19_integrations.py",       "group": "data_settings",     "order": 19, "default_visible": true, "personas": ["performance", "longevity", "clinical"] }
+    { "id": "integrations",       "title": "Integrations",       "icon": "🔌", "module": "pages/19_integrations.py",       "group": "data_settings",     "order": 19, "default_visible": true, "personas": ["performance", "longevity", "clinical"] },
+    { "id": "sleep",              "title": "Sleep",              "icon": "🌙", "module": "pages/20_sleep.py",              "group": "sleep",             "order": 20, "default_visible": true, "personas": ["performance", "longevity", "clinical"] },
+    { "id": "inventory",          "title": "Inventory",          "icon": "📦", "module": "pages/21_inventory.py",          "group": "inventory",         "order": 21, "default_visible": true, "personas": ["performance", "longevity", "clinical"] },
+    { "id": "alerts",             "title": "Alerts",             "icon": "🚨", "module": "pages/22_alerts.py",             "group": "alerts_group",      "order": 22, "default_visible": true, "personas": ["performance", "longevity", "clinical"] }
   ]
 }

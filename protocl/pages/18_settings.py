@@ -584,6 +584,89 @@ with st.expander("🛡 Privacy & Disclaimer", expanded=False):
 
 
 # ────────────────────────────────────────────────────────────────────────────
+# § 7b — Alerts (v3.1)
+# ────────────────────────────────────────────────────────────────────────────
+with st.expander("🚨 Alerts", expanded=False):
+    alerts_cfg = draft.setdefault("alerts", {})
+    cats = alerts_cfg.setdefault("categories", {})
+    thresholds = alerts_cfg.setdefault("thresholds", {})
+    digest = alerts_cfg.setdefault("digest", {
+        "enabled": True, "day_of_week": "Sunday", "time": "18:00", "timezone": "America/Denver"
+    })
+    cadence = alerts_cfg.setdefault("cadence", {
+        "q1_target_date": "2026-01-15",
+        "panel_cadence_days": 90,
+        "provider_preferences": "",
+    })
+
+    st.markdown("**Categories** — master toggle per evaluator group.")
+    cat_keys = [
+        ("bloodwork_cadence", "Bloodwork cadence"),
+        ("biomarker", "Biomarker thresholds"),
+        ("supplement", "Supplement reorders"),
+        ("protocol", "Protocol-tied scheduling"),
+        ("freshness", "Data freshness"),
+        ("sleep", "Sleep-specific"),
+        ("calendar", "Calendar-aware"),
+    ]
+    cat_cols = st.columns(3)
+    for idx, (key, label) in enumerate(cat_keys):
+        with cat_cols[idx % 3]:
+            cats[key] = st.checkbox(label, value=cats.get(key, True), key=f"cat_{key}")
+
+    st.divider()
+    st.markdown("**Biomarker thresholds** — override the defaults.")
+    bio_cols = st.columns(3)
+    overrides_defs = [
+        ("hct_pct_warn",   "Hct warn", 52),
+        ("hct_pct_crit",   "Hct crit", 54),
+        ("alt_u_l_warn",   "ALT warn", 40),
+        ("alt_u_l_crit",   "ALT crit", 60),
+        ("apob_mg_dl_warn", "ApoB warn", 80),
+        ("apob_mg_dl_crit", "ApoB crit", 100),
+        ("hscrp_mg_l_warn", "hs-CRP warn", 2),
+        ("hscrp_mg_l_crit", "hs-CRP crit", 5),
+    ]
+    for idx, (key, label, default) in enumerate(overrides_defs):
+        with bio_cols[idx % 3]:
+            thresholds[key] = st.number_input(label, min_value=0.0,
+                                              value=float(thresholds.get(key, default)),
+                                              step=0.5, key=f"bio_{key}")
+
+    st.divider()
+    st.markdown("**Email digest**")
+    digest["enabled"] = st.checkbox("Send weekly digest",
+                                     value=digest.get("enabled", True))
+    dd1, dd2, dd3 = st.columns(3)
+    with dd1:
+        days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
+        cur = digest.get("day_of_week", "Sunday")
+        digest["day_of_week"] = st.selectbox(
+            "Day", days, index=days.index(cur) if cur in days else 6)
+    with dd2:
+        digest["time"] = st.text_input("Time (24h)", value=digest.get("time", "18:00"))
+    with dd3:
+        digest["timezone"] = st.text_input("Timezone", value=digest.get("timezone", "America/Denver"))
+
+    st.divider()
+    st.markdown("**Bloodwork cadence**")
+    cc1, cc2, cc3 = st.columns(3)
+    with cc1:
+        cadence["q1_target_date"] = st.text_input(
+            "Q1 target date (YYYY-MM-DD)", value=cadence.get("q1_target_date", "2026-01-15"))
+    with cc2:
+        cadence["panel_cadence_days"] = st.number_input(
+            "Default panel cadence (days)", min_value=30, max_value=365,
+            value=int(cadence.get("panel_cadence_days", 90)), step=15)
+    with cc3:
+        cadence["provider_preferences"] = st.text_input(
+            "Provider preferences", value=cadence.get("provider_preferences", ""))
+
+    if st.button("Save alert settings", key="save_alerts_cfg"):
+        _commit_draft("Alert settings saved.")
+
+
+# ────────────────────────────────────────────────────────────────────────────
 # § 8 — Theme & Appearance
 # ────────────────────────────────────────────────────────────────────────────
 with st.expander("🎨 Theme & Appearance", expanded=False):

@@ -37,6 +37,7 @@ PERSONA_PRESETS: dict[str, dict[str, Any]] = {
             "training_activity", "strava_cycling", "zone2_vo2max",
             "protocol", "nof1_experiments", "recommendations",
             "timeline", "imports", "settings", "integrations",
+            "sleep", "inventory", "alerts",
         ],
         "pinned_biomarkers": [
             "apob_mg_dl", "hscrp_mg_l", "testosterone_free_pg_ml",
@@ -64,6 +65,7 @@ PERSONA_PRESETS: dict[str, dict[str, Any]] = {
             "biological_age",
             "protocol", "recommendations", "risks_alerts", "clinician_summary",
             "timeline", "imports", "settings", "integrations",
+            "sleep", "inventory", "alerts",
         ],
         "pinned_biomarkers": [
             "apob_mg_dl", "hba1c_pct", "egfr_ml_min", "alt_u_l", "hscrp_mg_l",
@@ -211,8 +213,8 @@ def home_rows_visible(prefs: dict[str, Any] | None = None) -> list[str]:
     prefs = prefs if prefs is not None else load_preferences()
     layout = prefs.get("home_layout", {}) or {}
     rows = list(layout.get("rows_visible") or [])
-    # Rows 1–3 (status / alerts / attention) are always on per spec §8.3.
-    for required in ("status", "alerts", "attention"):
+    # Always-on rows: v3.1 watchlist + morning_journal sit above status/alerts/attention.
+    for required in ("watchlist", "morning_journal", "status", "alerts", "attention"):
         if required not in rows:
             rows.insert(0, required)
     return rows
@@ -221,14 +223,15 @@ def home_rows_visible(prefs: dict[str, Any] | None = None) -> list[str]:
 def home_row_order(prefs: dict[str, Any] | None = None) -> list[str]:
     prefs = prefs if prefs is not None else load_preferences()
     layout = prefs.get("home_layout", {}) or {}
-    default = ["status", "alerts", "attention", "trends",
+    default = ["watchlist", "morning_journal",
+               "status", "alerts", "attention", "trends",
                "changes", "recommendations", "clinician"]
     order = list(layout.get("row_order") or default)
     # Ensure all default rows are present somewhere so a corrupt prefs file
     # never silently drops a critical row.
     for r in default:
         if r not in order:
-            order.append(r)
+            order.insert(0 if r in ("watchlist", "morning_journal") else len(order), r)
     return order
 
 

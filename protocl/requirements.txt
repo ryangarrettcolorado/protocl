@@ -17,5 +17,8 @@ pytesseract>=0.3.10
 pdf2image>=1.17.0
 # PDF generation for Clinician Summary export
 fpdf2>=2.7.0
+# v3.1 — markdown → HTML for weekly email digest. notifications.py has a
+# pure-stdlib fallback so this is technically optional, but cleaner with it.
+markdown>=3.5.0
 # Test runner (used by tests/ — not required at runtime)
 pytest>=8.0.0

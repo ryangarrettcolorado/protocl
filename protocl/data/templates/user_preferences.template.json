@@ -27,7 +27,10 @@
     "timeline",
     "imports",
     "settings",
-    "integrations"
+    "integrations",
+    "sleep",
+    "inventory",
+    "alerts"
   ],
   "home_layout": {
     "rows_visible": [
