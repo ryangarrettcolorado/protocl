@@ -386,3 +386,125 @@ A row is appended to `data/<user>/import_log.csv` with
 5. Decide whether Function-specific "optimal" ranges should override
    Protocōl's own `reference_ranges.csv` for the same biomarkers, or be
    stored alongside as a parallel column.
+
+---
+
+# v3.0 + v3.1 — Sleep + Alerts (branch `feat/protocl-v3-sleep-alerts`)
+
+Decisions made during the combined v3.0 Sleep + v3.1 Alerts implementation.
+
+## Sleep score formula (A1)
+
+**Chosen weights:** Duration 40% · Depth/Quality 30% · HRV 20% · Consistency 10%.
+
+**Rationale.** Sleep duration is the single most evidence-backed lever
+(AASM, CDC, Walker), so it gets the largest weight. Depth/REM are
+critical for recovery and memory consolidation but data quality from
+HealthKit is uneven; we down-weight to 30% to avoid penalizing nights
+where stage detection is noisy. HRV is a strong autonomic recovery
+signal but moves with many confounders (alcohol, illness, late meals)
+so 20% reflects "informative but not authoritative." Consistency
+matters chronically more than daily, hence the smaller 10% — it nudges
+behavior without dominating any single night's score.
+
+**Verdict thresholds:** ready ≥80 · moderate 60–79 · low <60. Aligned to
+Bevel/Whoop-style coaching language so the user reads the verdict before
+the number.
+
+## Sleep need adjustments (A2)
+
+**Adjustment magnitudes.**
+- Training strain (high)        +45 min
+- Training strain (moderate)    +30 min
+- HRV 7d down >5% vs 28d        +30 min
+- Illness/inflammation          +60 min
+- Travel detected               +30 min
+- Carryover sleep debt          +45 min
+
+All adjustments are additive on top of an 8h (480 min) base. Caps not
+enforced — if a user genuinely has six concurrent stressors, the recommendation
+to sleep extra is the correct one. The UI surfaces each adjustment with its
+reason so the user can sanity-check.
+
+## Email format (B5)
+
+**Markdown → HTML** rather than a templating engine. Reasons:
+1. Zero new dependencies if `markdown` is available; fpdf2-style fallback
+   otherwise.
+2. The digest is information-dense, not visually demanding — clean tables
+   and bullets read fine without custom styling.
+3. Easy for the user to copy chunks into a journal or notes app.
+4. Templating engines add complexity that pays off only when you have
+   marketing-style assets. We don't.
+
+## DST handling for the weekly cron (B5)
+
+Cron expression: `0 1 * * 1` (Sunday 01:00 UTC). This is:
+- Sunday **18:00 MST** (winter, UTC-7) — desired
+- Sunday **19:00 MDT** (summer, UTC-6) — fires one hour late
+
+Acceptable tradeoff vs. running two crons gated by month-of-year. Ryan
+gets a small calendar reminder before each DST transition to confirm
+nothing drifted; if the +1hr shift is annoying we'll switch to a
+two-cron setup later. `scripts/schedule_weekly_digest.py` documents
+both options.
+
+## "First digest is a draft" safety mechanism (B5)
+
+The inaugural weekly digest is created as a Gmail draft via
+`create_draft()` rather than sent through SMTP. The gate lives in
+`data/<user>/notifications_state.json` under `first_digest_sent: bool`.
+After Ryan reviews the draft and is happy, he flips the gate with
+`mark_first_digest_reviewed()` (one-shot from a Python REPL) and all
+subsequent Sunday digests send live. This prevents a misconfigured
+template, a wrong recipient, or a runaway alert evaluator from blasting
+out a bad email before Ryan has a chance to see it.
+
+## Hypnogram drilldown placement (A4)
+
+**Decision: same page as the dashboard, inside an expander** rather than
+a separate `pages/20a_sleep_night.py`.
+
+Reasons: (a) HealthKit reports per-night stage durations rather than
+minute-level, so the drilldown can't show much more than the dashboard
+already does; (b) keeping it in an expander avoids nav clutter and the
+need to remember a separate URL; (c) the expander pattern matches
+how N=1 experiments and protocol entries already work.
+
+If we eventually ingest minute-level Apple Watch sleep events
+(third-party tools like AutoSleep can export them) we'll upgrade the
+expander into a tab or a dedicated sub-page.
+
+## Single-user mode (cross-cutting)
+
+Confirmed: v3.0 + v3.1 do NOT parameterize by user_id beyond what
+already exists in `data_loader.py` (which keys directories by user but
+hard-codes `DEFAULT_USER = "ryan"`). Multi-user/family scoping is
+explicitly v3.2 and the alerts state files (`alerts_state.json`,
+`notifications_state.json`) live inside `data/ryan/` to match.
+
+## Cron registration not auto-fired
+
+`scripts/schedule_weekly_digest.py` is committed for reproducibility but
+the cron itself is NOT registered from inside the autonomous build.
+Ryan registers it manually after PR review. Reason: a misconfigured
+schedule would silently fire incorrect digests until killed; a one-line
+manual step is cheap insurance.
+
+## Deferred from this release
+
+- **Jet Lag Protocol Generator** — explicitly out of scope per spec
+  cross-cutting constraints. Calendar travel detection in
+  `evaluate_travel_detected()` is wired but doesn't yet generate the
+  jet-lag plan.
+- **LLM recommendation engine** — v3.3. Weekly digest §Recommendations
+  surfaces deterministic alerts-derived items rather than calling out
+  to an LLM.
+- **Multi-user / family scoping** — v3.2.
+- **Real Apple HealthKit minute-level event ingest** — depends on
+  upstream tooling. v3.0 reads stage durations from `wearables.csv`
+  and renders an approximate cyclic pattern for the hypnogram.
+- **Live Google Calendar connector** — `evaluate_travel_detected` and
+  the wind-down plan A5 currently fall back to default wake time. The
+  calendar adapter is a v3.2 prerequisite.
+
