@@ -44,6 +44,25 @@ def should_skip_hr() -> tuple[bool, str]:
     return False, ""
 
 
+def run_orchestrated_sync() -> None:
+    """v3.5 — fan the daily sync out across every opted-in beta user.
+
+    Iterates the allowlist, honours each user's per-source ``auto_sync`` opt-in,
+    isolates per-source failures, enforces the daily run cap, and logs to
+    ``data/shared/sync_log.csv``. Import is local so the owner-only Strava flow
+    above still works even if Streamlit/app deps are unavailable.
+    """
+    sys.path.insert(0, str(REPO_ROOT))
+    from modules.sync_orchestrator import run_daily_sync_for_all_profiles
+
+    print(f"\n{'='*60}\nOrchestrated per-user sync\n{'='*60}")
+    report = run_daily_sync_for_all_profiles()
+    print(
+        f"Sync runs: {report.runs_used} · ok: {report.ok_count} · "
+        f"errors: {report.error_count} · budget_reached: {report.budget_reached}"
+    )
+
+
 if __name__ == "__main__":
     rc1 = run("load_strava.py")
     rc2 = run("dedupe_cycling.py")
@@ -54,6 +73,12 @@ if __name__ == "__main__":
         rc3 = 0
     else:
         rc3 = run("enrich_cycling_hr.py")
+
+    # v3.5 — fan out to all opted-in beta users (error-isolated, capped).
+    try:
+        run_orchestrated_sync()
+    except Exception as exc:  # never let the fan-out break the owner's sync
+        print(f"WARNING: orchestrated sync failed: {exc}")
 
     if any(rc != 0 for rc in (rc1, rc2, rc3)):
         print(f"\nWARNING: One or more scripts had non-zero exit: {rc1=}, {rc2=}, {rc3=}")

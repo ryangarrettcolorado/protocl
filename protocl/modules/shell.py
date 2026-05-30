@@ -36,8 +36,16 @@ def _render_consent_gate(store: ProfileStorage) -> None:
         "improve the app. I can revoke this anytime in Settings. (optional)",
         key="_consent_owner_vis",
     )
+    analytics = st.checkbox(
+        "Allow anonymized usage analytics to help improve Protocōl. No identifying "
+        "data leaves your profile. I can turn this off anytime in Settings. (optional)",
+        value=True,
+        key="_consent_analytics",
+    )
     if st.button("Continue", type="primary", disabled=not privacy):
         consent.record_consent(privacy_accepted=True, owner_visibility=owner_vis, store=store)
+        from modules import user_prefs
+        user_prefs.set_analytics_consent(bool(analytics), store)
         st.rerun()
     if not privacy:
         st.caption("The first box is required to continue.")
@@ -59,17 +67,41 @@ def boot() -> auth.Principal:
 
     auth.render_impersonation_banner()
     _render_sidebar(principal)
+
+    # v3.6 — open this render's session BEFORE the NPS check so the modal can
+    # fire on the user's literal 7th distinct session_start (not the 8th render).
+    try:
+        from modules import events
+        events.maybe_start_session(store)
+    except Exception:
+        pass
+
+    # v3.6 — one-tap NPS micro-survey at the 7th/30th/60th session. No-op when
+    # the user opted out of analytics or isn't yet due.
+    try:
+        from modules import nps
+        nps.maybe_render_modal(store)
+    except Exception:
+        pass
+
     return principal
 
 
 def _render_sidebar(principal: auth.Principal) -> None:
-    import feedback
+    from modules import changelog
+    from modules import feedback_v2 as feedback
 
     with st.sidebar:
         st.caption(f"Signed in: {st.session_state.get('display_name', principal.display_name)}")
     feedback.render_sidebar_widget(current_page=_current_page_label())
     auth.logout_button()
     with st.sidebar:
+        try:
+            unseen = changelog.has_unseen(ProfileStorage())
+        except Exception:
+            unseen = False
+        label = "What's new" + (" 🔴" if unseen else "")
+        st.page_link("pages/96_whats_new.py", label=label, icon="📣")
         st.page_link("pages/99_privacy.py", label="Privacy notice", icon="🔒")
 
 

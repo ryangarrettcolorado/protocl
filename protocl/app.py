@@ -46,4 +46,41 @@ apply_density(appearance_cfg.get("density", "comfortable"))
 render_top_brand()
 
 pg = build_navigation()
-pg.run()
+
+# v3.5 — wrap page execution in error capture: log + show a friendly page
+# instead of a raw traceback. v3.6 — track each page render as a page_view.
+# (session_start is opened earlier in shell.boot, before the NPS check, so the
+# survey can fire on the literal 7th session.)
+try:
+    from modules import events
+    from storage import ProfileStorage as _PS
+    _store = _PS()
+    events.track("page_view", page=getattr(pg, "url_path", "") or "", store=_store)
+except Exception:
+    pass
+
+try:
+    pg.run()
+except Exception as _exc:  # noqa: BLE001 — last-resort page guard
+    from modules import error_capture
+    from storage import ProfileStorage as _PS
+
+    _pid = st.session_state.get("profile_id", "") or ""
+    _page = getattr(pg, "url_path", "") or ""
+    error_capture.capture_error(_exc, page=_page, profile_id=_pid)
+
+    st.error("Something went wrong. We've been notified.")
+    st.caption("You can keep using the rest of the app, or send Ryan what happened.")
+    if st.button("Send context to Ryan"):
+        try:
+            from modules import feedback_v2
+            feedback_v2.submit_structured(
+                sentiment="negative",
+                expected="",
+                improvement=f"[auto] error on {_page}: {type(_exc).__name__}: {_exc}",
+                page=_page,
+                store=_PS(),
+            )
+            st.success("Thanks — context sent.")
+        except Exception:
+            st.warning("Couldn't send automatically. Use the feedback widget in the sidebar.")

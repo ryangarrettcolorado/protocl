@@ -38,6 +38,11 @@
     { "id": "admin_feedback",     "title": "Feedback",           "icon": "💬", "module": "pages/31_admin_feedback.py",     "group": "admin",             "order": 31, "default_visible": true, "owner_only": true, "personas": ["performance", "longevity", "clinical"] },
     { "id": "admin_audit_log",    "title": "Audit Log",          "icon": "📜", "module": "pages/32_admin_audit_log.py",    "group": "admin",             "order": 32, "default_visible": true, "owner_only": true, "personas": ["performance", "longevity", "clinical"] },
     { "id": "admin_llm_costs",    "title": "LLM Costs",          "icon": "💸", "module": "pages/33_admin_llm_costs.py",    "group": "admin",             "order": 33, "default_visible": true, "owner_only": true, "personas": ["performance", "longevity", "clinical"] },
+    { "id": "admin_errors",       "title": "Errors",             "icon": "🐞", "module": "pages/34_admin_errors.py",       "group": "admin",             "order": 34, "default_visible": true, "owner_only": true, "personas": ["performance", "longevity", "clinical"] },
+    { "id": "admin_nps",          "title": "NPS",                "icon": "📈", "module": "pages/35_admin_nps.py",          "group": "admin",             "order": 35, "default_visible": true, "owner_only": true, "personas": ["performance", "longevity", "clinical"] },
+    { "id": "admin_analytics",    "title": "Analytics",          "icon": "📊", "module": "pages/36_admin_analytics.py",    "group": "admin",             "order": 36, "default_visible": true, "owner_only": true, "personas": ["performance", "longevity", "clinical"] },
+    { "id": "settings_privacy",   "title": "Account & Privacy",  "icon": "🗝", "module": "pages/95_settings_privacy.py",   "group": "data_settings",     "order": 95, "default_visible": true, "personas": ["performance", "longevity", "clinical"] },
+    { "id": "whats_new",          "title": "What's New",         "icon": "📣", "module": "pages/96_whats_new.py",          "group": "data_settings",     "order": 96, "default_visible": true, "personas": ["performance", "longevity", "clinical"] },
     { "id": "privacy",            "title": "Privacy",            "icon": "🔒", "module": "pages/99_privacy.py",            "group": "data_settings",     "order": 99, "default_visible": true, "personas": ["performance", "longevity", "clinical"] }
   ]
 }

@@ -407,6 +407,62 @@ never renders and no locked cards appear: his experience is unchanged.
 
 ---
 
+## v3.5 Pre-Share Blockers + v3.6 Learning Loop
+
+Everything needed before — and to learn from — the 5-friend beta. Full notes in
+`docs/v3_5_blockers.md` and `docs/v3_6_learning_loop.md`. **No LLM calls**, and
+all per-user data still flows through `ProfileStorage`.
+
+- **Account deletion** — *Settings → Privacy* lets any beta user delete their
+  account in two steps. Data is soft-deleted to `data/deleted/<id>_<ts>.zip` for
+  90 days; shared logs are PII-scrubbed (id → `deleted_<hash8>`) but rows are
+  kept for audit. Owner accounts can't be self-deleted.
+- **Per-user auto-sync** — `modules/sync_orchestrator.py` syncs every opted-in
+  beta user; one user's failure can't block another; capped at 50 runs/day.
+- **In-app changelog** — `pages/96_whats_new.py` renders `CHANGELOG.md` with a
+  nav badge + Home banner for unseen versions.
+- **Error monitoring** — `modules/error_capture.py` logs to
+  `data/shared/error_log.csv` (dedup by traceback hash); owner sees them on
+  `pages/34_admin_errors.py`.
+- **Event tracking** — anonymized, opt-in (`modules/events.py`).
+- **Structured feedback + NPS + drop-off + owner analytics** — see the v3.6 doc.
+
+### Enabling auto-sync for beta users
+
+Auto-sync is **off by default**. A user enables it per source under
+*Settings → Connections* ("Enable daily auto-sync" for Strava / Apple Health),
+which sets `auto_sync` in their `preferences.json`. The daily cron
+(`scripts/daily_sync.py`) then calls
+`sync_orchestrator.run_daily_sync_for_all_profiles()`, which fans out across all
+opted-in users with per-source error isolation and a 50-run/day cap.
+
+### Registering the error-digest and drop-off crons
+
+These cron registration scripts are **saved but never auto-executed** — the
+owner runs them manually after editing the placeholder repo path inside each:
+
+```bash
+# Daily 7am MT error digest (emails the owner only when there are errors)
+python scripts/register_error_digest_cron.py
+
+# Daily 8am MT drop-off detector (7/14/30-day nudge / notify / auto-pause)
+python scripts/register_dropoff_cron.py
+```
+
+Each prints the crontab line it would install; add it to your scheduler. The
+runners themselves (`scripts/error_digest.py`, `scripts/dropoff_detector.py`)
+can be invoked directly for a one-off run.
+
+### Analytics opt-out
+
+Usage analytics is anonymized and opt-in (default on, set at signup via the
+third consent checkbox). Turn it off anytime under *Settings → Privacy* — when
+off, nothing is recorded, not even the anonymized daily roll-up. The shared
+roll-up `data/shared/event_rollup_daily.csv` only ever contains
+`date, event_name, count` (no `profile_id`).
+
+---
+
 ## Sessions
 
 Build broken into 4 sessions from one master prompt:
