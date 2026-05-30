@@ -12,6 +12,7 @@ from modules.data_loader import refresh_data
 from modules.freshness import render_freshness_strip
 from modules.home_dashboard import render_home
 from modules.preferences import load_preferences, profile
+from modules.setup_hero import render_setup_hero
 from modules.theme import inject_css
 
 
@@ -29,6 +30,10 @@ with col_title:
 with col_refresh:
     if st.button("🔄 Refresh", use_container_width=True):
         refresh_data()
+
+# v3.4 — adaptive setup hero. Renders only while coverage < 50% and not snoozed;
+# the owner's rich data keeps coverage ≥ 50%, so this is a no-op for him.
+render_setup_hero()
 
 render_freshness_strip()
 

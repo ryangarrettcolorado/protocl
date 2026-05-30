@@ -371,6 +371,42 @@ realistic onboarding data (copied from `data/samples/`).
 
 ---
 
+## v3.4 Adaptive UI (Minimal)
+
+So that fresh beta users never land on a screen of empty charts, the app
+curates each section based on how much data the profile actually has. This is
+pure UX state logic — **no LLM calls**.
+
+- **Data presence registry** (`modules/data_presence.py`) — one `DataSource`
+  entry per data type. Helpers resolve a source to a state:
+  - `visibility_state(key)` → `active` (enough rows for a trend) · `stub`
+    (some data, not enough for a trend) · `hidden` (no data).
+  - `freshness_state(key)` → `fresh` · `stale` · `missing` (presence + recency).
+  - `data_coverage_pct()` → 0–100, weighted by importance (bloodwork=3;
+    wearables/training/inbody=2; everything else=1).
+- **Locked cards** (`modules/locked_section.py`) — a missing section renders a
+  single "unlock" card with a CTA instead of an empty chart. Dismissible per
+  source for 30 days (`dismissed_nudges.json`).
+- **Add-data modals** (`modules/add_data_modal.py`) — per-source `st.dialog`
+  that *reuses* existing import flows (lab-PDF parser, CSV uploader, connector
+  status, manual forms) — no new connectors.
+- **Setup hero** (`modules/setup_hero.py`) — Home shows a progress hero while
+  coverage `< 50%`. Snoozable for 14 days; resurfaces on a 25%/50% milestone
+  crossing; never renders at `≥ 50%`.
+- **Settings toggle** — *Settings → Theme & Appearance → "Show all sections
+  (even empty ones)"*. Default **off** for beta users, **on** for the owner.
+  When on, `visibility_state()` returns `active` everywhere so empty-state
+  messaging renders instead of hiding.
+
+**Reference implementations:** Home (`pages/01_home.py`) and Bloodwork
+(`pages/04_bloodwork.py`). The remaining 22 pages are intentionally untouched
+and roll out post-beta (see the PR's follow-up TODO).
+
+The **owner** (Ryan) has rich data — coverage stays `≥ 50%` — so the hero
+never renders and no locked cards appear: his experience is unchanged.
+
+---
+
 ## Sessions
 
 Build broken into 4 sessions from one master prompt:

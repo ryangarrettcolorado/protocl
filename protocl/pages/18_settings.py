@@ -729,6 +729,19 @@ with st.expander("🎨 Theme & Appearance", expanded=False):
         horizontal=True,
     )
 
+    st.divider()
+    # v3.4 — Adaptive UI. When OFF (default for beta users), sections with no
+    # data are hidden and replaced with an "unlock" card; when ON (default for
+    # the owner), every section renders with empty-state messaging.
+    _is_owner = st.session_state.get("role") == "owner"
+    _show_empty_default = bool(appearance.get("show_empty_sections", _is_owner))
+    appearance["show_empty_sections"] = st.toggle(
+        "Show all sections (even empty ones)",
+        value=_show_empty_default,
+        help="Off (default): empty charts are hidden behind an 'unlock' card. "
+             "On: every section renders, with empty-state messaging.",
+    )
+
     if st.button("Save appearance", key="save_appearance"):
         _commit_draft("Appearance saved. Reload to see density changes everywhere.")
 
