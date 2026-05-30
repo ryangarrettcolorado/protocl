@@ -197,6 +197,12 @@ def visible_page_ids(prefs: dict[str, Any] | None = None) -> set[str]:
     prefs = prefs if prefs is not None else load_preferences()
     visible = set(prefs.get("visible_pages", []))
     visible.add("settings")  # never hidable
+    # v3.2/v3.3 system pages are always available (admin pages are further
+    # gated to the owner role inside modules.nav.build_navigation).
+    visible.update({
+        "privacy",
+        "admin_beta_overview", "admin_feedback", "admin_audit_log", "admin_llm_costs",
+    })
     return visible
 
 

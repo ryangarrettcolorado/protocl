@@ -17,6 +17,8 @@ ENV/
 
 # Streamlit secrets — NEVER COMMIT
 .streamlit/secrets.toml
+**/.streamlit/secrets.toml
+secrets.toml
 
 # Environment files
 .env
@@ -50,3 +52,8 @@ dist/
 # Raw connector API dumps (reproducible, large)
 protocl/data/ryan/_strava_raw.json
 protocl/data/ryan/_hr_raw.json
+
+# v3.2 — per-user beta profile data is runtime state. The owner profile
+# (data/ryan) and shared/sample templates stay tracked; beta user dirs do not.
+protocl/data/profiles/
+data/profiles/

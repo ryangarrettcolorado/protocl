@@ -9,6 +9,7 @@ import streamlit as st
 from modules.data_loader import load_data, refresh_data
 from modules.charts import COLORS, apply_theme, metric_card_html, full_height
 from modules.time_range import render_time_range_selector, filter_by_range
+from explainers.ui import explainer_block
 
 
 from modules.theme import inject_css, grouped_sections
@@ -173,6 +174,14 @@ with tab_recovery:
     st.plotly_chart(fig, use_container_width=True)
     st.caption("Lines show 7-day rolling average. Faint background = raw daily values. "
                "Dashed line = 90-day median HRV (your baseline).")
+
+    explainer_block("recovery_score", chart_data={
+        "rhr_bpm": {"recent_7d": round(float(rhr_7), 1), "baseline": round(float(rhr_baseline), 1),
+                    "delta": round(float(rhr_delta), 1)},
+        "hrv_sdnn_ms": {"recent_7d": round(float(hrv_7), 1), "baseline": round(float(hrv_baseline), 1),
+                        "delta": round(float(hrv_delta), 1)},
+        "sleep_hrs_7d": round(float(sleep_7), 1),
+    })
 
     # Respiratory rate + skin temp delta — illness early warning
     st.subheader("Illness Early Warning — RR & Skin Temp Δ")

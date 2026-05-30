@@ -59,6 +59,32 @@ def _commit_draft(message: str = "Preferences saved.") -> None:
 
 
 # ────────────────────────────────────────────────────────────────────────────
+# Privacy & Consent (v3.2)
+# ────────────────────────────────────────────────────────────────────────────
+with st.expander("🔒 Privacy & Consent", expanded=False):
+    import consent as _consent
+    from storage import ProfileStorage as _ProfileStorage
+
+    _store = _ProfileStorage()
+    _c = _consent.load_consent(_store)
+    st.caption("Control whether the app owner can view your dashboard to help improve the app.")
+    _current = bool(_c.get("owner_visibility_consent")) and not _c.get("revoked_at")
+    _new = st.toggle(
+        "Allow Ryan to view my dashboard (read-only)",
+        value=_current,
+        key="_owner_vis_toggle",
+        help="Revocable anytime. Revocation is timestamped, not deleted.",
+    )
+    if _new != _current:
+        _consent.set_owner_visibility(_new, store=_store)
+        st.success("Consent updated.")
+        st.rerun()
+    if _c.get("revoked_at"):
+        st.caption(f"Owner visibility last revoked at {_c['revoked_at']}.")
+    st.page_link("pages/99_privacy.py", label="Read the full privacy notice", icon="🔒")
+
+
+# ────────────────────────────────────────────────────────────────────────────
 # § 1 — Profile
 # ────────────────────────────────────────────────────────────────────────────
 with st.expander("👤 Profile", expanded=True):

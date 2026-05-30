@@ -1,0 +1,6 @@
+id,title,priority,category,why_it_matters,due_date,related_metrics,status,source,created_date
+act_001,Recheck hematocrit (TRT polycythemia watch),high,testing,Hematocrit trending up — 44.5 → 49.0 over 12 months. Above 52% = donate blood.,2026-06-15,"hematocrit_pct,hemoglobin_g_dl",open,auto_risk,2026-05-11
+act_002,Increase weekly Zone 2 minutes to 150,medium,training,Currently averaging 110 min/week. 150+ correlates with mitochondrial gains.,2026-06-08,"zone2_min,vo2_max_ml_kg_min",in_progress,auto_recommendation,2026-05-18
+act_003,Reorder Omega-3 — supply runs out next week,medium,protocol,Maintaining omega-3 index above 8% drove inflammation gains.,2026-05-30,"omega_3_index_pct,hscrp_mg_l",open,manual,2026-05-23
+act_004,Schedule next quarterly bloodwork,high,testing,Last draw was 90 days ago. Quarterly cadence due.,2026-06-04,,open,manual,2026-05-25
+act_005,Review ferritin downtrend (95 → 74),low,nutrition,Ferritin gradually trending down; consider red meat frequency.,2026-06-24,"ferritin_ng_ml,iron_ug_dl",planned,auto_recommendation,2026-05-15

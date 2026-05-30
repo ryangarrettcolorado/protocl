@@ -18,18 +18,55 @@ import streamlit as st
 DATA_DIR = Path(__file__).resolve().parent.parent / "data"
 
 
-# Default user id — Phase 1 ships single-tenant but the data layer is keyed
-# by user so multi-user is a drop-in change later.
+# Owner's legacy directory. v3.2 makes the data layer multi-tenant: the active
+# profile is read from st.session_state (set by auth.require_auth). The owner
+# reuses data/ryan/ for back-compat; beta users live under data/profiles/<id>/.
 DEFAULT_USER = "ryan"
+OWNER_PROFILE_ID = "ryan"
+PROFILES_DIR = DATA_DIR / "profiles"
 
 
-def _user_dir(user_id: str = DEFAULT_USER) -> Path:
-    """Per-user directory inside data/. Falls back to data/ if user dir is absent."""
-    p = DATA_DIR / user_id
-    return p if p.exists() else DATA_DIR
+def _active_user() -> str:
+    """The profile id for the current session, or the owner by default.
+
+    Reading from session state means every existing page becomes per-user
+    automatically — they all call ``load_data()`` with no argument.
+    """
+    try:
+        pid = st.session_state.get("profile_id")
+    except Exception:
+        pid = None
+    return pid or DEFAULT_USER
 
 
-def _read_csv(name: str, user_id: str = DEFAULT_USER, parse_dates: list[str] | None = None) -> pd.DataFrame:
+def _guard_writable() -> None:
+    """Block writes while the owner is impersonating a user (read-only mode)."""
+    try:
+        if st.session_state.get("read_only"):
+            raise PermissionError(
+                "Writes are disabled while viewing another user's data (read-only)."
+            )
+    except PermissionError:
+        raise
+    except Exception:
+        pass
+
+
+def _user_dir(user_id: str | None = None) -> Path:
+    """Resolve a profile id to its data directory.
+
+    The owner keeps the legacy ``data/ryan/`` directory; every other profile
+    lives under ``data/profiles/<id>/``. Falls back to ``data/`` only if the
+    owner directory itself is missing (fresh checkout).
+    """
+    user_id = user_id or _active_user()
+    if user_id == OWNER_PROFILE_ID:
+        p = DATA_DIR / OWNER_PROFILE_ID
+        return p if p.exists() else DATA_DIR
+    return PROFILES_DIR / user_id
+
+
+def _read_csv(name: str, user_id: str | None = None, parse_dates: list[str] | None = None) -> pd.DataFrame:
     path = _user_dir(user_id) / name
     if not path.exists():
         return pd.DataFrame()
@@ -41,7 +78,7 @@ def _read_csv(name: str, user_id: str = DEFAULT_USER, parse_dates: list[str] | N
     return df
 
 
-def _read_json(name: str, user_id: str = DEFAULT_USER) -> Any:
+def _read_json(name: str, user_id: str | None = None) -> Any:
     path = _user_dir(user_id) / name
     if not path.exists():
         return []
@@ -71,8 +108,14 @@ class HealthData:
 
 
 @st.cache_data(ttl=300)
-def load_data(user_id: str = DEFAULT_USER) -> HealthData:
-    """Load every CSV/JSON for a user. Cached 5 minutes."""
+def load_data(user_id: str | None = None) -> HealthData:
+    """Load every CSV/JSON for a user. Cached 5 minutes, keyed by profile id.
+
+    When called with no argument (as every page does) the active profile is
+    resolved from session state, so the cache key — and the data returned — is
+    correctly scoped per user.
+    """
+    user_id = user_id or _active_user()
     return HealthData(
         bloodwork=_read_csv("bloodwork.csv", user_id, parse_dates=["date"]),
         protocol=_read_csv("protocol.csv", user_id, parse_dates=["start_date", "end_date"]),
@@ -111,11 +154,12 @@ _MANUAL_SOURCE_TYPES = {
 }
 
 
-def append_row(filename: str, row: dict, user_id: str = DEFAULT_USER) -> None:
+def append_row(filename: str, row: dict, user_id: str | None = None) -> None:
     """Append a single row to a CSV, creating the file if missing.
 
     Also stamps `import_log.csv` so the freshness badge updates.
     """
+    _guard_writable()
     path = _user_dir(user_id) / filename
     df = pd.DataFrame([row])
     if path.exists():
@@ -146,8 +190,9 @@ def append_row(filename: str, row: dict, user_id: str = DEFAULT_USER) -> None:
     st.cache_data.clear()
 
 
-def write_json(filename: str, payload: Any, user_id: str = DEFAULT_USER) -> None:
+def write_json(filename: str, payload: Any, user_id: str | None = None) -> None:
     """Overwrite a JSON file (used for nof1_experiments and similar)."""
+    _guard_writable()
     path = _user_dir(user_id) / filename
     path.parent.mkdir(parents=True, exist_ok=True)
     with path.open("w") as f:

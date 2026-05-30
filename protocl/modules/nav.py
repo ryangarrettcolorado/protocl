@@ -95,6 +95,7 @@ def build_navigation():
     reg = load_registry()
     prefs = load_preferences()
     visible = visible_page_ids(prefs)
+    is_owner = st.session_state.get("role") == "owner"
 
     # Order groups by their .order field.
     groups_ordered = sorted(reg["groups"], key=lambda g: g.get("order", 99))
@@ -103,6 +104,9 @@ def build_navigation():
     pages_by_group: dict[str, list[dict[str, Any]]] = {g["id"]: [] for g in groups_ordered}
     for p in sorted(reg["pages"], key=lambda p: p.get("order", 99)):
         if p["id"] not in visible:
+            continue
+        # Owner-only pages (admin) are hidden from beta users.
+        if p.get("owner_only") and not is_owner:
             continue
         bucket = pages_by_group.setdefault(p["group"], [])
         bucket.append(p)

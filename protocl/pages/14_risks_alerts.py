@@ -9,6 +9,7 @@ from modules.data_loader import load_data, refresh_data, latest_bloodwork_draw, 
 from modules.charts import COLORS, apply_theme, metric_card_html, status_label
 from modules.reference_ranges import load_reference, get as ref_get
 from modules.biomarker_aliases import display_name
+from explainers.ui import explainer_block
 
 
 from modules.theme import inject_css, grouped_sections
@@ -355,6 +356,17 @@ with tab_oor:
                         )
                     st.divider()
 
+    explainer_block("oor_heatmap", chart_data={
+        "out_of_range": len(critical),
+        "suboptimal": len(suboptimal),
+        "optimal": optimal_count,
+        "flags": [
+            {"biomarker": display_name(r["canonical"]), "status": r["status"],
+             "value": float(r["value"]), "category": r["category"]}
+            for r in risks
+        ][:40],
+    })
+
 # ── Trends ──────────────────────────────────────────────────────────────────
 with tab_trends:
     if not trend_alerts:
@@ -393,6 +405,15 @@ with tab_trends:
                     st.plotly_chart(fig_s, use_container_width=True,
                                      config={"displayModeBar": False})
                 st.divider()
+
+        explainer_block("trend_velocity_table", chart_data={
+            "movers": [
+                {"biomarker": display_name(t["canonical"]),
+                 "pct_change": round(float(t["pct"]), 1),
+                 "first": float(t["first"]), "last": float(t["last"])}
+                for t in trend_alerts
+            ][:30],
+        })
 
 # ── Interactions ────────────────────────────────────────────────────────────
 with tab_interactions:

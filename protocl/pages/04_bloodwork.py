@@ -23,6 +23,23 @@ from modules.reference_ranges import load_reference, panel_label
 from modules.biomarker_aliases import display_name
 from modules.theme import inject_css, render_section_header
 from modules.preferences import load_preferences
+from explainers.ui import explainer_block
+from explainers.rules import TIER1_BIOMARKERS
+
+# Map a canonical biomarker key to its Tier-1 explainer chart_id (spec 2.2).
+_CANONICAL_TO_CHART = {
+    spec["canonical"]: chart for chart, spec in TIER1_BIOMARKERS.items()
+}
+_CHART_ID_BY_BIOMARKER = {
+    "apob_mg_dl": "apob_trend", "lp_a_nmol_l": "lp_a_marker",
+    "hematocrit_pct": "hematocrit_trend", "alt_u_l": "alt_ast_trend",
+    "ggt_u_l": "ggt_trend", "estradiol_pg_ml": "estradiol_trend",
+    "testosterone_total_ng_dl": "testosterone_total_trough",
+    "testosterone_free_pg_ml": "testosterone_free_trend",
+    "shbg_nmol_l": "shbg_trend", "hba1c_pct": "hba1c_trend",
+    "fasting_insulin_uiu_ml": "fasting_insulin_homa", "igf_1_ng_ml": "igf_1_trend",
+    "hscrp_mg_l": "hscrp_trend", "egfr_ml_min": "egfr_trend",
+}
 
 # ────────────────────────────────────────────────────────────────────────────
 # Page shell — no set_page_config (nav owns it); no sidebar brand (top brand)
@@ -311,6 +328,20 @@ with st.expander("Biomarker drill-down — details", expanded=False):
                     continue
 
         st.plotly_chart(fig, use_container_width=True)
+
+        # v3.3 — AI explainer block. Tier-1 biomarkers (the 14 in spec 2.2) get
+        # the deterministic rules engine; the selected marker's history feeds it.
+        _chart_id = _CHART_ID_BY_BIOMARKER.get(bm)
+        if _chart_id:
+            _series = sub[["date", "value"]].copy()
+            _chart_data = {
+                "biomarker": bm,
+                "points": [
+                    {"date": str(d.date()) if hasattr(d, "date") else str(d), "value": float(v)}
+                    for d, v in zip(_series["date"], _series["value"]) if pd.notna(v)
+                ],
+            }
+            explainer_block(_chart_id, chart_data=_chart_data, biomarker_series=_series)
 
         if len(sub) >= 3:
             x_num = np.arange(len(sub))

@@ -308,6 +308,69 @@ replace files in that directory or use the Import Center.
 
 ---
 
+## v3.2 Beta Tier + v3.3 AI Explainers
+
+Protocōl is now a private, invite-only **multi-user beta** with per-user data
+isolation, and every key chart carries an **AI "Explain this chart"** block.
+
+### v3.2 — Beta Tier (Google SSO multi-user)
+
+- **Google sign-in** via Streamlit's native OIDC (`st.login` / `st.user`).
+  Configure the provider under `[auth]` in `.streamlit/secrets.toml` — see
+  `.streamlit/secrets.toml.example`.
+- **Allowlist** (`config/allowlist.yaml`) caps access at the owner + 5 beta
+  users. Anyone signing in with an off-list address gets a denial screen.
+- **Per-user data isolation** — `ProfileStorage` resolves every read/write to
+  `data/profiles/<profile_id>/`. The owner reuses the legacy `data/ryan/`.
+  `profile_id` is read from session state and is **never** a constructor
+  argument, so page code physically cannot reach another user's directory.
+- **Owner impersonation** (opt-in, read-only) — Ryan can view a beta user's
+  dashboard only if they consent under **Settings → Privacy**. A banner is
+  shown, all writes are blocked, and the event is audit-logged.
+- **Consent + audit + feedback** — timestamped (non-destructive) revocation,
+  one-way SHA-256 IP hashing, an in-app feedback widget, and four owner-only
+  admin pages (Beta Overview, Feedback, Audit Log, LLM Costs).
+
+See [`docs/v3_2_beta_tier.md`](docs/v3_2_beta_tier.md) for the full design.
+
+### v3.3 — AI Explainers (Top 30 charts)
+
+- **30 chart surfaces** (`explainers/registry.py`) each render an
+  **"💡 Explain this chart"** expander.
+- **Three tiers** — Tier 1 educational (deterministic + cached), Tier 2
+  personalized (per-user cached), Tier 3 free-form Q&A (uncached).
+- **14 Tier-1 biomarkers** are interpreted by a **deterministic rules engine**
+  (`explainers/rules/`); the LLM only wraps the structured facts in prose and
+  never invents clinical claims.
+- **Data minimization** — only the specific chart data is sent to the model,
+  scrubbed of all PII (name, email, profile id). A runtime guard + the
+  `test_data_minimization.py` suite enforce this.
+- **Cost control** — `gpt-4o-mini` for Tier 1/2, `gpt-4o` for Tier 3 chat;
+  Tier-1 cache TTL 30 days; per-user limits (50 Tier 2/day, 10 Tier 3/day) and
+  a 500-call/day per-app ceiling, tracked in the owner LLM Cost dashboard.
+
+See [`docs/v3_3_explainers.md`](docs/v3_3_explainers.md) for the full design.
+
+### Beta setup
+
+```toml
+# .streamlit/secrets.toml
+[auth]
+redirect_uri = "https://<your-app>.streamlit.app/oauth2callback"
+cookie_secret = "<random-string>"
+client_id = "<google-oauth-client-id>"
+client_secret = "<google-oauth-client-secret>"
+server_metadata_url = "https://accounts.google.com/.well-known/openid-configuration"
+
+OPENAI_API_KEY = "sk-..."   # enables Tier 1/2/3 explainer prose
+```
+
+Then edit `config/allowlist.yaml` to add the owner email and up to 5 beta
+addresses. Beta users get an empty profile on first login and can opt into
+realistic onboarding data (copied from `data/samples/`).
+
+---
+
 ## Sessions
 
 Build broken into 4 sessions from one master prompt:

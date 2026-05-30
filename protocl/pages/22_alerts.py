@@ -20,6 +20,7 @@ from modules.charts import COLORS
 from modules.data_loader import DATA_DIR, DEFAULT_USER
 from modules.preferences import load_preferences
 from modules.theme import inject_css
+from explainers.ui import explainer_block
 
 
 inject_css()
@@ -97,6 +98,15 @@ with tab_active:
                     with st.expander("Evidence"):
                         st.json(a.evidence)
 
+    explainer_block("active_alerts_summary", chart_data={
+        "active_total": total,
+        "by_severity": {
+            SEV_LABELS[sev]: len(grouped.get(sev, []))
+            for sev in (SEVERITY_CRITICAL, SEVERITY_WARNING, SEVERITY_INFO)
+        },
+        "titles": [a.title for a in alerts][:30],
+    })
+
 with tab_history:
     p = DATA_DIR / DEFAULT_USER / "alerts_history.csv"
     if not p.exists():
@@ -111,5 +121,14 @@ with tab_history:
                 st.caption("No alert actions in the last 30 days.")
             else:
                 st.dataframe(recent, use_container_width=True)
+                freq = {}
+                cat_col = "category" if "category" in recent.columns else None
+                if cat_col:
+                    freq = recent[cat_col].value_counts().to_dict()
+                explainer_block("alert_frequency_by_category", chart_data={
+                    "window_days": 30,
+                    "total_actions": int(len(recent)),
+                    "by_category": {str(k): int(v) for k, v in freq.items()},
+                })
         except Exception as e:
             st.error(f"Failed to read history: {e}")

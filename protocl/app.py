@@ -16,6 +16,7 @@ import streamlit as st
 
 from modules.nav import build_navigation
 from modules.preferences import appearance, ensure_initialized, load_preferences
+from modules.shell import boot
 from modules.theme import apply_density, inject_css, render_top_brand
 
 
@@ -25,6 +26,12 @@ st.set_page_config(
     layout="wide",
     initial_sidebar_state="collapsed",
 )
+
+
+# v3.2 — authenticate, assign role + profile, gate consent, render chrome.
+# This stops the run (login / denial / consent screens) for unauthenticated,
+# unauthorized, or not-yet-consented users before any page renders.
+boot()
 
 
 # Make sure the preferences file exists so visibility toggles + appearance
