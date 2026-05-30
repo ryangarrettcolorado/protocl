@@ -7,7 +7,8 @@
     { "id": "protocol_insights",  "label": "Protocol & Insights",   "icon": "⚗️", "order": 5 },
     { "id": "inventory",          "label": "Inventory",             "icon": "📦", "order": 6 },
     { "id": "alerts_group",       "label": "Alerts",                "icon": "🚨", "order": 7 },
-    { "id": "data_settings",      "label": "Data & Settings",       "icon": "🛠",  "order": 8 }
+    { "id": "data_settings",      "label": "Data & Settings",       "icon": "🛠",  "order": 8 },
+    { "id": "admin",              "label": "Admin",                 "icon": "🛡", "order": 9 }
   ],
   "pages": [
     { "id": "home",               "title": "Home",               "icon": "🏠", "module": "pages/01_home.py",               "group": "today",             "order": 1,  "default_visible": true, "personas": ["performance", "longevity", "clinical"] },
@@ -32,6 +33,11 @@
     { "id": "integrations",       "title": "Integrations",       "icon": "🔌", "module": "pages/19_integrations.py",       "group": "data_settings",     "order": 19, "default_visible": true, "personas": ["performance", "longevity", "clinical"] },
     { "id": "sleep",              "title": "Sleep",              "icon": "🌙", "module": "pages/20_sleep.py",              "group": "sleep",             "order": 20, "default_visible": true, "personas": ["performance", "longevity", "clinical"] },
     { "id": "inventory",          "title": "Inventory",          "icon": "📦", "module": "pages/21_inventory.py",          "group": "inventory",         "order": 21, "default_visible": true, "personas": ["performance", "longevity", "clinical"] },
-    { "id": "alerts",             "title": "Alerts",             "icon": "🚨", "module": "pages/22_alerts.py",             "group": "alerts_group",      "order": 22, "default_visible": true, "personas": ["performance", "longevity", "clinical"] }
+    { "id": "alerts",             "title": "Alerts",             "icon": "🚨", "module": "pages/22_alerts.py",             "group": "alerts_group",      "order": 22, "default_visible": true, "personas": ["performance", "longevity", "clinical"] },
+    { "id": "admin_beta_overview","title": "Beta Overview",      "icon": "👥", "module": "pages/30_admin_beta_overview.py","group": "admin",             "order": 30, "default_visible": true, "owner_only": true, "personas": ["performance", "longevity", "clinical"] },
+    { "id": "admin_feedback",     "title": "Feedback",           "icon": "💬", "module": "pages/31_admin_feedback.py",     "group": "admin",             "order": 31, "default_visible": true, "owner_only": true, "personas": ["performance", "longevity", "clinical"] },
+    { "id": "admin_audit_log",    "title": "Audit Log",          "icon": "📜", "module": "pages/32_admin_audit_log.py",    "group": "admin",             "order": 32, "default_visible": true, "owner_only": true, "personas": ["performance", "longevity", "clinical"] },
+    { "id": "admin_llm_costs",    "title": "LLM Costs",          "icon": "💸", "module": "pages/33_admin_llm_costs.py",    "group": "admin",             "order": 33, "default_visible": true, "owner_only": true, "personas": ["performance", "longevity", "clinical"] },
+    { "id": "privacy",            "title": "Privacy",            "icon": "🔒", "module": "pages/99_privacy.py",            "group": "data_settings",     "order": 99, "default_visible": true, "personas": ["performance", "longevity", "clinical"] }
   ]
 }

@@ -8,6 +8,7 @@ import streamlit as st
 from modules.data_loader import load_data, refresh_data
 from modules.charts import COLORS, apply_theme, metric_card_html, full_height
 from modules.time_range import render_time_range_selector, filter_by_range
+from explainers.ui import explainer_block
 
 from modules.theme import inject_css, grouped_sections
 inject_css()
@@ -159,6 +160,18 @@ with tab_volume:
     apply_theme(fig_h, height=320)
     fig_h.update_layout(yaxis=dict(title="Hours"), showlegend=False)
     st.plotly_chart(fig_h, use_container_width=True)
+
+    pwr = df[df["avg_power_watts"].notna()].copy()
+    explainer_block("strava_power_hr_trend", chart_data={
+        "rides_with_power": int(len(pwr)),
+        "avg_power_watts": round(float(pwr["avg_power_watts"].mean()), 0) if not pwr.empty else None,
+        "avg_hr_bpm": round(float(pwr["avg_hr_bpm"].mean()), 0) if not pwr.empty and pwr["avg_hr_bpm"].notna().any() else None,
+        "recent": [
+            {"date": d.strftime("%Y-%m-%d"), "power_w": round(float(p), 0),
+             "hr_bpm": (None if pd.isna(h) else round(float(h), 0))}
+            for d, p, h in zip(pwr["date"], pwr["avg_power_watts"], pwr["avg_hr_bpm"])
+        ][-20:],
+    })
 
 # ── Elevation trend ─────────────────────────────────────────────────────────
 with tab_elev:

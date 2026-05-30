@@ -10,6 +10,7 @@ import streamlit as st
 
 from modules.data_loader import load_data, refresh_data, append_row
 from modules.charts import COLORS, apply_theme, metric_card_html, full_height
+from explainers.ui import explainer_block
 
 
 from modules.theme import inject_css, grouped_sections
@@ -125,6 +126,15 @@ with tab_trends:
         hovermode="x unified",
     )
     st.plotly_chart(fig2, use_container_width=True)
+
+    explainer_block("inbody_trend", chart_data={
+        "window": {"start": first["date"].strftime("%Y-%m-%d"),
+                   "end": latest["date"].strftime("%Y-%m-%d")},
+        "weight_lbs": {"start": float(first["weight_lbs"]), "latest": float(latest["weight_lbs"])},
+        "body_fat_pct": {"start": float(first["body_fat_pct"]), "latest": float(latest["body_fat_pct"])},
+        "lean_mass_lbs": {"start": float(first["lean_mass_lbs"]), "latest": float(latest["lean_mass_lbs"])},
+        "fat_mass_lbs": {"start": float(first["body_fat_mass_lbs"]), "latest": float(latest["body_fat_mass_lbs"])},
+    })
 
 # ── Recomp view ─────────────────────────────────────────────────────────────
 with tab_recomp:

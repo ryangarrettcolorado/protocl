@@ -1,0 +1,22 @@
+# Protocōl v3.2 Beta Tier — access allowlist.
+#
+# Capped at 1 owner + 5 beta friends. Do NOT add a sixth beta slot.
+# Matching is case-insensitive (see protocl/auth.py). After editing this file,
+# redeploy the Streamlit app for changes to take effect.
+
+owner:
+  email: ryangarrettcolorado@gmail.com
+  name: Ryan Garrett
+
+beta_users:
+  # Ryan fills these in post-merge with real friend emails (up to 5).
+  - email: placeholder1@example.com
+    display_name: "Beta User 1"
+  - email: placeholder2@example.com
+    display_name: "Beta User 2"
+  - email: placeholder3@example.com
+    display_name: "Beta User 3"
+  - email: placeholder4@example.com
+    display_name: "Beta User 4"
+  - email: placeholder5@example.com
+    display_name: "Beta User 5"

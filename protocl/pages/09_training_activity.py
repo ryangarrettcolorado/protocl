@@ -11,6 +11,7 @@ import streamlit as st
 from modules.data_loader import load_data, refresh_data
 from modules.charts import COLORS, apply_theme, metric_card_html, full_height
 from modules.time_range import render_time_range_selector, filter_by_range
+from explainers.ui import explainer_block
 
 
 from modules.theme import inject_css, grouped_sections
@@ -119,6 +120,15 @@ with tab_load:
         hovermode="x unified",
     )
     st.plotly_chart(fig, use_container_width=True)
+
+    explainer_block("training_volume_by_week", chart_data={
+        "weeks": [
+            {"week": w.strftime("%Y-%m-%d"), "hours": round(float(h), 2),
+             "tss": round(float(t), 0), "sessions": int(s)}
+            for w, h, t, s in zip(weekly["week"], weekly["hours"],
+                                  weekly["tss"], weekly["sessions"])
+        ][-16:],
+    })
 
     # Acute:Chronic ratio (7d hours / 28d hours per day)
     st.subheader("Acute : Chronic Training Load")

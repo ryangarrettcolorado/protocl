@@ -1,0 +1,59 @@
+"""v3.2 — append-only audit log.
+
+Every security-relevant event (login, logout, denial, consent changes,
+impersonation, exports, settings changes, LLM budget events) is appended to
+``data/shared/audit_log.csv``. IPs are never stored raw — only a one-way
+SHA-256 hash, so the log can prove "same visitor" without being PII.
+"""
+from __future__ import annotations
+
+import hashlib
+from datetime import datetime, timezone
+
+import storage
+
+
+AUDIT_FILE = "audit_log.csv"
+COLUMNS = ["timestamp", "profile_id", "action", "details", "ip_hash"]
+
+# Actions enumerated in spec 1.6.
+ACTIONS = {
+    "login", "logout", "denial", "consent_granted", "consent_revoked",
+    "impersonation_start", "impersonation_end", "data_export", "settings_change",
+    "llm_budget_reached",
+}
+
+
+def hash_ip(ip: str | None) -> str:
+    """One-way SHA-256 of an IP. Empty string for unknown IPs."""
+    if not ip:
+        return ""
+    return hashlib.sha256(ip.encode("utf-8")).hexdigest()
+
+
+def _now() -> str:
+    return datetime.now(timezone.utc).isoformat(timespec="seconds")
+
+
+def log(action: str, *, profile_id: str | None = None, details: str = "",
+        ip: str | None = None) -> None:
+    """Append an audit event. Best-effort: never raises into page code."""
+    try:
+        storage.append_shared_csv(
+            AUDIT_FILE,
+            {
+                "timestamp": _now(),
+                "profile_id": profile_id or "",
+                "action": action,
+                "details": details,
+                "ip_hash": hash_ip(ip),
+            },
+            COLUMNS,
+        )
+    except Exception:
+        # Auditing must not take down the app.
+        pass
+
+
+def read_log():
+    return storage.read_shared_csv(AUDIT_FILE, parse_dates=["timestamp"])

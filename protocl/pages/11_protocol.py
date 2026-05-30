@@ -11,6 +11,7 @@ import streamlit as st
 from modules.data_loader import load_data, refresh_data, append_row
 from modules.charts import COLORS, apply_theme, metric_card_html, full_height
 from modules.biomarker_aliases import display_name
+from explainers.ui import explainer_block
 
 
 from modules.theme import inject_css, grouped_sections
@@ -166,6 +167,16 @@ with tab_active:
                 )
                 st.caption(f"{len(display)} row(s)")
 
+        explainer_block("supplement_adherence", chart_data={
+            "avg_adherence_pct": round(float(active["adherence_pct"].mean()), 0) if not active.empty else None,
+            "active_count": int(len(active)),
+            "items": [
+                {"name": str(r["name"]), "category": str(r.get("category", "")),
+                 "adherence_pct": (None if pd.isna(r.get("adherence_pct")) else round(float(r["adherence_pct"]), 0))}
+                for _, r in active_display.iterrows()
+            ][:40],
+        })
+
         # Cycle tracker for hormones / peptides
         st.markdown("#### Cycle Tracker")
         cycles = active[active["category"].isin(["hormone", "peptide"])]
@@ -190,6 +201,16 @@ with tab_active:
                     f'</div>',
                     unsafe_allow_html=True,
                 )
+
+        trt = active[active["name"].str.contains("testosterone", case=False, na=False)]
+        explainer_block("trt_injection_timing", chart_data={
+            "trt_items": [
+                {"name": str(r["name"]), "dose": str(r.get("dose", "")),
+                 "unit": str(r.get("unit", "")), "frequency": str(r.get("frequency", "")),
+                 "route": str(r.get("route", "")), "timing": str(r.get("timing", ""))}
+                for _, r in trt.iterrows()
+            ],
+        })
 
 
 # ── Gantt timeline ────────────────────────────────────────────────────────

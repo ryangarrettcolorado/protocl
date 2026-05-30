@@ -26,6 +26,7 @@ import streamlit as st
 from modules.charts import COLORS, apply_theme
 from modules.data_loader import load_data
 from modules.llm import llm_badge
+from explainers.ui import explainer_block
 from modules.sleep_data import (
     SleepNight,
     compute_baseline,
@@ -190,6 +191,9 @@ if trend_scores:
     fig.update_yaxes(range=[0, 105], title="Score")
     apply_theme(fig, height=280)
     st.plotly_chart(fig, use_container_width=True)
+    explainer_block("sleep_score_trend", chart_data={
+        "nights": [{"date": str(t[0]), "score": t[1], "verdict": t[2]} for t in trend_scores]
+    })
 
 
 # ────────────────────────────────────────────────────────────────────────────
@@ -219,6 +223,10 @@ with c2:
         fig.update_yaxes(title="Cumulative min deficit")
         apply_theme(fig, height=180)
         st.plotly_chart(fig, use_container_width=True)
+explainer_block("sleep_debt_cumulative", chart_data={
+    "cumulative_deficit_min": [{"date": str(x), "min": y} for x, y in zip(debt_xs, debt_ys)],
+    "need_min": sleep_need_min,
+})
 
 st.divider()
 
@@ -251,6 +259,10 @@ if stage_total > 0:
         f"REM {rem:.0f} min ({rem/stage_total*100:.1f}%) · "
         f"Light {light:.0f} min · Awake {awake:.0f} min"
     )
+    explainer_block("sleep_stage_breakdown", chart_data={
+        "deep_min": deep, "rem_min": rem, "light_min": light, "awake_min": awake,
+        "total_asleep_min": stage_total,
+    })
 
 
 # ────────────────────────────────────────────────────────────────────────────
@@ -303,6 +315,12 @@ if not win.empty:
         fig.update_yaxes(title="HRV (ms)")
         apply_theme(fig, height=280)
         st.plotly_chart(fig, use_container_width=True)
+        explainer_block("hrv_vs_sleep_score", chart_data={
+            "points": [
+                {"date": str(d), "hrv": (None if pd.isna(h) else float(h))}
+                for d, h in zip(win["date_ts"], win["hrv_overnight_avg"])
+            ][:120],
+        })
 
     # RHR chart
     if win["resting_hr"].notna().any():
@@ -317,6 +335,13 @@ if not win.empty:
         fig.update_yaxes(title="Resting HR (bpm)")
         apply_theme(fig, height=240)
         st.plotly_chart(fig, use_container_width=True)
+        explainer_block("rhr_vs_sleep_quality", chart_data={
+            "points": [
+                {"date": str(d), "rhr": (None if pd.isna(r) else float(r))}
+                for d, r in zip(win["date_ts"], win["resting_hr"])
+            ][:120],
+            "baseline_rhr": baseline.get("rhr_baseline"),
+        })
 
     # Consistency scatter — approximate bed time = wake - asleep
     # wearables.csv doesn't have raw bed times; show asleep duration as scatter dots instead.
@@ -330,6 +355,13 @@ if not win.empty:
     fig.update_yaxes(title="Hours")
     apply_theme(fig, height=220)
     st.plotly_chart(fig, use_container_width=True)
+    explainer_block("sleep_consistency", chart_data={
+        "asleep_hours": [
+            {"date": str(d), "hours": (None if pd.isna(m) else round(float(m) / 60, 2))}
+            for d, m in zip(win["date_ts"], win["total_asleep_min"])
+        ][:120],
+        "need_hours": round(sleep_need_min / 60, 2),
+    })
 
 
 # ────────────────────────────────────────────────────────────────────────────
