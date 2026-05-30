@@ -81,6 +81,22 @@ with st.expander("🔒 Privacy & Consent", expanded=False):
         st.rerun()
     if _c.get("revoked_at"):
         st.caption(f"Owner visibility last revoked at {_c['revoked_at']}.")
+
+    # v3.6 — anonymized usage analytics opt-out.
+    from modules import user_prefs as _uprefs
+    _analytics_on = _uprefs.analytics_allowed(_store)
+    _analytics_new = st.toggle(
+        "Allow anonymized usage analytics",
+        value=_analytics_on,
+        key="_analytics_toggle",
+        help="Tracks which pages/features are used to improve Protocōl. "
+             "Anonymized in shared rollups — no identifying data leaves your profile.",
+    )
+    if _analytics_new != _analytics_on:
+        _uprefs.set_analytics_consent(_analytics_new, _store)
+        st.success("Analytics preference updated.")
+        st.rerun()
+
     st.page_link("pages/99_privacy.py", label="Read the full privacy notice", icon="🔒")
 
 

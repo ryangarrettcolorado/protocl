@@ -78,3 +78,44 @@ for r in rows:
                 s.profile_id = r["profile_id"]
                 explainer_cache.clear_user(s)
                 st.success("Cleared.")
+
+
+# ── Soft-deleted accounts (v3.5) ────────────────────────────────────────────
+from modules import account_deletion as _acct_del  # noqa: E402
+
+st.divider()
+st.subheader("🗑 Soft-deleted accounts")
+st.caption("Archives retained for 90 days for accidental-deletion recovery.")
+_archives = _acct_del.list_soft_deleted()
+if not _archives:
+    st.caption("No soft-deleted accounts.")
+else:
+    for a in _archives:
+        ac1, ac2 = st.columns([4, 1])
+        with ac1:
+            st.markdown(f"**{a['profile_id']}** · deleted {a['deleted_at']} · {a['size_kb']} KB")
+            st.caption(a["zip"])
+        with ac2:
+            if st.button("Restore", key=f"restore_{a['zip']}"):
+                pid = _acct_del.restore_from_soft_delete(a["zip"])
+                st.success(f"Restored {pid}.")
+                st.rerun()
+
+
+# ── Sync health (v3.5) ──────────────────────────────────────────────────────
+from modules import sync_orchestrator as _sync  # noqa: E402
+
+st.divider()
+st.subheader("🔄 Sync health")
+_last_sync = _sync.last_sync_per_profile()
+_errors_df = _sync.read_sync_errors()
+if not _last_sync and _errors_df.empty:
+    st.caption("No sync runs recorded yet.")
+else:
+    _rows = []
+    for _pid, _ts in sorted(_last_sync.items()):
+        _ec = 0
+        if not _errors_df.empty and "profile_id" in _errors_df.columns:
+            _ec = int((_errors_df["profile_id"] == _pid).sum())
+        _rows.append({"profile_id": _pid, "last_sync": _ts, "recent_errors": _ec})
+    st.dataframe(pd.DataFrame(_rows), use_container_width=True, hide_index=True)

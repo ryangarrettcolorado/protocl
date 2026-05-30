@@ -31,11 +31,30 @@ advice.
 
 **No third-party analytics.** We do not run third-party analytics or ad trackers.
 
-**Audit log.** Security events (logins, consent changes, impersonation) are
-logged. IP addresses are stored only as one-way SHA-256 hashes, never in raw
-form.
+**Usage analytics (anonymized, opt-in).** To learn which features help and
+which confuse, the app records lightweight usage events (page views, when you
+expand an explainer, when you add data, feedback you submit). These events are
+stored **only in your own profile directory**. The only thing written to a
+shared file is an **anonymized daily roll-up** — a `date, event_name, count`
+tally that carries **no profile id** and cannot be traced back to you. The owner
+can see an individual user's events **only** if that user opted into owner
+visibility; everyone else contributes to anonymous counts alone. Analytics is
+opt-in at signup (default on) and you can turn it off anytime under
+**Settings → Privacy** — when off, nothing is recorded, not even the anonymized
+roll-up.
 
-**Data deletion.** To revoke consent or request deletion of your data, use the
-**💬 Send feedback** widget in the sidebar.
+**Audit log.** Security events (logins, consent changes, impersonation,
+account deletion) are logged. IP addresses are stored only as one-way SHA-256
+hashes, never in raw form.
+
+**Deleting your account.** Under **Settings → Privacy** you can permanently
+delete your account in two steps (type your email, then confirm). This removes
+your live profile, all uploaded data, feedback, and event logs. For accidental
+deletions we keep a compressed, access-controlled copy for **90 days** before it
+is purged. In shared security logs we do **not** delete rows — instead we scrub
+your identity (your profile id is replaced with `deleted_<hash>` and your name is
+blanked) while keeping the timestamp and action for audit integrity. The owner
+is notified when an account is deleted. Owner accounts must be removed manually
+by the developer.
 """
 )

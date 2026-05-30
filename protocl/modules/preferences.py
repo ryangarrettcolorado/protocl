@@ -200,8 +200,9 @@ def visible_page_ids(prefs: dict[str, Any] | None = None) -> set[str]:
     # v3.2/v3.3 system pages are always available (admin pages are further
     # gated to the owner role inside modules.nav.build_navigation).
     visible.update({
-        "privacy",
+        "privacy", "settings_privacy", "whats_new",
         "admin_beta_overview", "admin_feedback", "admin_audit_log", "admin_llm_costs",
+        "admin_errors", "admin_nps", "admin_analytics",
     })
     return visible
 

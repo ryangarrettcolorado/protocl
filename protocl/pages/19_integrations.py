@@ -283,6 +283,31 @@ summary_html = f"""
 st.markdown(summary_html, unsafe_allow_html=True)
 
 
+# Automated daily sync (v3.5) ────────────────────────────────────────────────
+with st.expander("⚙️ Automated daily sync", expanded=False):
+    from storage import ProfileStorage as _PS
+    from modules import user_prefs as _up
+
+    st.caption(
+        "Enable per-source daily auto-sync. Off by default. Runs at 7:00 AM MDT "
+        "via the daily cron and is capped app-wide to protect credits."
+    )
+    _store = _PS()
+    _read_only = bool(st.session_state.get("read_only"))
+    for _src, _label in (("strava", "Strava"), ("apple_health", "Apple Health")):
+        _cur = _up.auto_sync_enabled(_src, _store)
+        _new = st.toggle(
+            f"Enable daily auto-sync — {_label}",
+            value=_cur,
+            key=f"autosync_{_src}",
+            disabled=_read_only,
+        )
+        if _new != _cur and not _read_only:
+            _up.set_auto_sync(_src, _new, _store)
+            st.success(f"{_label} auto-sync {'enabled' if _new else 'disabled'}.")
+            st.rerun()
+
+
 # § 1 — Connected ────────────────────────────────────────────────────────────
 st.markdown("### Connected")
 st.caption("Live API + connector integrations. These auto-sync on a schedule.")
