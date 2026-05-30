@@ -267,8 +267,28 @@ def _tir_tile(data: HealthData) -> tuple[str, str, str, bool | None]:
     return ("Glucose TIR (14d)", f"{tir_14 * 100:.0f}%", f"{d:+.1f}pp vs 60d", d >= 0)
 
 
+# v3.4 — each KPI tile is backed by a data source. When that source is hidden
+# (no data, and "Show all sections" is off) the tile collapses to a one-line
+# locked variant inviting the user to add it, rather than showing a bare "—".
+_TILE_SOURCE = ["bloodwork", "bloodwork", "wearables", "inbody",
+                "wearables", "wearables", "wearables", "cgm"]
+
+
+def _locked_tile_html(source_key: str) -> str:
+    from modules.data_presence import get_source
+    src = get_source(source_key)
+    return (
+        f'<div class="metric-card" style="opacity:0.7;">'
+        f'<div style="font-size:0.8rem;color:#A0A0A0;">{src.icon} {src.label}</div>'
+        f'<div style="font-size:0.9rem;color:#FFB612;margin-top:6px;">'
+        f'Add {src.label.split("(")[0].strip().lower()} to unlock</div></div>'
+    )
+
+
 def render_row_status(data: HealthData, prefs: dict) -> None:
     """Row 1 — eight KPI tiles."""
+    from modules.data_presence import visibility_state
+
     st.markdown('<div class="home-row">', unsafe_allow_html=True)
     st.markdown("#### At a glance")
 
@@ -287,12 +307,18 @@ def render_row_status(data: HealthData, prefs: dict) -> None:
     # 4-per-row x 2 rows reads well on most screens.
     for row_start in (0, 4):
         cols = st.columns(4)
-        for col, (label, value, delta, positive) in zip(cols, tiles[row_start:row_start + 4]):
+        for offset, (col, tile) in enumerate(zip(cols, tiles[row_start:row_start + 4])):
+            idx = row_start + offset
+            label, value, delta, positive = tile
+            source_key = _TILE_SOURCE[idx]
             with col:
-                st.markdown(
-                    metric_card_html(label, value, delta, positive),
-                    unsafe_allow_html=True,
-                )
+                if visibility_state(source_key) == "hidden":
+                    st.markdown(_locked_tile_html(source_key), unsafe_allow_html=True)
+                else:
+                    st.markdown(
+                        metric_card_html(label, value, delta, positive),
+                        unsafe_allow_html=True,
+                    )
     st.markdown('</div>', unsafe_allow_html=True)
 
 
@@ -608,32 +634,65 @@ def _hrv_sleep_chart(data: HealthData) -> go.Figure | None:
     return fig
 
 
+def _stub_nudge(source_key: str) -> None:
+    """Inline 'add more readings' nudge shown above a stub chart."""
+    from modules.data_presence import get_source
+    need = get_source(source_key).min_rows_for_trend
+    st.caption(f"➕ Add {max(1, need - 1)} more reading(s) to see a full trend.")
+
+
 def render_row_trends(data: HealthData, prefs: dict) -> None:
+    """Row 4 — three trend chart columns, each gated on its source's state.
+
+    hidden → locked 'unlock' card (no empty chart); stub → chart + inline
+    'add more' nudge; active → the chart as before.
+    """
+    from modules.data_presence import visibility_state
+    from modules.locked_section import render_locked_card
+
     st.markdown('<div class="home-row">', unsafe_allow_html=True)
     st.markdown("#### Trends")
     c1, c2, c3 = st.columns(3)
     with c1:
-        st.markdown("**Pinned biomarkers (90d)**")
-        fig = _pinned_biomarker_chart(data, prefs)
-        if fig is None:
-            st.caption("Pin biomarkers from Settings → Home Dashboard Layout.")
+        state = visibility_state("bloodwork")
+        if state == "hidden":
+            render_locked_card("bloodwork")
         else:
-            st.plotly_chart(fig, use_container_width=True)
+            st.markdown("**Pinned biomarkers (90d)**")
+            if state == "stub":
+                _stub_nudge("bloodwork")
+            fig = _pinned_biomarker_chart(data, prefs)
+            if fig is None:
+                st.caption("Pin biomarkers from Settings → Home Dashboard Layout.")
+            else:
+                st.plotly_chart(fig, use_container_width=True)
     with c2:
-        st.markdown("**Body composition**")
-        fig = _body_comp_chart(data)
-        if fig is None:
-            st.caption("No DEXA / InBody data yet.")
+        state = visibility_state("inbody")
+        if state == "hidden":
+            render_locked_card("inbody")
         else:
-            st.plotly_chart(fig, use_container_width=True)
+            st.markdown("**Body composition**")
+            if state == "stub":
+                _stub_nudge("inbody")
+            fig = _body_comp_chart(data)
+            if fig is None:
+                st.caption("No DEXA / InBody data yet.")
+            else:
+                st.plotly_chart(fig, use_container_width=True)
     with c3:
-        st.markdown("**HRV + Sleep (90d)**")
-        fig = _hrv_sleep_chart(data)
-        if fig is None:
-            st.caption("No wearables data yet.")
+        state = visibility_state("wearables")
+        if state == "hidden":
+            render_locked_card("wearables")
         else:
-            st.plotly_chart(fig, use_container_width=True)
-            st.caption("Lines show 7-day rolling average. Faint background = raw daily values.")
+            st.markdown("**HRV + Sleep (90d)**")
+            if state == "stub":
+                _stub_nudge("wearables")
+            fig = _hrv_sleep_chart(data)
+            if fig is None:
+                st.caption("No wearables data yet.")
+            else:
+                st.plotly_chart(fig, use_container_width=True)
+                st.caption("Lines show 7-day rolling average. Faint background = raw daily values.")
     st.markdown('</div>', unsafe_allow_html=True)
 
 

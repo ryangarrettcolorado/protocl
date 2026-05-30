@@ -23,6 +23,9 @@ from modules.reference_ranges import load_reference, panel_label
 from modules.biomarker_aliases import display_name
 from modules.theme import inject_css, render_section_header
 from modules.preferences import load_preferences
+from modules.data_presence import visibility_state
+from modules.locked_section import render_locked_card
+from modules.add_data_modal import open_add_data_modal
 from explainers.ui import explainer_block
 from explainers.rules import TIER1_BIOMARKERS
 
@@ -49,10 +52,15 @@ inject_css()
 
 prefs = load_preferences()
 
-col_title, col_refresh = st.columns([6, 1])
+col_title, col_add, col_refresh = st.columns([5, 1.4, 1])
 with col_title:
     st.title("Bloodwork")
     st.caption("Panels by system · expert-derived optimal ranges · drill into any biomarker")
+with col_add:
+    # v3.4 — quick "add a draw" entry point that opens the per-source modal
+    # (reuses the same lab-import flow as the Import Center).
+    if st.button("➕ Add new draw", use_container_width=True, key="bw_add_draw_btn"):
+        open_add_data_modal("bloodwork")
 with col_refresh:
     if st.button("🔄 Refresh", use_container_width=True, key="bw_refresh"):
         refresh_data()
@@ -60,6 +68,14 @@ with col_refresh:
 data = load_data()
 ref = load_reference()
 bw = data.bloodwork
+
+# v3.4 — adaptive visibility gate. With no bloodwork at all (and "Show all
+# sections" off) we render a single unlock card and stop — no empty tables or
+# charts below. A single draw still renders, with inline "add more" nudges.
+_bw_state = visibility_state("bloodwork")
+if _bw_state == "hidden":
+    render_locked_card("bloodwork")
+    st.stop()
 
 with st.expander("📚 Sources & reference ranges", expanded=False):
     st.markdown("""
@@ -83,6 +99,11 @@ healthspan.
 if bw.empty:
     st.warning("No bloodwork yet. Add a draw in the **Add Draw** section below or import a CSV from the Imports page.")
     st.stop()
+
+# v3.4 — single draw on file: render the full layout but flag that trends need
+# more data. Charts below show a single point until a second draw lands.
+if _bw_state == "stub":
+    st.info("➕ Add 1 more draw to see biomarker trends over time.")
 
 # ────────────────────────────────────────────────────────────────────────────
 # Sticky filter bar

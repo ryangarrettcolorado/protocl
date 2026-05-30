@@ -508,3 +508,63 @@ manual step is cheap insurance.
   the wind-down plan A5 currently fall back to default wake time. The
   calendar adapter is a v3.2 prerequisite.
 
+
+---
+
+## v3.4 — Adaptive UI (Minimal)
+
+### Visibility-state policy
+
+Every section resolves to one of three states via
+`data_presence.visibility_state(source_key)`:
+
+- **active** — `has_data(for_trend=True)`: at least `min_rows_for_trend`
+  rows (default 3). The section renders as it always has.
+- **stub** — `has_data()` but not for a trend: 1–2 rows. The section still
+  renders, but charts get an inline "add N more reading(s)" nudge so a
+  single point isn't mistaken for a trend.
+- **hidden** — no rows. The section is replaced by a single `render_locked_card`
+  CTA (or, for a whole page like Bloodwork, the card + `st.stop()`), so beta
+  users never see empty tables or flat charts.
+
+**Why a registry instead of inline `df.empty` checks.** Presence rules
+(row thresholds, freshness windows, which file backs which source) were
+already scattered across pages. Centralizing them in one `DataSource` catalog
+means the policy is testable in isolation and the 22 not-yet-migrated pages
+have a single contract to adopt.
+
+**Coverage weighting.** `data_coverage_pct()` counts only *primary* sources
+(`weight > 0`); the view sources `strava` / `function_health` / `sleep` are
+weight 0 because they share a file with a primary source — importing one
+bloodwork PDF must not be counted three times. Weights: bloodwork=3;
+wearables/training/inbody=2; cgm/ketones/protocol/daily_log=1.
+
+### Snooze / nudge cadence
+
+- **Locked-card dismissal** is per-source and lasts **30 days**
+  (`dismissed_nudges.json`). A dismissed card renders nothing; the caller
+  decides any fallback.
+- **Setup hero** snoozes for **14 days** (`setup_hero_state.json`) but
+  *resurfaces early* when the user crosses a **25%** or **50%** coverage
+  milestone, so progress feels rewarding rather than nagging. At **≥ 50%**
+  coverage the hero never renders again. The decision is a pure function
+  (`setup_hero.hero_decision`) so the full lifecycle is unit-tested without
+  Streamlit.
+
+### "Show all sections" default
+
+The toggle persists to `appearance.show_empty_sections` in
+`user_preferences.json`. Default is **off** for beta users (curated, empty
+sections hidden) and **on** for the owner (full layout with empty-state
+messaging). Rationale: the owner authors and QAs against every section; beta
+friends get the tight, intentional first-run experience. Preferences remain
+single-tenant in this codebase (v3.2 isolation applies to the CSV data layer,
+not `user_preferences.json`), so the toggle is read the same way every other
+page reads prefs.
+
+### Reference-implementation scope
+
+Only **Home** and **Bloodwork** adopt the components in this PR — deliberate,
+so we validate the pattern on two real pages before a 22-page sweep. No other
+page, the nav structure, or the v3.2 auth/storage flow is touched. **No LLM
+calls** are made anywhere in v3.4.
