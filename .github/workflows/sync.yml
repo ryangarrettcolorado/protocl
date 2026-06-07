@@ -2,7 +2,10 @@ name: Daily Sync
 
 on:
   schedule:
-    - cron: '0 11 * * *'  # 5:00 AM MDT = 11:00 UTC
+    # Every 6 hours: 05:00, 11:00, 17:00, 23:00 UTC
+    # (= 11p, 5a, 11a, 5p Mountain). Health Auto Export typically drops a
+    # new file every 6h; this schedule picks each one up within the hour.
+    - cron: '0 5,11,17,23 * * *'
   workflow_dispatch:
 
 jobs:
@@ -27,6 +30,10 @@ jobs:
       - name: Run sync script
         env:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          # HealthKit → Drive sync (no-op if either secret is unset)
+          HEALTH_AUTO_EXPORT_DRIVE_FOLDER_ID: ${{ secrets.HEALTH_AUTO_EXPORT_DRIVE_FOLDER_ID }}
+          HEALTH_AUTO_EXPORT_ARCHIVE_FOLDER_ID: ${{ secrets.HEALTH_AUTO_EXPORT_ARCHIVE_FOLDER_ID }}
+          GOOGLE_DRIVE_SERVICE_ACCOUNT_JSON: ${{ secrets.GOOGLE_DRIVE_SERVICE_ACCOUNT_JSON }}
         run: |
           if [ -f scripts/daily_sync.py ]; then
             python scripts/daily_sync.py
@@ -38,6 +45,8 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add data/ || true
-          git diff --staged --quiet || git commit -m "chore: daily sync $(date -u +%Y-%m-%d)"
+          # Pick up CSV mutations from both the legacy Strava sync (data/)
+          # and the Health Auto Export ingester (protocl/data/ryan/).
+          git add data/ protocl/data/ryan/ || true
+          git diff --staged --quiet || git commit -m "chore(sync): healthkit + strava $(date -u +%Y-%m-%dT%H:%MZ)"
           git push || true

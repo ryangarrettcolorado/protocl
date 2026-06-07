@@ -337,7 +337,10 @@ def evaluate_data_freshness() -> list[Alert]:
     today = datetime.now().date()
     data = load_data()
     alerts: list[Alert] = []
-    # HealthKit sync — use wearables most recent date
+    # HealthKit sync — use wearables most recent date. The expected path is
+    # the Health Auto Export iOS app dropping JSON files into Drive every
+    # 6h, which the daily_sync workflow ingests. If wearables go stale, the
+    # automation has stopped firing on the user's phone.
     if not data.wearables.empty:
         try:
             last_w = pd.Timestamp(data.wearables["date"].max()).date()
@@ -347,7 +350,8 @@ def evaluate_data_freshness() -> list[Alert]:
                     CATEGORY_FRESHNESS, "healthkit_stale",
                     SEVERITY_WARNING,
                     "HealthKit not syncing",
-                    f"No wearables data for {days} days. Check Apple Health export.",
+                    f"No wearables data for {days} days. Open Health Auto Export "
+                    f"and confirm the automation has fired recently.",
                     evidence={"days_stale": days, "last": last_w.isoformat()},
                 ))
         except Exception:

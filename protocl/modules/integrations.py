@@ -567,14 +567,18 @@ CATALOG: list[Integration] = [
     # ── Coming soon ──────────────────────────────────────────────────────
     Integration(
         key="cgm",
-        name="CGM (Dexcom / Libre)",
+        name="CGM (Lingo / Stelo / Libre)",
         category="Lab",
-        status="coming_soon",
-        connection_type="coming_soon",
+        status="connected",
+        connection_type="connector",
         svg=SVG_CGM,
         description="Continuous glucose monitoring — 5-minute glucose, daily "
-                    "mean, time-in-range and post-prandial spikes.",
-        action_label="Notify me",
+                    "mean, time-in-range and post-prandial spikes. Pulled "
+                    "from Apple Health via the Health Auto Export bridge.",
+        source_types=["healthkit_json"],
+        feed_label="Glucose",
+        action_label="Manage",
+        action_hint="Toggle Blood Glucose in your Health Auto Export automation.",
     ),
     Integration(
         key="fullscript",

@@ -1,0 +1,739 @@
+{
+  "data": {
+    "metrics": [
+      {
+        "name": "body_fat_percentage",
+        "data": [
+          {
+            "source": "InBody",
+            "qty": 7.8,
+            "date": "2026-01-09 00:00:00 -0700"
+          },
+          {
+            "source": "InBody",
+            "qty": 9.7,
+            "date": "2026-01-15 00:00:00 -0700"
+          }
+        ],
+        "units": "%"
+      },
+      {
+        "data": [
+          {
+            "date": "2026-01-01 00:00:00 -0700",
+            "source": "RyGarrett's Watch",
+            "qty": 21
+          },
+          {
+            "date": "2026-01-02 00:00:00 -0700",
+            "qty": 17,
+            "source": "RyGarrett's Watch"
+          },
+          {
+            "date": "2026-01-03 00:00:00 -0700",
+            "qty": 76,
+            "source": "RyGarrett's Watch"
+          }
+        ],
+        "units": "min",
+        "name": "apple_exercise_time"
+      },
+      {
+        "name": "active_energy",
+        "units": "kcal",
+        "data": [
+          {
+            "date": "2026-01-01 00:00:00 -0700",
+            "qty": 617.3540179813754,
+            "source": "RyGarrett's Watch"
+          },
+          {
+            "source": "RyGarrett's Watch",
+            "date": "2026-01-02 00:00:00 -0700",
+            "qty": 554.0629820186239
+          },
+          {
+            "source": "RyGarrett's Watch",
+            "date": "2026-01-03 00:00:00 -0700",
+            "qty": 929.6078953509483
+          }
+        ]
+      },
+      {
+        "data": [
+          {
+            "qty": 135,
+            "date": "2026-01-01 00:00:00 -0700",
+            "source": "RyGarrett's Watch"
+          },
+          {
+            "date": "2026-01-02 00:00:00 -0700",
+            "qty": 137,
+            "source": "RyGarrett's Watch"
+          },
+          {
+            "source": "RyGarrett's Watch",
+            "qty": 194,
+            "date": "2026-01-03 00:00:00 -0700"
+          }
+        ],
+        "name": "apple_stand_time",
+        "units": "min"
+      },
+      {
+        "data": [
+          {
+            "source": "RyGarrett's Watch",
+            "date": "2025-12-31 00:00:00 -0700",
+            "qty": 97.60700759887689
+          },
+          {
+            "source": "RyGarrett's Watch",
+            "qty": 97.48943328857415,
+            "date": "2026-01-02 00:00:00 -0700"
+          },
+          {
+            "qty": 97.77639617919915,
+            "source": "RyGarrett's Watch",
+            "date": "2026-01-03 00:00:00 -0700"
+          }
+        ],
+        "name": "apple_sleeping_wrist_temperature",
+        "units": "degF"
+      },
+      {
+        "units": "count",
+        "name": "breathing_disturbances",
+        "data": [
+          {
+            "qty": 8.397912979125977,
+            "source": "RyGarrett's Watch",
+            "date": "2025-12-31 00:00:00 -0700"
+          },
+          {
+            "qty": 1.4228391647338867,
+            "date": "2026-01-01 00:00:00 -0700",
+            "source": "RyGarrett's Watch"
+          },
+          {
+            "source": "RyGarrett's Watch",
+            "date": "2026-01-03 00:00:00 -0700",
+            "qty": 8.695324420928955
+          }
+        ]
+      },
+      {
+        "data": [
+          {
+            "qty": 29.12,
+            "date": "2026-01-09 00:00:00 -0700",
+            "source": "InBody"
+          },
+          {
+            "date": "2026-01-15 00:00:00 -0700",
+            "qty": 29.42,
+            "source": "InBody"
+          }
+        ],
+        "name": "body_mass_index",
+        "units": "count"
+      },
+      {
+        "units": "count",
+        "data": [
+          {
+            "qty": 8,
+            "source": "RyGarrett's Watch|Ryan Garrett",
+            "date": "2026-01-01 00:00:00 -0700"
+          },
+          {
+            "date": "2026-01-02 00:00:00 -0700",
+            "source": "RyGarrett's Watch|Ryan Garrett",
+            "qty": 12
+          },
+          {
+            "date": "2026-01-03 00:00:00 -0700",
+            "qty": 7,
+            "source": "RyGarrett's Watch|Ryan Garrett"
+          }
+        ],
+        "name": "flights_climbed"
+      },
+      {
+        "data": [
+          {
+            "qty": 182.9,
+            "source": "InBody",
+            "date": "2026-01-09 00:00:00 -0700"
+          },
+          {
+            "date": "2026-01-15 00:00:00 -0700",
+            "source": "InBody",
+            "qty": 182.9
+          }
+        ],
+        "name": "height",
+        "units": "cm"
+      },
+      {
+        "name": "heart_rate",
+        "units": "count/min",
+        "data": [
+          {
+            "Max": 155,
+            "Avg": 86.05305342953427,
+            "source": "RyGarrett's Watch|Ryan Garrett",
+            "date": "2026-01-01 00:00:00 -0700",
+            "Min": 59
+          },
+          {
+            "source": "RyGarrett's Watch|Ryan Garrett",
+            "date": "2026-01-02 00:00:00 -0700",
+            "Max": 140,
+            "Avg": 82.17126692554838,
+            "Min": 60
+          },
+          {
+            "date": "2026-01-03 00:00:00 -0700",
+            "source": "RyGarrett's Watch|Ryan Garrett",
+            "Max": 181,
+            "Avg": 89.25580148838993,
+            "Min": 55
+          }
+        ]
+      },
+      {
+        "name": "apple_stand_hour",
+        "data": [
+          {
+            "source": "",
+            "qty": 15,
+            "date": "2026-01-01 00:00:00 -0700"
+          },
+          {
+            "source": "",
+            "date": "2026-01-02 00:00:00 -0700",
+            "qty": 10
+          },
+          {
+            "date": "2026-01-03 00:00:00 -0700",
+            "qty": 15,
+            "source": ""
+          }
+        ],
+        "units": "count"
+      },
+      {
+        "units": "%",
+        "data": [
+          {
+            "date": "2026-01-01 00:00:00 -0700",
+            "qty": 94.2,
+            "source": "Ryan Garrett"
+          },
+          {
+            "qty": 95.3529411764706,
+            "source": "Ryan Garrett",
+            "date": "2026-01-02 00:00:00 -0700"
+          },
+          {
+            "qty": 94.88461538461539,
+            "source": "Ryan Garrett",
+            "date": "2026-01-03 00:00:00 -0700"
+          }
+        ],
+        "name": "blood_oxygen_saturation"
+      },
+      {
+        "units": "dBASPL",
+        "name": "headphone_audio_exposure",
+        "data": [
+          {
+            "qty": 94.54596399698023,
+            "date": "2026-01-01 00:00:00 -0700",
+            "source": "Ryan Garrett"
+          },
+          {
+            "qty": 94.60406224315803,
+            "source": "Ryan Garrett",
+            "date": "2026-01-05 00:00:00 -0700"
+          },
+          {
+            "source": "Ryan Garrett",
+            "date": "2026-01-06 00:00:00 -0700",
+            "qty": 93.99981696736744
+          }
+        ]
+      },
+      {
+        "units": "count/min",
+        "data": [
+          {
+            "date": "2026-01-01 00:00:00 -0700",
+            "qty": 71,
+            "source": "RyGarrett's Watch"
+          },
+          {
+            "source": "RyGarrett's Watch",
+            "qty": 63,
+            "date": "2026-01-02 00:00:00 -0700"
+          },
+          {
+            "source": "RyGarrett's Watch",
+            "date": "2026-01-03 00:00:00 -0700",
+            "qty": 72
+          }
+        ],
+        "name": "resting_heart_rate"
+      },
+      {
+        "data": [
+          {
+            "date": "2026-01-01 00:00:00 -0700",
+            "qty": 2276.1976342472203,
+            "source": "RyGarrett's Watch"
+          },
+          {
+            "date": "2026-01-02 00:00:00 -0700",
+            "qty": 2205.1183991810803,
+            "source": "RyGarrett's Watch"
+          },
+          {
+            "source": "RyGarrett's Watch",
+            "qty": 2263.5850434521394,
+            "date": "2026-01-03 00:00:00 -0700"
+          }
+        ],
+        "name": "basal_energy_burned",
+        "units": "kcal"
+      },
+      {
+        "data": [
+          {
+            "qty": 34.2,
+            "source": "RyGarrett's Watch",
+            "date": "2026-01-17 00:00:00 -0700"
+          }
+        ],
+        "units": "ml/(kg\u00b7min)",
+        "name": "vo2_max"
+      },
+      {
+        "units": "m",
+        "name": "six_minute_walking_test_distance",
+        "data": [
+          {
+            "source": "Ryan Garrett",
+            "date": "2026-01-05 00:00:00 -0700",
+            "qty": 500
+          },
+          {
+            "qty": 500,
+            "date": "2026-01-12 00:00:00 -0700",
+            "source": "Ryan Garrett"
+          },
+          {
+            "date": "2026-01-19 00:00:00 -0700",
+            "qty": 500,
+            "source": "Ryan Garrett"
+          }
+        ]
+      },
+      {
+        "name": "step_count",
+        "data": [
+          {
+            "date": "2026-01-01 00:00:00 -0700",
+            "qty": 7175,
+            "source": "RyGarrett's Watch|Ryan Garrett"
+          },
+          {
+            "date": "2026-01-02 00:00:00 -0700",
+            "qty": 7365,
+            "source": "RyGarrett's Watch|Ryan Garrett"
+          },
+          {
+            "qty": 12293.588387369124,
+            "date": "2026-01-03 00:00:00 -0700",
+            "source": "RyGarrett's Watch|Ryan Garrett"
+          }
+        ],
+        "units": "count"
+      },
+      {
+        "name": "heart_rate_variability",
+        "units": "ms",
+        "data": [
+          {
+            "source": "RyGarrett's Watch",
+            "date": "2026-01-01 00:00:00 -0700",
+            "qty": 34.155252064700164
+          },
+          {
+            "date": "2026-01-02 00:00:00 -0700",
+            "source": "RyGarrett's Watch",
+            "qty": 34.998752433288054
+          },
+          {
+            "source": "RyGarrett's Watch",
+            "date": "2026-01-03 00:00:00 -0700",
+            "qty": 29.984284304170217
+          }
+        ]
+      },
+      {
+        "data": [
+          {
+            "sleepEnd": "2026-01-01 09:07:02 -0700",
+            "deep": 0.9789396950271394,
+            "totalSleep": 8.296336343487104,
+            "core": 5.674730219311185,
+            "sleepStart": "2025-12-31 22:58:37 -0700",
+            "inBedEnd": "2026-01-01 09:07:02 -0700",
+            "source": "RyGarrett's Watch",
+            "inBedStart": "2025-12-31 22:58:37 -0700",
+            "inBed": 0,
+            "awake": 0.17421664973100026,
+            "date": "2026-01-01 00:00:00 -0700",
+            "asleep": 0,
+            "rem": 1.6426664291487802
+          },
+          {
+            "rem": 1.4683329901099205,
+            "date": "2026-01-03 00:00:00 -0700",
+            "core": 5.732449059618844,
+            "inBed": 0,
+            "sleepEnd": "2026-01-03 07:49:55 -0700",
+            "deep": 0.48946476303868824,
+            "source": "RyGarrett's Watch",
+            "sleepStart": "2026-01-02 23:58:33 -0700",
+            "inBedEnd": "2026-01-03 07:49:55 -0700",
+            "totalSleep": 7.690246812767453,
+            "inBedStart": "2026-01-02 23:58:33 -0700",
+            "awake": 0.16591141015291214,
+            "asleep": 0
+          },
+          {
+            "rem": 1.377103596528371,
+            "sleepEnd": "2026-01-04 05:54:44 -0700",
+            "awake": 0.09125347945425245,
+            "inBedStart": "2026-01-03 23:37:26 -0700",
+            "core": 4.371959556010035,
+            "inBed": 0,
+            "totalSleep": 6.197056918111112,
+            "inBedEnd": "2026-01-04 05:54:44 -0700",
+            "asleep": 0,
+            "sleepStart": "2026-01-03 23:37:26 -0700",
+            "source": "RyGarrett's Watch",
+            "date": "2026-01-04 00:00:00 -0700",
+            "deep": 0.4479937655727068
+          }
+        ],
+        "units": "hr",
+        "name": "sleep_analysis"
+      },
+      {
+        "name": "walking_heart_rate_average",
+        "units": "count/min",
+        "data": [
+          {
+            "qty": 109.5,
+            "date": "2026-01-01 00:00:00 -0700",
+            "source": "RyGarrett's Watch"
+          },
+          {
+            "date": "2026-01-02 00:00:00 -0700",
+            "source": "RyGarrett's Watch",
+            "qty": 99
+          },
+          {
+            "date": "2026-01-03 00:00:00 -0700",
+            "source": "RyGarrett's Watch",
+            "qty": 104
+          }
+        ]
+      },
+      {
+        "data": [
+          {
+            "source": "RyGarrett's Watch",
+            "date": "2026-01-01 00:00:00 -0700",
+            "qty": 1.5113544621857653
+          },
+          {
+            "date": "2026-01-02 00:00:00 -0700",
+            "source": "RyGarrett's Watch",
+            "qty": 1.1251134307417865
+          },
+          {
+            "qty": 1.3279491483070092,
+            "date": "2026-01-03 00:00:00 -0700",
+            "source": "RyGarrett's Watch"
+          }
+        ],
+        "units": "ft/s",
+        "name": "stair_speed_down"
+      },
+      {
+        "data": [
+          {
+            "date": "2026-01-01 00:00:00 -0700",
+            "qty": 1.22310489836562,
+            "source": "RyGarrett's Watch"
+          },
+          {
+            "date": "2026-01-02 00:00:00 -0700",
+            "qty": 0.883823939126238,
+            "source": "RyGarrett's Watch"
+          },
+          {
+            "source": "RyGarrett's Watch",
+            "qty": 1.134796933395656,
+            "date": "2026-01-03 00:00:00 -0700"
+          }
+        ],
+        "units": "ft/s",
+        "name": "stair_speed_up"
+      },
+      {
+        "name": "walking_asymmetry_percentage",
+        "data": [
+          {
+            "date": "2026-01-01 00:00:00 -0700",
+            "source": "Ryan Garrett",
+            "qty": 0
+          },
+          {
+            "qty": 0,
+            "source": "Ryan Garrett",
+            "date": "2026-01-02 00:00:00 -0700"
+          },
+          {
+            "source": "Ryan Garrett",
+            "qty": 10,
+            "date": "2026-01-03 00:00:00 -0700"
+          }
+        ],
+        "units": "%"
+      },
+      {
+        "units": "min",
+        "data": [
+          {
+            "date": "2026-01-01 00:00:00 -0700",
+            "qty": 12,
+            "source": "RyGarrett's Watch"
+          },
+          {
+            "source": "RyGarrett's Watch",
+            "qty": 13,
+            "date": "2026-01-02 00:00:00 -0700"
+          },
+          {
+            "source": "RyGarrett's Watch",
+            "date": "2026-01-03 00:00:00 -0700",
+            "qty": 64
+          }
+        ],
+        "name": "time_in_daylight"
+      },
+      {
+        "name": "weight_body_mass",
+        "data": [
+          {
+            "source": "InBody",
+            "qty": 214.79638204672622,
+            "date": "2026-01-09 00:00:00 -0700"
+          },
+          {
+            "date": "2026-01-15 00:00:00 -0700",
+            "qty": 217.001004668575,
+            "source": "InBody"
+          }
+        ],
+        "units": "lb"
+      },
+      {
+        "name": "walking_running_distance",
+        "units": "mi",
+        "data": [
+          {
+            "date": "2026-01-01 00:00:00 -0700",
+            "qty": 3.3449438074031574,
+            "source": "RyGarrett's Watch|Ryan Garrett"
+          },
+          {
+            "qty": 3.3333753177885987,
+            "date": "2026-01-02 00:00:00 -0700",
+            "source": "RyGarrett's Watch|Ryan Garrett"
+          },
+          {
+            "date": "2026-01-03 00:00:00 -0700",
+            "qty": 6.0853658169658775,
+            "source": "RyGarrett's Watch|Ryan Garrett"
+          }
+        ]
+      },
+      {
+        "units": "count/min",
+        "name": "respiratory_rate",
+        "data": [
+          {
+            "date": "2026-01-01 00:00:00 -0700",
+            "source": "RyGarrett's Watch",
+            "qty": 15.177083333333334
+          },
+          {
+            "date": "2026-01-02 00:00:00 -0700",
+            "qty": 20.5,
+            "source": "RyGarrett's Watch"
+          },
+          {
+            "source": "RyGarrett's Watch",
+            "date": "2026-01-03 00:00:00 -0700",
+            "qty": 16.51923076923077
+          }
+        ]
+      },
+      {
+        "units": "dBASPL",
+        "data": [
+          {
+            "qty": 46.098953902027624,
+            "source": "RyGarrett's Watch",
+            "date": "2025-12-31 00:00:00 -0700"
+          },
+          {
+            "source": "RyGarrett's Watch",
+            "qty": 65.79777379147,
+            "date": "2026-01-01 00:00:00 -0700"
+          },
+          {
+            "date": "2026-01-02 00:00:00 -0700",
+            "source": "RyGarrett's Watch",
+            "qty": 70.36783443659404
+          }
+        ],
+        "name": "environmental_audio_exposure"
+      },
+      {
+        "name": "walking_double_support_percentage",
+        "data": [
+          {
+            "source": "Ryan Garrett",
+            "date": "2026-01-01 00:00:00 -0700",
+            "qty": 30.50833333333333
+          },
+          {
+            "qty": 30.745454545454546,
+            "date": "2026-01-02 00:00:00 -0700",
+            "source": "Ryan Garrett"
+          },
+          {
+            "qty": 31.399999999999995,
+            "source": "Ryan Garrett",
+            "date": "2026-01-03 00:00:00 -0700"
+          }
+        ],
+        "units": "%"
+      },
+      {
+        "name": "walking_speed",
+        "data": [
+          {
+            "qty": 2.4916028853036725,
+            "date": "2026-01-01 00:00:00 -0700",
+            "source": "Ryan Garrett"
+          },
+          {
+            "source": "Ryan Garrett",
+            "date": "2026-01-02 00:00:00 -0700",
+            "qty": 2.453173466952994
+          },
+          {
+            "date": "2026-01-03 00:00:00 -0700",
+            "source": "Ryan Garrett",
+            "qty": 2.4363964447625865
+          }
+        ],
+        "units": "mi/hr"
+      },
+      {
+        "units": "in",
+        "name": "walking_step_length",
+        "data": [
+          {
+            "date": "2026-01-01 00:00:00 -0700",
+            "qty": 25.227135069654757,
+            "source": "Ryan Garrett"
+          },
+          {
+            "source": "Ryan Garrett",
+            "date": "2026-01-02 00:00:00 -0700",
+            "qty": 24.50787401574803
+          },
+          {
+            "qty": 23.786089238845147,
+            "date": "2026-01-03 00:00:00 -0700",
+            "source": "Ryan Garrett"
+          }
+        ]
+      },
+      {
+        "name": "physical_effort",
+        "units": "kcal/hr\u00b7kg",
+        "data": [
+          {
+            "source": "RyGarrett's Watch",
+            "date": "2025-12-31 00:00:00 -0700",
+            "qty": 1
+          },
+          {
+            "qty": 3.5388625557953715,
+            "source": "RyGarrett's Watch",
+            "date": "2026-01-01 00:00:00 -0700"
+          },
+          {
+            "qty": 3.512237098887135,
+            "source": "RyGarrett's Watch",
+            "date": "2026-01-02 00:00:00 -0700"
+          }
+        ]
+      },
+      {
+        "name": "blood_glucose",
+        "units": "mg/dL",
+        "data": [
+          {
+            "date": "2026-01-15 08:00:00 -0700",
+            "qty": 92.0,
+            "source": "Lingo"
+          },
+          {
+            "date": "2026-01-15 08:05:00 -0700",
+            "qty": 97.0,
+            "source": "Lingo"
+          },
+          {
+            "date": "2026-01-15 08:10:00 -0700",
+            "qty": 105.0,
+            "source": "Lingo"
+          }
+        ]
+      },
+      {
+        "name": "sleep_analysis",
+        "units": "hr",
+        "data": [
+          {
+            "date": "2026-01-15 00:00:00 -0700",
+            "asleep": 7.2,
+            "deep": 1.3,
+            "rem": 1.8,
+            "source": "RyGarrett's Watch"
+          }
+        ]
+      }
+    ]
+  }
+}
