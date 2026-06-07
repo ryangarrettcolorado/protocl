@@ -144,13 +144,15 @@ def llm_status() -> str:
 
 
 # Visual tokens for each status — kept as a single block so it's easy to edit.
+# Visual tokens are now mode-aware: each badge uses CSS variables so
+# light/dark theming swap automatically via the body[data-theme] selector.
 _BADGE_STYLES = {
-    STATUS_LIVE:        ("LLM LIVE",        "rgba(76,175,80,0.18)",  "#4CAF50"),
-    STATUS_IDLE:        ("LLM LIVE",        "rgba(76,175,80,0.18)",  "#4CAF50"),
-    STATUS_KEY_MISSING: ("LLM KEY MISSING", "rgba(255,152,0,0.18)",  "#FF9800"),
-    STATUS_BILLING:     ("LLM BILLING",     "rgba(244,67,54,0.18)",  "#F44336"),
-    STATUS_QUOTA:       ("QUOTA ISSUE",     "rgba(244,67,54,0.18)",  "#F44336"),
-    STATUS_ERROR:       ("LLM ERROR",       "rgba(244,67,54,0.18)",  "#F44336"),
+    STATUS_LIVE:        ("LLM LIVE",        "var(--brand-success-soft)", "var(--brand-success)"),
+    STATUS_IDLE:        ("LLM LIVE",        "var(--brand-success-soft)", "var(--brand-success)"),
+    STATUS_KEY_MISSING: ("LLM KEY MISSING", "var(--brand-warn-soft)",    "var(--brand-warn)"),
+    STATUS_BILLING:     ("LLM BILLING",     "var(--brand-danger-soft)",  "var(--brand-danger)"),
+    STATUS_QUOTA:       ("QUOTA ISSUE",     "var(--brand-danger-soft)",  "var(--brand-danger)"),
+    STATUS_ERROR:       ("LLM ERROR",       "var(--brand-danger-soft)",  "var(--brand-danger)"),
 }
 
 

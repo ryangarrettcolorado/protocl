@@ -1,0 +1,2679 @@
+# =====================================================================
+# Protocōl Biomarker Catalog
+# =====================================================================
+# Source of truth for all biomarkers Protocōl can ingest, score, and
+# render. Adding a marker is a YAML edit, not a code change.
+#
+# Total markers: 118
+# Categories: lipids, metabolic, inflammation, hormones, thyroid, liver_kidney, vitamins, cbc, urinalysis
+#
+# Tiers:
+#   1 = High-signal (Attia Tier-1, ApoB primacy, glycemic, etc.)
+#   2 = Clinically useful (thyroid, vitamins, electrolytes)
+#   3 = Supplementary (CBC differentials, urinalysis sediments)
+#
+# Directions:
+#   lower_is_better  — e.g. ApoB, HbA1c, hs-CRP
+#   higher_is_better — e.g. HDL-C, Vitamin D
+#   mid_range        — banded optimal (e.g. testosterone, sodium)
+#   binary_flag      — present/absent (e.g. urinalysis crystals, blasts)
+#
+# Ranges (US conventional units):
+#   optimal_min / optimal_max         — the band Protocōl shades green
+#   borderline_min / borderline_max   — amber band (caution)
+#   out_of_range_low_max              — red band below this value
+#   out_of_range_high_min             — red band above this value
+#   null = not applicable (e.g. binary_flag markers have no bands)
+#
+# Generated: 2026-05-30
+# =====================================================================
+
+schema_version: 1
+total_markers: 118
+
+categories:
+  - key: lipids
+    label: "Lipids"
+    description: "LIPIDS — Atherogenic burden, ApoB-primacy (Tier 1)"
+    marker_count: 9
+  - key: metabolic
+    label: "Metabolic"
+    description: "METABOLIC — Glycemic control & insulin resistance (Tier 1)"
+    marker_count: 5
+  - key: inflammation
+    label: "Inflammation"
+    description: "INFLAMMATION — Systemic inflammatory burden (Tier 1)"
+    marker_count: 2
+  - key: hormones
+    label: "Hormones"
+    description: "HORMONES — Endocrine + sex steroids (Tier 1-2)"
+    marker_count: 15
+  - key: thyroid
+    label: "Thyroid"
+    description: "THYROID — HPT axis (Tier 1-2)"
+    marker_count: 3
+  - key: liver_kidney
+    label: "Liver + Kidney"
+    description: "LIVER + KIDNEY — Hepatic & renal function (Tier 1-2)"
+    marker_count: 20
+  - key: vitamins
+    label: "Vitamins + Iron"
+    description: "VITAMINS + IRON — Micronutrient status (Tier 2)"
+    marker_count: 7
+  - key: cbc
+    label: "Cbc"
+    description: "CBC — Complete blood count with differential (Tier 2-3)"
+    marker_count: 30
+  - key: urinalysis
+    label: "Urinalysis"
+    description: "URINALYSIS — Dipstick + microscopic (Tier 3)"
+    marker_count: 27
+
+markers:
+
+  # ---------------------------------------------------------------------
+  # LIPIDS — Atherogenic burden, ApoB-primacy (Tier 1)
+  # 9 markers
+  # ---------------------------------------------------------------------
+
+  - canonical_key: apob
+    display_name: "Apolipoprotein B (ApoB)"
+    category: lipids
+    tier: 1
+    direction: lower_is_better
+    units: "mg/dL"
+    aliases: ["apolipoprotein B", "ApoB-100", "Apo B"]
+    ranges:
+      optimal_min: null
+      optimal_max: 80
+      borderline_min: 80
+      borderline_max: 100
+      out_of_range_low_max: null
+      out_of_range_high_min: 100
+    source_citation: "Sniderman 2019 JAMA Cardiology ApoB primacy; Attia Outlive 2023; AHA Circulation 2022 lower-is-better"
+    source_url: "https://jamanetwork.com/journals/jamacardiology/fullarticle/2753612"
+    notes: >
+      ApoB is the best single measure of atherogenic lipoprotein burden; Attia targets <80
+      mg/dL for low-risk patients and <60 mg/dL for aggressive prevention; evidence from
+      ODYSSEY OUTCOMES shows on-treatment ApoB ≤35 mg/dL confers maximum MACE reduction.
+
+  - canonical_key: glyca
+    display_name: "GlycA (Glycoprotein Acetylation)"
+    category: lipids
+    tier: 1
+    direction: lower_is_better
+    units: "μmol/L"
+    aliases: ["GlycA", "glycoprotein acetylation", "NMR GlycA"]
+    ranges:
+      optimal_min: null
+      optimal_max: 340
+      borderline_min: 340
+      borderline_max: 400
+      out_of_range_low_max: null
+      out_of_range_high_min: 400
+    source_citation: "Mehta & Dey 2020 AJPC NMR GlycA CVD risk; Women's Health Study Akinkuolie et al. (median control ~336–370 μmol/L)"
+    source_url: "https://pmc.ncbi.nlm.nih.gov/articles/PMC8315361/"
+    notes: >
+      GlycA is an NMR-derived composite inflammatory marker reflecting acute phase
+      glycoproteins; available on LabCorp's NMR LipoProfile panel; levels ≥400 μmol/L are
+      associated with meaningfully higher CVD risk in chronic inflammation states.
+
+  - canonical_key: lpa
+    display_name: "Lipoprotein(a) [Lp(a)]"
+    category: lipids
+    tier: 1
+    direction: lower_is_better
+    units: "nmol/L"
+    aliases: ["lipoprotein a", "Lp(a)", "lp_a"]
+    ranges:
+      optimal_min: null
+      optimal_max: 75
+      borderline_min: 75
+      borderline_max: 125
+      out_of_range_low_max: null
+      out_of_range_high_min: 125
+    source_citation: "EAS 2022 consensus; ACC 2023 update on Lp(a); NLA scientific statement 2019"
+    source_url: "https://www.acc.org/latest-in-cardiology/articles/2023/09/19/10/54/an-update-on-lipoprotein-a"
+    notes: >
+      Lp(a) is genetically fixed; EAS considers <75 nmol/L (<30 mg/dL) normal, 75–125 nmol/L
+      intermediate, >125 nmol/L high risk; no current approved pharmacotherapy can reliably
+      lower it — note result once and monitor for gene-therapy trials. Convert mg/dL × 2.5 ≈
+      nmol/L (isoform-dependent).
+
+  - canonical_key: triglycerides
+    display_name: "Triglycerides (fasting)"
+    category: lipids
+    tier: 1
+    direction: lower_is_better
+    units: "mg/dL"
+    aliases: ["TG", "TRIG", "triglyceride"]
+    ranges:
+      optimal_min: null
+      optimal_max: 100
+      borderline_min: 100
+      borderline_max: 150
+      out_of_range_low_max: null
+      out_of_range_high_min: 150
+    source_citation: "Attia 2022 peterattiamd.com — optimal TG < 100 mg/dL; AHA 2011 statement optimal < 100 mg/dL"
+    source_url: "https://peterattiamd.com/triglyceride-levels-cardiovascular-risk/"
+    notes: >
+      Attia cites Duke data showing CVD risk begins rising at TG ~50 mg/dL; the AHA's 'optimal'
+      threshold of <100 mg/dL is more defensible than the 'normal' <150 mg/dL; TG/HDL ratio >2
+      (mg/dL units) signals insulin resistance.
+
+  - canonical_key: hdl_c
+    display_name: "HDL Cholesterol"
+    category: lipids
+    tier: 2
+    direction: higher_is_better
+    units: "mg/dL"
+    aliases: ["HDL-C", "HDL cholesterol", "high density lipoprotein cholesterol"]
+    ranges:
+      optimal_min: 60
+      optimal_max: null
+      borderline_min: 40
+      borderline_max: 59
+      out_of_range_low_max: 40
+      out_of_range_high_min: null
+    source_citation: "AHA/ACC 2018 cholesterol guidelines; Attia Outlive 2023"
+    source_url: "https://peterattiamd.com/measuring-cardiovascular-disease-risk-and-the-importance-of-apob-part-1/"
+    notes: >
+      HDL-C >60 mg/dL is protective; however, extremely high HDL (>100 mg/dL) may paradoxically
+      signal dysfunctional HDL and is not necessarily better; functional HDL quality matters as
+      much as quantity.
+
+  - canonical_key: ldl_c
+    display_name: "LDL Cholesterol (calculated)"
+    category: lipids
+    tier: 2
+    direction: lower_is_better
+    units: "mg/dL"
+    aliases: ["LDL-C", "LDL cholesterol", "low density lipoprotein cholesterol", "LDL (calculated)"]
+    ranges:
+      optimal_min: null
+      optimal_max: 100
+      borderline_min: 100
+      borderline_max: 129
+      out_of_range_low_max: null
+      out_of_range_high_min: 130
+    source_citation: "AHA/ACC 2018; ESC/EAS 2022 very-high-risk goal <55 mg/dL; ACC 2022 expert consensus"
+    source_url: "https://theskepticalcardiologist.substack.com/p/peter-attias-outlive-medicine-30"
+    notes: >
+      Attia prefers ApoB over LDL-C, especially when TG >150 mg/dL causes Friedewald
+      underestimation; very high-risk secondary prevention target is <55 mg/dL per ESC 2022.
+
+  - canonical_key: non_hdl_c
+    display_name: "Non-HDL Cholesterol"
+    category: lipids
+    tier: 2
+    direction: lower_is_better
+    units: "mg/dL"
+    aliases: ["non-HDL cholesterol", "non HDL-C"]
+    ranges:
+      optimal_min: null
+      optimal_max: 130
+      borderline_min: 130
+      borderline_max: 159
+      out_of_range_low_max: null
+      out_of_range_high_min: 160
+    source_citation: "AHA 2018; ACC 2022 expert consensus pathway (non-HDL target <85 mg/dL in very-high-risk)"
+    source_url: "https://peterattiamd.com/measuring-cardiovascular-disease-risk-and-the-importance-of-apob-part-1/"
+    notes: >
+      Non-HDL-C captures all atherogenic lipoprotein cholesterol; superior to LDL-C when TG is
+      elevated; high-risk goal <85 mg/dL per ACC 2022.
+
+  - canonical_key: total_cholesterol
+    display_name: "Total Cholesterol"
+    category: lipids
+    tier: 2
+    direction: mid_range
+    units: "mg/dL"
+    aliases: ["cholesterol total", "TC", "total chol"]
+    ranges:
+      optimal_min: 150
+      optimal_max: 200
+      borderline_min: 200
+      borderline_max: 239
+      out_of_range_low_max: 150
+      out_of_range_high_min: 240
+    source_citation: "AHA/ACC 2018 cholesterol guidelines; Attia Outlive 2023 (ApoB supersedes TC)"
+    source_url: "https://peterattiamd.com/the-straight-dope-on-cholesterol-part-viii/"
+    notes: >
+      Total cholesterol is an imperfect surrogate; Attia deprioritizes it in favor of ApoB;
+      very low TC (<130 mg/dL) may indicate malnutrition or liver disease.
+
+  - canonical_key: chol_hdl_ratio
+    display_name: "Total Cholesterol / HDL Ratio"
+    category: lipids
+    tier: 2
+    direction: lower_is_better
+    units: "ratio"
+    aliases: ["TC/HDL ratio", "cholesterol ratio"]
+    ranges:
+      optimal_min: null
+      optimal_max: 3.5
+      borderline_min: 3.5
+      borderline_max: 5
+      out_of_range_low_max: null
+      out_of_range_high_min: 5
+    source_citation: "AHA cardiovascular risk guidelines; Framingham Heart Study"
+    source_url: "https://peterattiamd.com/measuring-cardiovascular-disease-risk-and-the-importance-of-apob-part-1/"
+    notes: >
+      Ratio <3.5 is associated with low CVD risk; Attia prefers ApoB over this ratio but the
+      TC/HDL ratio remains a useful quick screen for metabolic lipid phenotype.
+
+  # ---------------------------------------------------------------------
+  # METABOLIC — Glycemic control & insulin resistance (Tier 1)
+  # 5 markers
+  # ---------------------------------------------------------------------
+
+  - canonical_key: glucose_fasting
+    display_name: "Glucose (fasting)"
+    category: metabolic
+    tier: 1
+    direction: mid_range
+    units: "mg/dL"
+    aliases: ["fasting glucose", "FPG", "blood glucose fasting", "fasting blood glucose"]
+    ranges:
+      optimal_min: 72
+      optimal_max: 90
+      borderline_min: 90
+      borderline_max: 99
+      out_of_range_low_max: 70
+      out_of_range_high_min: 100
+    source_citation: "Attia Outlive 2023; ADA 2023 (prediabetes 100–125 mg/dL, normal <100 mg/dL); CGM data per FoundMyFitness/Attia (average ~100 mg/dL preferred over 115 mg/dL)"
+    source_url: "https://www.foundmyfitness.com/episodes/insulin-sensitivity-longevity-attia"
+    notes: >
+      Attia considers fasting glucose 72–90 mg/dL as optimal; ADA flags prediabetes at 100
+      mg/dL; 90–99 mg/dL is technically 'normal' but Attia considers values trending toward 99
+      as early metabolic signal warranting lifestyle intervention.
+
+  - canonical_key: hba1c
+    display_name: "Hemoglobin A1c (HbA1c)"
+    category: metabolic
+    tier: 1
+    direction: mid_range
+    units: "%"
+    aliases: ["A1c", "HgbA1c", "glycated hemoglobin", "glycohemoglobin"]
+    ranges:
+      optimal_min: 4.8
+      optimal_max: 5.4
+      borderline_min: 5.4
+      borderline_max: 5.9
+      out_of_range_low_max: 4.5
+      out_of_range_high_min: 6
+    source_citation: "Attia Outlive 2023 & Bolt Pharmacy analysis — Attia targets 5.0–5.5%; ADA 2023 prediabetes threshold 5.7%; continuous risk data from Emerging Risk Factors Collaboration (Lancet)"
+    source_url: "https://www.boltpharmacy.co.uk/guide/peter-attia-hba1c-target"
+    notes: >
+      Attia targets 5.0–5.5%; all-cause mortality data suggest benefit at lower HbA1c even
+      within 'normal' range; ACCORD trial cautions against aggressive lowering in high-risk
+      diabetic patients on medications; falsely low in hemolytic anemia/hemoglobinopathies.
+
+  - canonical_key: insulin_fasting
+    display_name: "Insulin (fasting)"
+    category: metabolic
+    tier: 1
+    direction: lower_is_better
+    units: "μIU/mL"
+    aliases: ["fasting insulin", "serum insulin fasting", "insulin fasting"]
+    ranges:
+      optimal_min: 2
+      optimal_max: 6
+      borderline_min: 6
+      borderline_max: 10
+      out_of_range_low_max: null
+      out_of_range_high_min: 10
+    source_citation: "Veri.co optimal insulin review 2023; Archives Endocrinol Metab 2024 RI study (2.52–13.14 μIU/mL); Attia Outlive 2023"
+    source_url: "https://www.veri.co/learn/optimal-fasting-insulin-level"
+    notes: >
+      No universally standardized clinical cutoff exists for fasting insulin; consensus in
+      precision medicine considers <6 μIU/mL optimal, <10 good, >20 concerning for insulin
+      resistance; Attia uses fasting insulin as early IR signal before HbA1c rises; assay
+      variability is significant across labs.
+
+  - canonical_key: uric_acid
+    display_name: "Uric Acid"
+    category: metabolic
+    tier: 1
+    direction: lower_is_better
+    units: "mg/dL"
+    aliases: ["UA", "serum uric acid", "urate"]
+    ranges:
+      optimal_min: null
+      optimal_max: 5
+      borderline_min: 5
+      borderline_max: 6
+      out_of_range_low_max: null
+      out_of_range_high_min: 7
+    source_citation: "Attia (STEM Talk 2020 — 'I like to see it <5 mg/dL'); JAHA 2023 optimal cutoff 6.17 mg/dL for MACE; Lamkin Clinic FM optimal <5.5 mg/dL"
+    source_url: "https://podcastnotes.org/stem-talk/peter-attia-stem-talk-healthspan-longevity-lifespan/"
+    notes: >
+      Attia's target is <5 mg/dL, citing endothelial and blood pressure benefits below this
+      threshold; conventional gout threshold is 6.8 mg/dL; standard lab upper normal is 7.0
+      mg/dL men / 6.0 mg/dL women; Lustig links fructose-driven uric acid to metabolic
+      syndrome.
+
+  - canonical_key: diabetes_risk_index
+    display_name: "Diabetes Risk Index (DRI)"
+    category: metabolic
+    tier: 2
+    direction: lower_is_better
+    units: "score (1–100)"
+    aliases: ["DRI", "LabCorp DRI", "NMR diabetes risk index"]
+    ranges:
+      optimal_min: null
+      optimal_max: 50
+      borderline_min: 50
+      borderline_max: 65
+      out_of_range_low_max: null
+      out_of_range_high_min: 65
+    source_citation: "LabCorp DRI methodology document; MESA reference population cutpoints"
+    source_url: "https://www.labcorp.com/tests/123855/diabetes-risk-index-dri"
+    notes: >
+      LabCorp's NMR-derived score (1–100) predicts T2D risk independent of glycemic status
+      using lipoprotein subfractions and branched-chain amino acids; men: low <50, moderate
+      50–65, high >65; women: low <40, moderate 40–55, high >55.
+
+  # ---------------------------------------------------------------------
+  # INFLAMMATION — Systemic inflammatory burden (Tier 1)
+  # 2 markers
+  # ---------------------------------------------------------------------
+
+  - canonical_key: ferritin
+    display_name: "Ferritin"
+    category: inflammation
+    tier: 1
+    direction: mid_range
+    units: "ng/mL"
+    aliases: ["serum ferritin", "ferritin level"]
+    ranges:
+      optimal_min: 60
+      optimal_max: 120
+      borderline_min: 30
+      borderline_max: 60
+      out_of_range_low_max: 30
+      out_of_range_high_min: 200
+    source_citation: "Superpower.com optimal ferritin review (men 60–120 ng/mL, women 45–80 ng/mL); Bronson Health analysis (>50 ng/mL operationally important); longevity studies: ferritin >400 ng/mL significantly shorter median survival"
+    source_url: "https://superpower.com/blog/optimal-ferritin"
+    notes: >
+      Ranges above reflect male optimal; female optimal: 45–80 ng/mL (borderline 15–45,
+      out-of-range-low <15, out-of-range-high >150). Ferritin is both an iron storage marker
+      AND an acute phase reactant — elevated ferritin from inflammation can mask iron
+      deficiency. Standard lab upper limits (~300–566 ng/mL for men) are far too permissive
+      from a longevity standpoint; high ferritin linked to shorter telomere length and
+      increased all-cause mortality.
+
+  - canonical_key: hs_crp
+    display_name: "High-Sensitivity CRP (hs-CRP)"
+    category: inflammation
+    tier: 1
+    direction: lower_is_better
+    units: "mg/L"
+    aliases: ["hsCRP", "CRP high sensitivity", "C-reactive protein high sensitivity"]
+    ranges:
+      optimal_min: null
+      optimal_max: 1
+      borderline_min: 1
+      borderline_max: 3
+      out_of_range_low_max: null
+      out_of_range_high_min: 3
+    source_citation: "Attia Outlive 2023; ACC now recommends hs-CRP for everyone per Empirical Health 2025; AHA 2003 cardiovascular risk classification (<1/1–3/>3 mg/L)"
+    source_url: "https://empirical.health/blog/peter-attia-outlive-labs/"
+    notes: >
+      hs-CRP <1.0 mg/L is optimal; 1.0–3.0 mg/L is average/borderline risk; >3.0 mg/L is high
+      risk (excluding acute illness/infection); very high hs-CRP (>10 mg/L) suggests active
+      infection or acute inflammatory illness, invalidating cardiovascular risk interpretation;
+      reflects systemic low-grade inflammation, a key longevity lever.
+
+  # ---------------------------------------------------------------------
+  # HORMONES — Endocrine + sex steroids (Tier 1-2)
+  # 15 markers
+  # ---------------------------------------------------------------------
+
+  - canonical_key: estradiol_sensitive
+    display_name: "Estradiol (Sensitive Immunoassay, LabCorp E2)"
+    category: hormones
+    tier: 1
+    direction: mid_range
+    units: "pg/mL"
+    aliases: ["E2 sensitive", "estradiol sensitive assay", "estradiol LabCorp 4021"]
+    ranges:
+      optimal_min: 20
+      optimal_max: 35
+      borderline_min: 10
+      borderline_max: 20
+      out_of_range_low_max: 10
+      out_of_range_high_min: 40
+    source_citation: "HealthMatters.io estradiol men reference (LabCorp: 8–35 pg/mL); OptimalDX ODX range 24–39 pg/mL; Russell 2019 healthy young men median 40.9 pg/mL"
+    source_url: "https://healthmatters.io/understand-blood-test-results/estradiol-male"
+    notes: >
+      Men: E2 optimal 20–35 pg/mL balances bone density, libido, and cardiovascular protection;
+      levels >40 pg/mL on TRT often trigger AI use (controversial); levels <15 pg/mL associated
+      with joint pain, bone loss, and libido impairment. Women's ranges vary dramatically
+      across menstrual cycle phases — not collapsible to a single optimal band for
+      premenopausal women.
+
+  - canonical_key: estradiol_ultrasensitive_lcms
+    display_name: "Estradiol Ultrasensitive (LC/MS, Quest)"
+    category: hormones
+    tier: 1
+    direction: mid_range
+    units: "pg/mL"
+    aliases: ["E2 ultrasensitive", "estradiol LC/MS", "Quest ultrasensitive E2"]
+    ranges:
+      optimal_min: 20
+      optimal_max: 40
+      borderline_min: 10
+      borderline_max: 20
+      out_of_range_low_max: 10
+      out_of_range_high_min: 50
+    source_citation: "Quest Diagnostics ultrasensitive E2 reference (10–40 pg/mL for men); OptimalDX 2023"
+    source_url: "https://www.optimaldx.com/research-blog/hormone-biomarkers-estradiol-in-men"
+    notes: >
+      LC/MS method is the most accurate for low-range estradiol measurements relevant to men
+      and postmenopausal women; LabCorp sensitive and Quest LC/MS give comparable results but
+      different assay nomenclature; use same lab sequentially for trend monitoring.
+
+  - canonical_key: free_testosterone_dialysis
+    display_name: "Free Testosterone (Equilibrium Dialysis)"
+    category: hormones
+    tier: 1
+    direction: mid_range
+    units: "pg/mL"
+    aliases: ["free T equilibrium dialysis", "free T dialysis", "bioavailable testosterone dialysis"]
+    ranges:
+      optimal_min: 15
+      optimal_max: 25
+      borderline_min: 8
+      borderline_max: 15
+      out_of_range_low_max: 8
+      out_of_range_high_min: 30
+    source_citation: "Attia AMA #28; Endocrine Society 2018 testosterone guideline; LabCorp equilibrium dialysis reference"
+    source_url: "https://peterattiamd.com/ama28/"
+    notes: >
+      Gold-standard method for free testosterone; Attia prioritizes this over total T for
+      symptom correlation and TRT dosing decisions; free T typically represents 1–3% of total
+      T; context-dependent interpretation critical — athletic men may run higher without
+      pathology.
+
+  - canonical_key: igf1
+    display_name: "IGF-1 (LC/MS, Insulin-Like Growth Factor 1)"
+    category: hormones
+    tier: 1
+    direction: mid_range
+    units: "ng/mL"
+    aliases: ["IGF-1", "insulin-like growth factor 1", "somatomedin C"]
+    ranges:
+      optimal_min: 100
+      optimal_max: 200
+      borderline_min: 70
+      borderline_max: 100
+      out_of_range_low_max: 70
+      out_of_range_high_min: 250
+    source_citation: "Attia Outlive 2023 (optimal IGF-1 mid-reference range for age); FoundMyFitness Attia/Patrick episode; LabCorp age-specific reference ranges"
+    source_url: "https://www.foundmyfitness.com/episodes/igf-1-diabetes-alzheimer"
+    notes: >
+      IGF-1 optimal range is contested: very high IGF-1 (>250 ng/mL) is associated with
+      increased cancer risk (prostate, colorectal, breast); very low IGF-1 (<70 ng/mL)
+      associated with sarcopenia, frailty, and poor metabolic function. Attia targets
+      mid-reference range for age, not top quartile. Ranges are strongly age-dependent (peak in
+      teenage years, decline ~14% per decade after 30). Z-score for males is clinically
+      informative.
+
+  - canonical_key: psa_total
+    display_name: "PSA Total (Prostate Specific Antigen)"
+    category: hormones
+    tier: 1
+    direction: lower_is_better
+    units: "ng/mL"
+    aliases: ["PSA", "prostate specific antigen total"]
+    ranges:
+      optimal_min: null
+      optimal_max: 1
+      borderline_min: 1
+      borderline_max: 2.5
+      out_of_range_low_max: null
+      out_of_range_high_min: 4
+    source_citation: "StatPearls PSA review 2024; Turkish J Urology age-median PSA (40–50: median 0.7 ng/mL); NCCN guidelines; ACS recommendations"
+    source_url: "https://www.ncbi.nlm.nih.gov/books/NBK557495/"
+    notes: >
+      PSA ≤1.0 ng/mL in men <55 yrs is reassuring; PSA >4.0 ng/mL warrants urologic evaluation;
+      PSA velocity >0.75 ng/mL/year is concerning; for precision monitoring, note that TRT does
+      not increase prostate cancer risk per current evidence but may unmask existing disease.
+      Age-adjusted upper limits: 40–49 yr ≤2.5, 50–59 yr ≤3.5, 60–69 yr ≤4.5.
+
+  - canonical_key: shbg
+    display_name: "Sex Hormone Binding Globulin (SHBG)"
+    category: hormones
+    tier: 1
+    direction: mid_range
+    units: "nmol/L"
+    aliases: ["sex hormone binding globulin", "SHBG nmol/L"]
+    ranges:
+      optimal_min: 20
+      optimal_max: 40
+      borderline_min: 15
+      borderline_max: 20
+      out_of_range_low_max: 15
+      out_of_range_high_min: 80
+    source_citation: "Attia: SHBG <60 nmol/L for males per longevity-tools.com; Lamkin Clinic FM optimal men 20–40 nmol/L; Lamkin women 40–80 nmol/L"
+    source_url: "https://www.longevity-tools.com/biomarker/S-SHBG"
+    notes: >
+      Very high SHBG (>60 nmol/L in men) reduces free testosterone bioavailability; very low
+      SHBG (<15 nmol/L in men) signals insulin resistance and metabolic syndrome; SHBG is a key
+      determinant of free/bioavailable androgen status. Women's optimal range is higher (40–80
+      nmol/L); standard LabCorp range: men 10–57 nmol/L, women 18–144 nmol/L.
+
+  - canonical_key: total_testosterone
+    display_name: "Total Testosterone (LC/MS)"
+    category: hormones
+    tier: 1
+    direction: mid_range
+    units: "ng/dL"
+    aliases: ["testosterone total", "T total", "testosterone LC/MS"]
+    ranges:
+      optimal_min: 600
+      optimal_max: 1000
+      borderline_min: 400
+      borderline_max: 600
+      out_of_range_low_max: 300
+      out_of_range_high_min: 1200
+    source_citation: "Attia AMA #28 peterattiamd.com; 1st Optimal Health Attia TRT analysis 2025; Endocrine Society hypogonadism guidelines"
+    source_url: "https://peterattiamd.com/ama28/"
+    notes: >
+      Attia focuses more on free testosterone than total; 'normal' lab range 300–1,000 ng/dL is
+      population-derived; clinical hypogonadism defined <300 ng/dL; total T should be measured
+      by LC/MS (gold standard) in morning fasting state; borderline band here represents
+      'suboptimal but not overtly deficient.'
+
+  - canonical_key: cortisol_am
+    display_name: "Cortisol (Total, AM serum)"
+    category: hormones
+    tier: 2
+    direction: mid_range
+    units: "mcg/dL"
+    aliases: ["morning cortisol", "AM cortisol", "serum cortisol"]
+    ranges:
+      optimal_min: 10
+      optimal_max: 20
+      borderline_min: 7
+      borderline_max: 10
+      out_of_range_low_max: 5
+      out_of_range_high_min: 25
+    source_citation: "WebMD cortisol reference (6–8 AM: 10–20 mcg/dL); Indian J Endocrinol Metab 2024 (mean 6 AM: 13.3 mcg/dL); Endocrine Society adrenal insufficiency cutoff <5 mcg/dL"
+    source_url: "https://www.webmd.com/a-to-z-guides/cortisol-test"
+    notes: >
+      Must be drawn 6–9 AM fasting for valid interpretation; values <5 mcg/dL raise adrenal
+      insufficiency concern; values >25 mcg/dL warrant evaluation for Cushing's syndrome or
+      stress-related hypercortisolism; high cortisol chronically signals HPA axis dysregulation
+      and is associated with visceral adiposity and insulin resistance.
+
+  - canonical_key: dhea_sulfate
+    display_name: "DHEA-Sulfate (DHEA-S)"
+    category: hormones
+    tier: 2
+    direction: mid_range
+    units: "mcg/dL"
+    aliases: ["DHEAS", "dehydroepiandrosterone sulfate", "DHEA-S mcg/dL"]
+    ranges:
+      optimal_min: 300
+      optimal_max: 450
+      borderline_min: 200
+      borderline_max: 300
+      out_of_range_low_max: 200
+      out_of_range_high_min: 500
+    source_citation: "Lamkin Clinic FM optimal men 300–450 mcg/dL, women 150–300 mcg/dL; Rejuvenation Research 2013 DHEA review"
+    source_url: "https://lamkinclinic.com/dhea-s/"
+    notes: >
+      Ranges above reflect male optimal; female optimal is 150–300 mcg/dL (borderline 100–150,
+      out-of-range-low <100). DHEA-S declines ~1–2%/year after age 30; functional medicine
+      targets youthful reference levels rather than age-adjusted population norms; elevated
+      DHEA-S in women warrants evaluation for PCOS or adrenal hyperplasia.
+
+  - canonical_key: fsh
+    display_name: "Follicle Stimulating Hormone (FSH)"
+    category: hormones
+    tier: 2
+    direction: mid_range
+    units: "mIU/mL"
+    aliases: ["follicle stimulating hormone", "FSH serum"]
+    ranges:
+      optimal_min: 1.5
+      optimal_max: 12.4
+      borderline_min: null
+      borderline_max: null
+      out_of_range_low_max: 0.5
+      out_of_range_high_min: 15
+    source_citation: "LabCorp reference range adult men (1.5–12.4 mIU/mL); Endocrine Society guidelines"
+    source_url: "https://www.labcorp.com"
+    notes: >
+      FSH >15 mIU/mL in men may indicate testicular failure or reduced spermatogenesis; in
+      postmenopausal women, FSH >25–40 mIU/mL is expected; combined LH/FSH ratio and
+      testosterone necessary for full gonadal axis interpretation.
+
+  - canonical_key: free_testosterone_direct
+    display_name: "Free Testosterone (Direct Analog RIA)"
+    category: hormones
+    tier: 2
+    direction: mid_range
+    units: "pg/mL"
+    aliases: ["free T direct", "free testosterone analog assay"]
+    ranges:
+      optimal_min: 15
+      optimal_max: 25
+      borderline_min: 9
+      borderline_max: 15
+      out_of_range_low_max: 9
+      out_of_range_high_min: 30
+    source_citation: "LabCorp reference ranges; Attia prefers dialysis method but direct RIA is widely available"
+    source_url: "https://peterattiamd.com/ama28/"
+    notes: >
+      Direct analog immunoassay for free testosterone has known inaccuracies vs. equilibrium
+      dialysis (gold standard); Attia emphasizes free T as the clinically actionable number;
+      LabCorp reference range for men 20–50 yrs: 8.7–25.1 pg/mL. Consider free T (dialysis) for
+      precision.
+
+  - canonical_key: lh
+    display_name: "Luteinizing Hormone (LH)"
+    category: hormones
+    tier: 2
+    direction: mid_range
+    units: "mIU/mL"
+    aliases: ["luteinizing hormone", "LH serum"]
+    ranges:
+      optimal_min: 1.5
+      optimal_max: 9.3
+      borderline_min: null
+      borderline_max: null
+      out_of_range_low_max: 0.5
+      out_of_range_high_min: 12
+    source_citation: "LabCorp reference range (adult men: 1.5–9.3 mIU/mL); Endocrine Society hypogonadism guidelines"
+    source_url: "https://www.labcorp.com"
+    notes: >
+      In men, LH + testosterone context determines hypogonadism type; high LH + low T = primary
+      (testicular) hypogonadism; low/normal LH + low T = secondary (pituitary/hypothalamic)
+      hypogonadism; in women, dramatic phase-dependent variation — LH surge (>20 mIU/mL)
+      signals ovulation; postmenopausal women: 14–52 mIU/mL.
+
+  - canonical_key: pregnenolone
+    display_name: "Pregnenolone (LC/MS)"
+    category: hormones
+    tier: 2
+    direction: mid_range
+    units: "ng/dL"
+    aliases: ["pregnenolone MS", "pregnenolone LC/MS serum"]
+    ranges:
+      optimal_min: 80
+      optimal_max: 180
+      borderline_min: 50
+      borderline_max: 80
+      out_of_range_low_max: 50
+      out_of_range_high_min: 230
+    source_citation: "Lamkin Clinic FM optimal 50–200 ng/dL; HealthMatters.io reference 33–248 ng/dL (LabCorp)"
+    source_url: "https://lamkinclinic.com/pregnenolone/"
+    notes: >
+      Pregnenolone is the 'mother hormone' — upstream precursor to all steroid hormones; below
+      50 ng/dL in functional medicine practice signals reduced steroidogenic capacity; standard
+      LabCorp range is 33–248 ng/dL (adults ≥18); declines significantly with age; mild morning
+      diurnal rhythm, draw AM.
+
+  - canonical_key: progesterone
+    display_name: "Progesterone"
+    category: hormones
+    tier: 2
+    direction: binary_flag
+    units: "ng/mL"
+    aliases: ["serum progesterone"]
+    ranges:
+      optimal_min: null
+      optimal_max: null
+      borderline_min: null
+      borderline_max: null
+      out_of_range_low_max: null
+      out_of_range_high_min: null
+    source_citation: "LabCorp/Quest reference ranges (phase-dependent); ACOG guidelines"
+    source_url: "https://www.labcorp.com"
+    notes: >
+      Progesterone ranges vary dramatically by menstrual cycle phase and menopausal status; in
+      men, normal is <0.2 ng/mL; in premenopausal women, follicular <1 ng/mL, ovulatory 2–5
+      ng/mL, luteal 10–40 ng/mL; binary_flag direction used here because no single tri-band
+      range is clinically defensible across all contexts — must interpret with phase and sex
+      context.
+
+  - canonical_key: prolactin
+    display_name: "Prolactin"
+    category: hormones
+    tier: 2
+    direction: lower_is_better
+    units: "ng/mL"
+    aliases: ["serum prolactin", "PRL"]
+    ranges:
+      optimal_min: 2
+      optimal_max: 15
+      borderline_min: 15
+      borderline_max: 20
+      out_of_range_low_max: null
+      out_of_range_high_min: 20
+    source_citation: "LabCorp reference range (men 2.0–18 ng/mL; women non-pregnant 2.8–29 ng/mL)"
+    source_url: "https://www.labcorp.com"
+    notes: >
+      Elevated prolactin (>20–25 ng/mL in men) can suppress testosterone and cause
+      hypogonadism; important to rule out macroprolactinoma and medication causes
+      (antipsychotics, metoclopramide); mildly elevated levels may be due to stress or
+      'macroprolactin' (bioinactive).
+
+  # ---------------------------------------------------------------------
+  # THYROID — HPT axis (Tier 1-2)
+  # 3 markers
+  # ---------------------------------------------------------------------
+
+  - canonical_key: free_t3
+    display_name: "Free T3 (Triiodothyronine, Free)"
+    category: thyroid
+    tier: 1
+    direction: mid_range
+    units: "pg/mL"
+    aliases: ["FT3", "triiodothyronine free", "T3 free"]
+    ranges:
+      optimal_min: 3
+      optimal_max: 4
+      borderline_min: 2.5
+      borderline_max: 3
+      out_of_range_low_max: 2.3
+      out_of_range_high_min: 4.4
+    source_citation: "Attia Drive podcast #256 on thyroid axis; LabCorp reference 2.3–4.2 pg/mL; Attia optimal in upper half of reference range"
+    source_url: "https://peterattiamd.com/endocrinesystem/"
+    notes: >
+      Free T3 is the biologically active thyroid hormone at the cellular level; Attia focuses
+      on free T3/reverse T3 ratio as key signal of cellular thyroid adequacy; prolonged
+      fasting, illness, and caloric restriction disproportionately lower T3 and raise reverse
+      T3 (low T3 syndrome) — not indicative of true hypothyroidism.
+
+  - canonical_key: free_t4
+    display_name: "Free T4 (Thyroxine, Free)"
+    category: thyroid
+    tier: 1
+    direction: mid_range
+    units: "ng/dL"
+    aliases: ["FT4", "thyroxine free", "T4 free"]
+    ranges:
+      optimal_min: 1
+      optimal_max: 1.6
+      borderline_min: 0.8
+      borderline_max: 1
+      out_of_range_low_max: 0.7
+      out_of_range_high_min: 1.8
+    source_citation: "ATA/AACE guideline; Attia Drive podcast episode #256; LabCorp reference 0.8–1.8 ng/dL"
+    source_url: "https://peterattiamd.com/endocrinesystem/"
+    notes: >
+      Free T4 is the main secretory product of the thyroid; T4 is converted peripherally to
+      active T3; Attia notes that normal TSH with low-normal free T4 may still indicate
+      suboptimal thyroid function, especially if free T3 is suppressed (increased reverse T3
+      shunting).
+
+  - canonical_key: tsh
+    display_name: "TSH (Thyroid Stimulating Hormone)"
+    category: thyroid
+    tier: 1
+    direction: mid_range
+    units: "mIU/L"
+    aliases: ["thyroid stimulating hormone", "thyrotropin"]
+    ranges:
+      optimal_min: 1
+      optimal_max: 2
+      borderline_min: 2
+      borderline_max: 3
+      out_of_range_low_max: 0.4
+      out_of_range_high_min: 4.5
+    source_citation: "Lamkin Clinic FM optimal 1.0–2.0 mIU/L citing HUNT study; Clinical Medicine & Research PMC (most normal range 0.5–2.5 mIU/L); ATA/AACE guideline treatment target 0.5–3.0 mIU/L"
+    source_url: "https://lamkinclinic.com/tsh/"
+    notes: >
+      HUNT study and others demonstrate TSH 1.0–2.0 mIU/L correlates with lowest CVD risk and
+      fewest hypothyroid symptoms; TSH 2.5–4.5 mIU/L is technically 'normal' but associated
+      with worse metabolic and cardiovascular outcomes; upper normal limit rises with age (>70
+      yrs, upper limit may be 6–7 mIU/L physiologically).
+
+  # ---------------------------------------------------------------------
+  # LIVER + KIDNEY — Hepatic & renal function (Tier 1-2)
+  # 20 markers
+  # ---------------------------------------------------------------------
+
+  - canonical_key: alt
+    display_name: "ALT (Alanine Aminotransferase)"
+    category: liver_kidney
+    tier: 1
+    direction: lower_is_better
+    units: "U/L"
+    aliases: ["alanine aminotransferase", "SGPT", "alanine transaminase"]
+    ranges:
+      optimal_min: null
+      optimal_max: 25
+      borderline_min: 25
+      borderline_max: 40
+      out_of_range_low_max: null
+      out_of_range_high_min: 55
+    source_citation: "Attia Outlive 2023 — optimal <25 U/L men, <20 U/L women; StatPearls normal 4–36 IU/L; Fast Life Hacks Attia ALT analysis"
+    source_url: "https://fastlifehacks.com/peter-attia-top-5-blood-tests/"
+    notes: >
+      Attia's thresholds are more stringent than standard lab upper limits (typically 40–56
+      U/L); he argues 'normal is not healthy' for ALT; values >25 U/L in men or >20 U/L in
+      women may indicate early NAFLD or metabolic liver stress even before standard 'abnormal'
+      flagging; extremely low ALT is generally not clinically concerning.
+
+  - canonical_key: ast
+    display_name: "AST (Aspartate Aminotransferase)"
+    category: liver_kidney
+    tier: 1
+    direction: lower_is_better
+    units: "U/L"
+    aliases: ["aspartate aminotransferase", "SGOT", "aspartate transaminase"]
+    ranges:
+      optimal_min: null
+      optimal_max: 25
+      borderline_min: 25
+      borderline_max: 40
+      out_of_range_low_max: null
+      out_of_range_high_min: 40
+    source_citation: "StatPearls normal 5–30 IU/L; Attia Outlive 2023 (liver health emphasis); AASLD liver guidelines"
+    source_url: "https://www.ncbi.nlm.nih.gov/books/NBK482489/"
+    notes: >
+      AST is less liver-specific than ALT (also elevated by muscle injury, hemolysis, cardiac
+      damage); AST/ALT ratio >2:1 suggests alcoholic liver disease; isolated AST elevation with
+      normal ALT may indicate muscle breakdown (check CK); combined AST+ALT elevation signals
+      hepatocellular injury.
+
+  - canonical_key: cystatin_c
+    display_name: "Cystatin C"
+    category: liver_kidney
+    tier: 1
+    direction: lower_is_better
+    units: "mg/L"
+    aliases: ["cystatin-C", "CStat", "serum cystatin C"]
+    ranges:
+      optimal_min: null
+      optimal_max: 0.9
+      borderline_min: 0.9
+      borderline_max: 1.1
+      out_of_range_low_max: null
+      out_of_range_high_min: 1.15
+    source_citation: "Lamkin Clinic FM optimal <0.90 mg/L; Biomolecules 2023 cystatin C review (reference interval 0.6–1.1 mg/L); KDIGO 2022"
+    source_url: "https://lamkinclinic.com/cystatin-c/"
+    notes: >
+      Cystatin C is a low-molecular-weight protein filtered by glomeruli; production rate is
+      nearly constant regardless of muscle mass, making it a superior GFR marker; not affected
+      by diet or exercise the way creatinine is; standard reference 0.62–1.15 mg/L; functional
+      optimal <0.90 mg/L.
+
+  - canonical_key: ggt
+    display_name: "GGT (Gamma-Glutamyltransferase)"
+    category: liver_kidney
+    tier: 1
+    direction: lower_is_better
+    units: "U/L"
+    aliases: ["gamma-glutamyl transferase", "gamma-glutamyltransferase", "GGTP"]
+    ranges:
+      optimal_min: null
+      optimal_max: 20
+      borderline_min: 20
+      borderline_max: 40
+      out_of_range_low_max: null
+      out_of_range_high_min: 51
+    source_citation: "StatPearls normal 6–50 IU/L; Lola Health GGT longevity analysis 2025; longevity literature links GGT to all-cause mortality"
+    source_url: "https://lolahealth.com/blogs/longevity/ggt-blood-test"
+    notes: >
+      GGT is sensitive to alcohol consumption, NAFLD, and biliary disease; even within 'normal'
+      range, higher GGT quartiles are associated with increased CVD risk and all-cause
+      mortality; Attia uses GGT as a liver metabolic stress sentinel; optimal functional
+      medicine target is <20 U/L.
+
+  - canonical_key: egfr_creatinine
+    display_name: "eGFR (Creatinine-based, CKD-EPI 2021)"
+    category: liver_kidney
+    tier: 1
+    direction: higher_is_better
+    units: "mL/min/1.73m²"
+    aliases: ["eGFR", "estimated GFR creatinine", "GFR estimated", "CKD-EPI eGFR"]
+    ranges:
+      optimal_min: 90
+      optimal_max: null
+      borderline_min: 60
+      borderline_max: 89
+      out_of_range_low_max: 60
+      out_of_range_high_min: null
+    source_citation: "NKF/KDIGO CKD staging; Aging Clin Exp Res PMC 2018 (eGFR <60 = significant mortality increase); JAMA Network Open 2022 cystatin C paper"
+    source_url: "https://www.kidney.org/kidney-topics/estimated-glomerular-filtration-rate-egfr"
+    notes: >
+      eGFR ≥90 is optimal; CKD defined as eGFR <60 for ≥3 months; note that creatinine-based
+      eGFR is muscle-mass dependent and can miss CKD in sarcopenic individuals; combine with
+      cystatin C-based eGFR and urine albumin:creatinine ratio for complete kidney function
+      assessment. Attia flags eGFR trending downward even within 'normal' range as an early
+      longevity signal.
+
+  - canonical_key: egfr_cystatin_c
+    display_name: "eGFR (Cystatin C-based)"
+    category: liver_kidney
+    tier: 1
+    direction: higher_is_better
+    units: "mL/min/1.73m²"
+    aliases: ["eGFRcys", "cystatin C GFR", "eGFR cystatin"]
+    ranges:
+      optimal_min: 90
+      optimal_max: null
+      borderline_min: 60
+      borderline_max: 89
+      out_of_range_low_max: 60
+      out_of_range_high_min: null
+    source_citation: "JAMA Network Open 2022 — eGFRcys outperforms eGFRcr for CVD and mortality prediction; Biomolecules 2023 cystatin C review; KDIGO 2022 guidelines"
+    source_url: "https://jamanetwork.com/journals/jamanetworkopen/fullarticle/2797627"
+    notes: >
+      Cystatin C-based eGFR is superior to creatinine-based eGFR for predicting CVD and
+      mortality outcomes, particularly in patients with atypical muscle mass (elderly,
+      sarcopenic, obese, athletes); when eGFRcys <60 mL/min/1.73m² irrespective of eGFRcr,
+      10-year CVD risk doubles in younger adults; emerging standard of care for precision
+      kidney assessment.
+
+  - canonical_key: albumin
+    display_name: "Albumin"
+    category: liver_kidney
+    tier: 2
+    direction: higher_is_better
+    units: "g/dL"
+    aliases: ["serum albumin", "albumin serum"]
+    ranges:
+      optimal_min: 4
+      optimal_max: 5
+      borderline_min: 3.5
+      borderline_max: 4
+      out_of_range_low_max: 3.5
+      out_of_range_high_min: null
+    source_citation: "Verywellhealth A/G ratio; LabCorp reference 3.4–5.4 g/dL; nutritional marker context — Attia Outlive 2023"
+    source_url: "https://www.verywellhealth.com/a-g-ratio-8405376"
+    notes: >
+      Albumin <3.5 g/dL indicates significant hepatic synthetic dysfunction or protein
+      malnutrition; albumin is also a negative acute phase reactant (drops in inflammatory
+      states); an albumin of 4.0–5.0 g/dL in a non-acutely ill patient is a positive longevity
+      signal, reflecting adequate protein nutrition and liver function.
+
+  - canonical_key: ag_ratio
+    display_name: "Albumin/Globulin Ratio (A/G)"
+    category: liver_kidney
+    tier: 2
+    direction: mid_range
+    units: "ratio"
+    aliases: ["A/G ratio", "albumin globulin ratio"]
+    ranges:
+      optimal_min: 1.4
+      optimal_max: 2.1
+      borderline_min: 1.1
+      borderline_max: 1.4
+      out_of_range_low_max: 1
+      out_of_range_high_min: 2.5
+    source_citation: "OptimalDX A/G ratio research (optimal 1.40–2.10); Verywellhealth (normal 1.1–2.5)"
+    source_url: "https://www.optimaldx.com/research-blog/protein-biomarkers-albumin-globulin-ratio"
+    notes: >
+      A/G ratio <1.0 is clinically significant and prompts evaluation for elevated globulins
+      (liver disease, myeloma) or reduced albumin (malnutrition, nephrotic syndrome); high A/G
+      ratio (>2.5) may indicate hypogammaglobulinemia.
+
+  - canonical_key: alkaline_phosphatase
+    display_name: "Alkaline Phosphatase (ALP)"
+    category: liver_kidney
+    tier: 2
+    direction: mid_range
+    units: "U/L"
+    aliases: ["ALP", "alk phos", "alkaline phosphate"]
+    ranges:
+      optimal_min: 40
+      optimal_max: 80
+      borderline_min: 80
+      borderline_max: 120
+      out_of_range_low_max: 30
+      out_of_range_high_min: 120
+    source_citation: "StatPearls normal 30–120 IU/L; LabCorp/Quest reference ranges"
+    source_url: "https://www.ncbi.nlm.nih.gov/books/NBK482489/"
+    notes: >
+      ALP is elevated in bone disease (Paget's, fractures, bone metastases) and
+      biliary/cholestatic liver disease; pregnancy elevates ALP (placental isoform); low ALP
+      may indicate zinc or magnesium deficiency; isolated ALP elevation with normal bilirubin
+      and other LFTs suggests bone source — check bone-specific ALP if suspected.
+
+  - canonical_key: bun
+    display_name: "BUN (Blood Urea Nitrogen)"
+    category: liver_kidney
+    tier: 2
+    direction: mid_range
+    units: "mg/dL"
+    aliases: ["blood urea nitrogen", "urea nitrogen", "BUN serum"]
+    ranges:
+      optimal_min: 10
+      optimal_max: 20
+      borderline_min: 20
+      borderline_max: 25
+      out_of_range_low_max: 7
+      out_of_range_high_min: 25
+    source_citation: "LabCorp reference 7–25 mg/dL; NCBI Clinical Methods BUN/Creatinine (doubling BUN = 50% GFR drop)"
+    source_url: "https://www.ncbi.nlm.nih.gov/books/NBK305/"
+    notes: >
+      BUN is affected by protein intake, hydration status, and catabolism — not purely renal;
+      high-protein diets and GI bleeding raise BUN disproportionately to creatinine; low BUN
+      may indicate protein malnutrition or severe liver dysfunction (reduced urea synthesis);
+      interpret with creatinine and BUN/Cr ratio.
+
+  - canonical_key: bun_creatinine_ratio
+    display_name: "BUN/Creatinine Ratio"
+    category: liver_kidney
+    tier: 2
+    direction: mid_range
+    units: "ratio"
+    aliases: ["BUN/Cr ratio", "BUN creatinine ratio"]
+    ranges:
+      optimal_min: 12
+      optimal_max: 16
+      borderline_min: 16
+      borderline_max: 20
+      out_of_range_low_max: 10
+      out_of_range_high_min: 20
+    source_citation: "Mito Health optimal 12–16:1; HealthMatters.io normal 10–20:1; standard lab range 10–20"
+    source_url: "https://mitohealth.com/guide/bun-creatinine-ratio"
+    notes: >
+      Ratio >20 suggests prerenal azotemia (dehydration, GI bleeding, CHF); ratio <10 suggests
+      liver disease, protein malnutrition, or acute tubular necrosis; optimal for precision
+      health is 12–16:1 in well-hydrated adults with normal protein intake.
+
+  - canonical_key: bilirubin_total
+    display_name: "Bilirubin (Total)"
+    category: liver_kidney
+    tier: 2
+    direction: mid_range
+    units: "mg/dL"
+    aliases: ["total bilirubin", "TBIL", "bili total"]
+    ranges:
+      optimal_min: 0.3
+      optimal_max: 1
+      borderline_min: 1
+      borderline_max: 1.2
+      out_of_range_low_max: null
+      out_of_range_high_min: 1.2
+    source_citation: "LabCorp reference 0.2–1.2 mg/dL; StatPearls 2–17 μmol/L; antioxidant role of mild bilirubin elevation noted in elderly Chinese cohort study PMC 2014"
+    source_url: "https://www.ncbi.nlm.nih.gov/books/NBK482489/"
+    notes: >
+      Mild bilirubin elevation (1.0–3.0 mg/dL in isolation) may indicate Gilbert's syndrome
+      (benign UGT1A1 polymorphism) — actually associated with reduced CVD risk due to
+      antioxidant effect; bilirubin >3 mg/dL causes clinical jaundice and warrants
+      investigation; direct vs indirect fractionation distinguishes hepatocellular from
+      hemolytic causes.
+
+  - canonical_key: co2
+    display_name: "CO2 (Bicarbonate/Carbon Dioxide, Serum)"
+    category: liver_kidney
+    tier: 2
+    direction: mid_range
+    units: "mEq/L"
+    aliases: ["bicarbonate", "HCO3", "total CO2", "TCO2"]
+    ranges:
+      optimal_min: 22
+      optimal_max: 28
+      borderline_min: 20
+      borderline_max: 22
+      out_of_range_low_max: 20
+      out_of_range_high_min: 29
+    source_citation: "LabCorp reference 19–30 mEq/L; Cleveland Clinic electrolyte ranges"
+    source_url: "https://my.clevelandclinic.org/health/diagnostics/21790-electrolytes"
+    notes: >
+      Serum CO2 (bicarbonate) reflects acid-base status; low CO2 (<20 mEq/L) indicates
+      metabolic acidosis (CKD, DKA, lactic acidosis); high CO2 (>30 mEq/L) indicates metabolic
+      alkalosis (vomiting, diuretics); interpret alongside anion gap for complete acid-base
+      picture.
+
+  - canonical_key: calcium
+    display_name: "Calcium (Serum, Total)"
+    category: liver_kidney
+    tier: 2
+    direction: mid_range
+    units: "mg/dL"
+    aliases: ["Ca", "serum calcium", "total calcium"]
+    ranges:
+      optimal_min: 9
+      optimal_max: 10.2
+      borderline_min: 8.6
+      borderline_max: 9
+      out_of_range_low_max: 8.5
+      out_of_range_high_min: 10.5
+    source_citation: "LabCorp reference 8.6–10.3 mg/dL; Cleveland Clinic; AACE calcium disorder guidelines"
+    source_url: "https://my.clevelandclinic.org/health/diagnostics/21790-electrolytes"
+    notes: >
+      Total calcium must be corrected for albumin (corrected Ca = total Ca + 0.8 × [4 -
+      albumin]); hypercalcemia (>10.5 mg/dL) warrants evaluation for primary
+      hyperparathyroidism, malignancy, or vitamin D toxicity; hypocalcemia (<8.5 mg/dL) seen in
+      hypoparathyroidism, vitamin D deficiency, CKD; ionized calcium is more precise for acute
+      illness.
+
+  - canonical_key: chloride
+    display_name: "Chloride (Serum)"
+    category: liver_kidney
+    tier: 2
+    direction: mid_range
+    units: "mEq/L"
+    aliases: ["Cl", "serum chloride", "Cl-"]
+    ranges:
+      optimal_min: 98
+      optimal_max: 107
+      borderline_min: 96
+      borderline_max: 98
+      out_of_range_low_max: 96
+      out_of_range_high_min: 107
+    source_citation: "LabCorp reference 98–107 mEq/L; Cleveland Clinic electrolyte reference"
+    source_url: "https://my.clevelandclinic.org/health/diagnostics/21790-electrolytes"
+    notes: >
+      Chloride follows sodium; hyperchloremia may indicate non-anion-gap metabolic acidosis
+      (RTA, diarrhea); hypochloremia seen with vomiting, diuretics, or metabolic alkalosis;
+      less independently monitored but part of the basic metabolic anion gap calculation.
+
+  - canonical_key: creatinine
+    display_name: "Creatinine (Serum)"
+    category: liver_kidney
+    tier: 2
+    direction: mid_range
+    units: "mg/dL"
+    aliases: ["serum creatinine", "Cr", "creat"]
+    ranges:
+      optimal_min: 0.7
+      optimal_max: 1.1
+      borderline_min: 1.1
+      borderline_max: 1.3
+      out_of_range_low_max: 0.5
+      out_of_range_high_min: 1.3
+    source_citation: "LabCorp reference men 0.7–1.2 mg/dL, women 0.5–1.0 mg/dL; Attia Outlive — optimal 0.5–0.9 mg/dL per Reddit Outlive summary; CKD-EPI equations"
+    source_url: "https://www.labcorp.com"
+    notes: >
+      Creatinine is a product of muscle creatine phosphate metabolism; very muscular
+      individuals have higher creatinine at equivalent GFR (spurious 'elevated' creatinine);
+      creatinine is insensitive to early GFR decline (<50% GFR loss before creatinine rises);
+      combine with cystatin C for more accurate kidney function assessment. Female reference
+      range: 0.5–1.0 mg/dL.
+
+  - canonical_key: globulin
+    display_name: "Globulin"
+    category: liver_kidney
+    tier: 2
+    direction: mid_range
+    units: "g/dL"
+    aliases: ["serum globulin", "calculated globulin"]
+    ranges:
+      optimal_min: 2
+      optimal_max: 3
+      borderline_min: 3
+      borderline_max: 3.5
+      out_of_range_low_max: 1.5
+      out_of_range_high_min: 3.5
+    source_citation: "LabCorp reference 2.0–3.5 g/dL; Verywellhealth A/G ratio analysis"
+    source_url: "https://www.verywellhealth.com/a-g-ratio-8405376"
+    notes: >
+      Globulins are calculated as total protein minus albumin; elevated globulins (>3.5 g/dL)
+      warrant evaluation for monoclonal gammopathy (SPEP), chronic infection, liver disease, or
+      autoimmune disease; very low globulin (<1.5 g/dL) suggests immunoglobulin deficiency.
+
+  - canonical_key: potassium
+    display_name: "Potassium (Serum)"
+    category: liver_kidney
+    tier: 2
+    direction: mid_range
+    units: "mEq/L"
+    aliases: ["K", "serum potassium", "K+"]
+    ranges:
+      optimal_min: 4
+      optimal_max: 4.5
+      borderline_min: 3.5
+      borderline_max: 4
+      out_of_range_low_max: 3.5
+      out_of_range_high_min: 5
+    source_citation: "Cleveland Clinic; LabCorp reference 3.5–5.2 mEq/L; WHO dietary potassium guidance; BMC Public Health 2024 sodium-potassium ratio mortality"
+    source_url: "https://pmc.ncbi.nlm.nih.gov/articles/PMC10789005/"
+    notes: >
+      Hypokalemia (<3.5 mEq/L) causes cardiac arrhythmias and muscle weakness; common with
+      diuretic use; hyperkalemia (>5.5 mEq/L) is dangerous, seen in CKD, ACE inhibitors, and
+      Addison's disease; optimal intracellular potassium requires adequate magnesium; dietary
+      potassium (fruits, vegetables) is a key longevity nutrient.
+
+  - canonical_key: sodium
+    display_name: "Sodium (Serum)"
+    category: liver_kidney
+    tier: 2
+    direction: mid_range
+    units: "mEq/L"
+    aliases: ["Na", "serum sodium", "Na+"]
+    ranges:
+      optimal_min: 137
+      optimal_max: 142
+      borderline_min: 135
+      borderline_max: 137
+      out_of_range_low_max: 135
+      out_of_range_high_min: 145
+    source_citation: "Cleveland Clinic electrolyte reference; LabCorp reference 136–145 mEq/L"
+    source_url: "https://my.clevelandclinic.org/health/diagnostics/21790-electrolytes"
+    notes: >
+      Sodium is tightly regulated; hyponatremia (<135 mEq/L) can cause cerebral edema and is
+      serious; hypernatremia (>145 mEq/L) indicates dehydration or diabetes insipidus;
+      over-hydration with plain water can cause hyponatremia in athletes (exercise-associated
+      hyponatremia); interpret in context of hydration status and clinical symptoms.
+
+  - canonical_key: total_protein
+    display_name: "Total Protein"
+    category: liver_kidney
+    tier: 2
+    direction: mid_range
+    units: "g/dL"
+    aliases: ["serum total protein", "protein total"]
+    ranges:
+      optimal_min: 6.5
+      optimal_max: 8
+      borderline_min: 6
+      borderline_max: 6.5
+      out_of_range_low_max: 6
+      out_of_range_high_min: 8.5
+    source_citation: "MedlinePlus Lab Tests Online; LabCorp reference 6.1–8.1 g/dL"
+    source_url: "https://medlineplus.gov/lab-tests/total-protein-and-albumin-globulin-a-g-ratio/"
+    notes: >
+      Total protein reflects albumin + globulins; elevated total protein with low albumin
+      indicates elevated globulins (infection, inflammation, myeloma, autoimmune disease); must
+      be interpreted alongside albumin and the A/G ratio.
+
+  # ---------------------------------------------------------------------
+  # VITAMINS + IRON — Micronutrient status (Tier 2)
+  # 7 markers
+  # ---------------------------------------------------------------------
+
+  - canonical_key: vitamin_d_25oh
+    display_name: "Vitamin D 25-OH (Total: D2 + D3)"
+    category: vitamins
+    tier: 1
+    direction: mid_range
+    units: "ng/mL"
+    aliases: ["25-hydroxyvitamin D", "vitamin D total", "25-OH vitamin D", "25(OH)D"]
+    ranges:
+      optimal_min: 40
+      optimal_max: 70
+      borderline_min: 30
+      borderline_max: 40
+      out_of_range_low_max: 20
+      out_of_range_high_min: 80
+    source_citation: "Attia — target ~50 ng/mL, >80 ng/mL excessive (peterattiamd.com 2025); Endocrine Society: deficiency <20, insufficiency 20–29, sufficiency ≥30 ng/mL; FoundMyFitness Attia/Patrick vitamin D discussion"
+    source_url: "https://peterattiamd.com/vitamin-d-and-exercise/"
+    notes: >
+      Attia targets ~50 ng/mL (shoot for 40–70 ng/mL zone); >80 ng/mL considered excessive with
+      potential hypercalcemia risk; standard clinical cutoffs are insufficiency <30 ng/mL and
+      deficiency <20 ng/mL; D3 (cholecalciferol) is the preferred supplementation form; combine
+      with K2 for bone/vascular calcium routing.
+
+  - canonical_key: iron_serum
+    display_name: "Iron (Serum)"
+    category: vitamins
+    tier: 2
+    direction: mid_range
+    units: "mcg/dL"
+    aliases: ["serum iron", "Fe serum", "iron level"]
+    ranges:
+      optimal_min: 60
+      optimal_max: 160
+      borderline_min: 40
+      borderline_max: 60
+      out_of_range_low_max: 40
+      out_of_range_high_min: 180
+    source_citation: "Everlywell TIBC/iron reference; StatPearls iron binding capacity; LabCorp reference men 50–180 mcg/dL, women 35–170 mcg/dL"
+    source_url: "https://www.ncbi.nlm.nih.gov/books/NBK559119/"
+    notes: >
+      Serum iron alone is an unreliable marker for iron status due to diurnal variation (up to
+      30% lower in afternoon); must interpret in context of ferritin, TIBC, and transferrin
+      saturation; serum iron <60 mcg/dL with elevated TIBC is more informative of iron
+      deficiency than serum iron alone.
+
+  - canonical_key: iron_saturation
+    display_name: "Iron Saturation (Transferrin Saturation %)"
+    category: vitamins
+    tier: 2
+    direction: mid_range
+    units: "%"
+    aliases: ["transferrin saturation", "iron sat%", "% iron saturation", "Fe saturation"]
+    ranges:
+      optimal_min: 25
+      optimal_max: 40
+      borderline_min: 15
+      borderline_max: 25
+      out_of_range_low_max: 15
+      out_of_range_high_min: 50
+    source_citation: "StatPearls transferrin saturation 25–35%; Everlywell (normal 20–50%); hemochromatosis threshold >45% men, >50% women"
+    source_url: "https://www.ncbi.nlm.nih.gov/books/NBK559119/"
+    notes: >
+      Iron saturation <15% indicates iron deficiency; >45–50% in fasting state raises concern
+      for hemochromatosis (check HFE gene mutation); normal range 20–50% is wide — optimal zone
+      is 25–40% for most adults; morning fasting sample preferred to reduce diurnal
+      variability.
+
+  - canonical_key: tibc
+    display_name: "TIBC (Total Iron Binding Capacity)"
+    category: vitamins
+    tier: 2
+    direction: mid_range
+    units: "mcg/dL"
+    aliases: ["total iron binding capacity", "iron binding capacity total"]
+    ranges:
+      optimal_min: 250
+      optimal_max: 370
+      borderline_min: 370
+      borderline_max: 420
+      out_of_range_low_max: 200
+      out_of_range_high_min: 450
+    source_citation: "StatPearls iron binding capacity (TIBC 240–450 mcg/dL); Everlywell TIBC reference (171–505 mcg/dL for males, 149–492 for females)"
+    source_url: "https://www.ncbi.nlm.nih.gov/books/NBK559119/"
+    notes: >
+      TIBC is elevated in iron deficiency (more transferrin produced to scavenge iron) and
+      decreased in iron overload and chronic inflammatory states; inversely correlates with
+      iron stores; TIBC >450 mcg/dL strongly suggests iron deficiency when serum iron is also
+      low.
+
+  - canonical_key: uibc
+    display_name: "UIBC (Unsaturated Iron Binding Capacity)"
+    category: vitamins
+    tier: 2
+    direction: mid_range
+    units: "mcg/dL"
+    aliases: ["unsaturated iron binding capacity", "latent iron binding capacity"]
+    ranges:
+      optimal_min: 100
+      optimal_max: 250
+      borderline_min: 250
+      borderline_max: 300
+      out_of_range_low_max: 70
+      out_of_range_high_min: 340
+    source_citation: "StatPearls (UIBC normal 111–343 mcg/dL); LabCorp reference"
+    source_url: "https://www.ncbi.nlm.nih.gov/books/NBK559119/"
+    notes: >
+      UIBC = TIBC minus serum iron; represents the unfilled iron-binding capacity of
+      transferrin; elevated UIBC indicates iron deficiency (capacity unfilled); low UIBC
+      indicates iron overload or saturation; typically reported alongside TIBC and iron
+      saturation.
+
+  - canonical_key: vitamin_d_25oh_d3
+    display_name: "Vitamin D 25-OH D3"
+    category: vitamins
+    tier: 2
+    direction: mid_range
+    units: "ng/mL"
+    aliases: ["25-OH D3", "cholecalciferol 25-OH", "vitamin D3 level"]
+    ranges:
+      optimal_min: 40
+      optimal_max: 70
+      borderline_min: 30
+      borderline_max: 40
+      out_of_range_low_max: 20
+      out_of_range_high_min: 80
+    source_citation: "Attia 2025 vitamin D target ~50 ng/mL; Endocrine Society guidelines"
+    source_url: "https://peterattiamd.com/vitamin-d-and-exercise/"
+    notes: >
+      D3 fraction is the biologically active form from sun/supplement; optimal D3 level mirrors
+      total 25-OH-D target; in a person supplementing correctly with D3, this fraction should
+      constitute nearly all of total vitamin D.
+
+  - canonical_key: vitamin_d_25oh_d2
+    display_name: "Vitamin D 25-OH D2"
+    category: vitamins
+    tier: 3
+    direction: binary_flag
+    units: "ng/mL"
+    aliases: ["25-OH D2", "ergocalciferol", "vitamin D2"]
+    ranges:
+      optimal_min: null
+      optimal_max: null
+      borderline_min: null
+      borderline_max: null
+      out_of_range_low_max: null
+      out_of_range_high_min: null
+    source_citation: "LabCorp fractionated vitamin D panel"
+    source_url: "https://www.labcorp.com"
+    notes: >
+      D2 should ideally be near zero in individuals not supplementing with ergocalciferol (D2);
+      high D2 with low D3 suggests D2 supplementation (less preferred than D3); D3 fraction
+      carries most of the clinical significance; binary_flag here because there is no
+      meaningful 'optimal' D2 band — track total 25-OH-D and D3 fraction instead.
+
+  # ---------------------------------------------------------------------
+  # CBC — Complete blood count with differential (Tier 2-3)
+  # 30 markers
+  # ---------------------------------------------------------------------
+
+  - canonical_key: hematocrit
+    display_name: "Hematocrit"
+    category: cbc
+    tier: 2
+    direction: mid_range
+    units: "%"
+    aliases: ["HCT", "Hct", "packed cell volume"]
+    ranges:
+      optimal_min: 40
+      optimal_max: 50
+      borderline_min: 37
+      borderline_max: 40
+      out_of_range_low_max: 37
+      out_of_range_high_min: 52
+    source_citation: "LabCorp reference men 41–53%, women 36–46%; WHO/AABB standards"
+    source_url: "https://www.ncbi.nlm.nih.gov/books/NBK604207/"
+    notes: >
+      Ranges shown are male-typical; female optimal: 37–46% (borderline 34–37, out-of-range
+      <34). Hematocrit is roughly 3× hemoglobin; elevated hematocrit (>52% men) on TRT is a
+      clinical concern for increased thrombotic risk — Attia monitors closely and adjusts TRT
+      dosing or recommends phlebotomy.
+
+  - canonical_key: hemoglobin
+    display_name: "Hemoglobin"
+    category: cbc
+    tier: 2
+    direction: mid_range
+    units: "g/dL"
+    aliases: ["Hgb", "Hb", "hemoglobin level"]
+    ranges:
+      optimal_min: 13.5
+      optimal_max: 16.5
+      borderline_min: 12
+      borderline_max: 13.5
+      out_of_range_low_max: 12
+      out_of_range_high_min: 17.5
+    source_citation: "LabCorp reference men 13.5–17.5 g/dL, women 11.5–15.5 g/dL; WHO anemia thresholds"
+    source_url: "https://www.ncbi.nlm.nih.gov/books/NBK604207/"
+    notes: >
+      Ranges shown reflect adult males; female optimal: 12.5–15.5 g/dL (borderline 11.5–12.5,
+      out-of-range <11.5). WHO defines anemia as Hgb <13.0 g/dL men, <12.0 g/dL women; high
+      hemoglobin (>17 g/dL in men) raises concern for polycythemia vera or secondary
+      polycythemia.
+
+  - canonical_key: mch
+    display_name: "MCH (Mean Corpuscular Hemoglobin)"
+    category: cbc
+    tier: 2
+    direction: mid_range
+    units: "pg"
+    aliases: ["mean corpuscular hemoglobin", "MCH pg"]
+    ranges:
+      optimal_min: 27
+      optimal_max: 32
+      borderline_min: 25
+      borderline_max: 27
+      out_of_range_low_max: 25
+      out_of_range_high_min: 34
+    source_citation: "StatPearls normal 27–32 pg/RBC; LabCorp reference"
+    source_url: "https://www.ncbi.nlm.nih.gov/books/NBK604207/"
+    notes: >
+      MCH parallels MCV in most anemias; hypochromic (low MCH) cells indicate iron deficiency
+      or thalassemia; hyperchromic (high MCH) indicates macrocytosis (B12/folate deficiency);
+      MCH moves slowly and is less sensitive than MCV for early deficiency states.
+
+  - canonical_key: mchc
+    display_name: "MCHC (Mean Corpuscular Hemoglobin Concentration)"
+    category: cbc
+    tier: 2
+    direction: mid_range
+    units: "g/dL"
+    aliases: ["mean corpuscular hemoglobin concentration", "MCHC g/dL"]
+    ranges:
+      optimal_min: 32
+      optimal_max: 36
+      borderline_min: 31
+      borderline_max: 32
+      out_of_range_low_max: 31
+      out_of_range_high_min: 36.5
+    source_citation: "StatPearls — normal ~34% Hb/cell; LabCorp reference 31.5–35.7 g/dL"
+    source_url: "https://www.ncbi.nlm.nih.gov/books/NBK604207/"
+    notes: >
+      MCHC is limited to the physiological maximum of ~36 g/dL; hyperchromia is typically an
+      artifact (spherocytosis, lipemia, cell agglutination) rather than a true pathological
+      state; hypochromia confirms iron deficiency or thalassemia. MCHC is the most specific CBC
+      index for iron deficiency anemia.
+
+  - canonical_key: mcv
+    display_name: "MCV (Mean Corpuscular Volume)"
+    category: cbc
+    tier: 2
+    direction: mid_range
+    units: "fL"
+    aliases: ["mean corpuscular volume", "MCV fL"]
+    ranges:
+      optimal_min: 82
+      optimal_max: 98
+      borderline_min: 80
+      borderline_max: 82
+      out_of_range_low_max: 80
+      out_of_range_high_min: 100
+    source_citation: "LabCorp reference 80–98 fL; StatPearls CBC differential; WHO anemia classification"
+    source_url: "https://www.ncbi.nlm.nih.gov/books/NBK604207/"
+    notes: >
+      MCV classifies anemia: microcytic (<80 fL) = iron deficiency or thalassemia; normocytic
+      (80–100 fL) = acute blood loss, hemolysis, or mixed deficiency; macrocytic (>100 fL) =
+      B12/folate deficiency, liver disease, hypothyroidism, or alcohol use; MCV >98 fL is often
+      the first sign of B12 or folate deficiency before overt anemia develops.
+
+  - canonical_key: platelets
+    display_name: "Platelet Count"
+    category: cbc
+    tier: 2
+    direction: mid_range
+    units: "K/μL"
+    aliases: ["PLT", "thrombocytes", "platelet count"]
+    ranges:
+      optimal_min: 150
+      optimal_max: 350
+      borderline_min: 100
+      borderline_max: 150
+      out_of_range_low_max: 100
+      out_of_range_high_min: 400
+    source_citation: "StatPearls normal 150,000–400,000/μL; PLoS ONE 2019 MPV-adjusted reference study (median 222 K/μL)"
+    source_url: "https://www.ncbi.nlm.nih.gov/books/NBK604207/"
+    notes: >
+      Thrombocytopenia (<150 K/μL) warrants investigation for bone marrow disorders, ITP,
+      heparin-induced thrombocytopenia, or hypersplenism; thrombocytosis (>400 K/μL) may be
+      reactive (infection, iron deficiency, inflammation) or clonal (essential
+      thrombocythemia); platelet count is inversely related to MPV.
+
+  - canonical_key: rbc
+    display_name: "RBC (Red Blood Cell Count)"
+    category: cbc
+    tier: 2
+    direction: mid_range
+    units: "M/μL"
+    aliases: ["red blood cells", "RBC count", "erythrocytes"]
+    ranges:
+      optimal_min: 4.5
+      optimal_max: 5.5
+      borderline_min: 4.2
+      borderline_max: 4.5
+      out_of_range_low_max: 4.2
+      out_of_range_high_min: 5.8
+    source_citation: "LabCorp reference men 4.7–6.1 M/μL, women 4.2–5.4 M/μL; StatPearls CBC"
+    source_url: "https://www.ncbi.nlm.nih.gov/books/NBK604207/"
+    notes: >
+      RBC count ranges shown are sex-averaged; men's optimal range is 4.7–5.5 M/μL, women's
+      4.2–5.0 M/μL; elevated RBC may indicate polycythemia (secondary to hypoxia, smoking, EPO
+      use); low RBC indicates anemia — interpret with hemoglobin, hematocrit, and MCV for
+      etiologic classification.
+
+  - canonical_key: rdw
+    display_name: "RDW (Red Cell Distribution Width)"
+    category: cbc
+    tier: 2
+    direction: lower_is_better
+    units: "%"
+    aliases: ["red cell distribution width", "RDW-CV", "anisocytosis index"]
+    ranges:
+      optimal_min: 11.5
+      optimal_max: 13.5
+      borderline_min: 13.5
+      borderline_max: 14.5
+      out_of_range_low_max: null
+      out_of_range_high_min: 14.5
+    source_citation: "Cleveland Clinic (normal RDW 12–15%); StatPearls normal 11.5–15%; MedlinePlus; Disease Markers 2017 RDW mortality review"
+    source_url: "https://my.clevelandclinic.org/health/diagnostics/22980-rdw-blood-test"
+    notes: >
+      Elevated RDW (>14.5%) indicates anisocytosis (mixed-size RBCs) and is associated with
+      iron deficiency, B12/folate deficiency, and chronic disease; even modest RDW elevation
+      within 'normal' range predicts all-cause mortality in population studies; MCV+RDW
+      combination classifies anemia morphology.
+
+  - canonical_key: wbc
+    display_name: "WBC (White Blood Cell Count)"
+    category: cbc
+    tier: 2
+    direction: mid_range
+    units: "K/μL"
+    aliases: ["white blood cells", "WBC count", "leukocytes"]
+    ranges:
+      optimal_min: 4.5
+      optimal_max: 7.5
+      borderline_min: 4
+      borderline_max: 4.5
+      out_of_range_low_max: 4
+      out_of_range_high_min: 10.5
+    source_citation: "StatPearls CBC normal reference 4,500–11,000/μL; LabCorp reference 4.5–11.0 K/μL"
+    source_url: "https://www.ncbi.nlm.nih.gov/books/NBK604207/"
+    notes: >
+      Persistent WBC >7.5 K/μL even within 'normal' range is associated with increased CVD and
+      all-cause mortality in population studies; very low WBC (<4.0 K/μL) warrants
+      investigation for bone marrow suppression, autoimmune disease, or viral infection;
+      clinical context and differential are essential.
+
+  - canonical_key: bands
+    display_name: "Bands (Band Neutrophils)"
+    category: cbc
+    tier: 3
+    direction: binary_flag
+    units: "%"
+    aliases: ["band neutrophils", "stabs"]
+    ranges:
+      optimal_min: null
+      optimal_max: null
+      borderline_min: null
+      borderline_max: null
+      out_of_range_low_max: null
+      out_of_range_high_min: null
+    source_citation: "UCSF blood differential (0–3% normal); standard hospital reference"
+    source_url: "https://www.ucsfhealth.org/care/medical-tests/blood-differential-test"
+    notes: >
+      Bands 0–3% is considered normal (minor left shift is physiological); bands >10% indicate
+      significant bacterial infection, sepsis, or severe physiological stress; some automated
+      analyzers don't report bands separately — flagged in manual review. Binary flag here as
+      any meaningful band count above 5% represents a pathological signal requiring clinical
+      correlation.
+
+  - canonical_key: basophils_pct
+    display_name: "Basophils %"
+    category: cbc
+    tier: 3
+    direction: lower_is_better
+    units: "%"
+    aliases: ["basophil percent", "basos %"]
+    ranges:
+      optimal_min: 0
+      optimal_max: 1
+      borderline_min: null
+      borderline_max: null
+      out_of_range_low_max: null
+      out_of_range_high_min: 2
+    source_citation: "UCSF blood differential (0.5–1%); LabCorp reference 0–1%"
+    source_url: "https://www.ucsfhealth.org/care/medical-tests/blood-differential-test"
+    notes: >
+      Basophilia (>2%) is rare; when present, consider myeloproliferative disease (especially
+      CML), allergic states, or hypothyroidism; basophils are the least common granulocyte and
+      rarely clinically isolated.
+
+  - canonical_key: basophils_abs
+    display_name: "Basophils (Absolute)"
+    category: cbc
+    tier: 3
+    direction: lower_is_better
+    units: "K/μL"
+    aliases: ["absolute basophil count", "basophil absolute"]
+    ranges:
+      optimal_min: null
+      optimal_max: 0.1
+      borderline_min: null
+      borderline_max: null
+      out_of_range_low_max: null
+      out_of_range_high_min: 0.1
+    source_citation: "LabCorp reference 0.0–0.1 K/μL"
+    source_url: "https://www.labcorp.com"
+    notes: >
+      Absolute basophil count >0.1 K/μL is flagged; clinical significance is low in isolation
+      but CML can present with basophilia — check if WBC and other counts also elevated.
+
+  - canonical_key: blasts
+    display_name: "Blasts"
+    category: cbc
+    tier: 3
+    direction: binary_flag
+    units: "%"
+    aliases: ["blast cells", "leukemic blasts"]
+    ranges:
+      optimal_min: null
+      optimal_max: null
+      borderline_min: null
+      borderline_max: null
+      out_of_range_low_max: null
+      out_of_range_high_min: null
+    source_citation: "WHO AML classification (≥20% blasts defines AML); standard hematology reference"
+    source_url: "https://www.labcorp.com"
+    notes: >
+      Blasts should be ABSENT in peripheral blood of healthy individuals; any circulating
+      blasts require urgent hematology evaluation; >20% blasts defines acute leukemia
+      (AML/ALL). Binary flag: zero is the only normal state.
+
+  - canonical_key: eosinophils_pct
+    display_name: "Eosinophils %"
+    category: cbc
+    tier: 3
+    direction: mid_range
+    units: "%"
+    aliases: ["eosinophil percent", "eos %"]
+    ranges:
+      optimal_min: 1
+      optimal_max: 4
+      borderline_min: 4
+      borderline_max: 6
+      out_of_range_low_max: null
+      out_of_range_high_min: 6
+    source_citation: "UCSF blood differential (1–4%); LabCorp reference 0–5%"
+    source_url: "https://www.ucsfhealth.org/care/medical-tests/blood-differential-test"
+    notes: >
+      Eosinophilia (>5%) suggests allergic disease, parasitic infection, or eosinophilic
+      disorders; persistent eosinophilia >10% (hypereosinophilia) can cause end-organ damage
+      (cardiac, pulmonary, neurological) and warrants investigation; eosinophils <1% may be
+      seen with stress or steroid use.
+
+  - canonical_key: eosinophils_abs
+    display_name: "Eosinophils (Absolute)"
+    category: cbc
+    tier: 3
+    direction: mid_range
+    units: "K/μL"
+    aliases: ["absolute eosinophil count", "eosinophil absolute"]
+    ranges:
+      optimal_min: 0.05
+      optimal_max: 0.35
+      borderline_min: 0.35
+      borderline_max: 0.5
+      out_of_range_low_max: null
+      out_of_range_high_min: 0.5
+    source_citation: "LabCorp reference 0.0–0.5 K/μL"
+    source_url: "https://www.labcorp.com"
+    notes: >
+      Absolute eosinophilia >0.5 K/μL is significant; >1.5 K/μL for ≥6 months with end-organ
+      damage meets criteria for hypereosinophilic syndrome.
+
+  - canonical_key: immature_granulocytes
+    display_name: "Immature Granulocytes"
+    category: cbc
+    tier: 3
+    direction: binary_flag
+    units: "K/μL"
+    aliases: ["IG count", "immature granulocyte count"]
+    ranges:
+      optimal_min: null
+      optimal_max: null
+      borderline_min: null
+      borderline_max: null
+      out_of_range_low_max: null
+      out_of_range_high_min: null
+    source_citation: "LabCorp/Quest automated CBC reference; ICSH guidelines on immature granulocytes"
+    source_url: "https://www.labcorp.com"
+    notes: >
+      Should be absent (0) in healthy individuals; presence of >0.03 K/μL indicates a left
+      shift (bone marrow releasing immature cells) — seen in severe infection/sepsis,
+      myeloproliferative disorders, or G-CSF treatment. Binary flag: absent = normal, present =
+      abnormal requiring investigation.
+
+  - canonical_key: lymphocytes_pct
+    display_name: "Lymphocytes %"
+    category: cbc
+    tier: 3
+    direction: mid_range
+    units: "%"
+    aliases: ["lymphocyte percent", "lymphs %"]
+    ranges:
+      optimal_min: 25
+      optimal_max: 40
+      borderline_min: 20
+      borderline_max: 25
+      out_of_range_low_max: 20
+      out_of_range_high_min: 45
+    source_citation: "UCSF blood differential reference (20–40%); LabCorp reference"
+    source_url: "https://www.ucsfhealth.org/care/medical-tests/blood-differential-test"
+    notes: >
+      Lymphocytosis (>45%) in adults: consider viral infection, CLL, or pertussis; lymphopenia
+      (<20%) is associated with immunodeficiency, HIV, corticosteroid use, and stress;
+      declining lymphocyte count with aging (immunosenescence) is a longevity signal monitored
+      in precision health panels.
+
+  - canonical_key: lymphocytes_abs
+    display_name: "Lymphocytes (Absolute)"
+    category: cbc
+    tier: 3
+    direction: mid_range
+    units: "K/μL"
+    aliases: ["absolute lymphocyte count", "ALC", "lymphocyte absolute"]
+    ranges:
+      optimal_min: 1.2
+      optimal_max: 3.5
+      borderline_min: 0.8
+      borderline_max: 1.2
+      out_of_range_low_max: 0.8
+      out_of_range_high_min: 4
+    source_citation: "LabCorp reference 1.0–4.8 K/μL; UCSF differential"
+    source_url: "https://www.ucsfhealth.org/care/medical-tests/blood-differential-test"
+    notes: >
+      Absolute lymphopenia (<1.0 K/μL) is a marker of immune impairment; severe lymphopenia
+      (<0.5 K/μL) suggests severe immunodeficiency; COVID-19 typically causes marked
+      lymphopenia; lymphocyte count is informative for immunological age assessment.
+
+  - canonical_key: mpv
+    display_name: "MPV (Mean Platelet Volume)"
+    category: cbc
+    tier: 3
+    direction: mid_range
+    units: "fL"
+    aliases: ["mean platelet volume", "MPV fL"]
+    ranges:
+      optimal_min: 8
+      optimal_max: 11
+      borderline_min: 7
+      borderline_max: 8
+      out_of_range_low_max: 7
+      out_of_range_high_min: 12.5
+    source_citation: "Cleveland Clinic normal 7–9 fL; Superpower.com MPV guide (7.5–11.5 fL normal); PLoS ONE 2019 MPV reference (median 10.3 fL in population)"
+    source_url: "https://my.clevelandclinic.org/health/diagnostics/23572-mpv-blood-test"
+    notes: >
+      Larger platelets (high MPV) are more metabolically active and associated with increased
+      thrombotic risk in some studies; low MPV with low platelets may indicate bone marrow
+      suppression; MPV is inversely correlated with platelet count. MPV is analyzer-dependent
+      and not well standardized.
+
+  - canonical_key: metamyelocytes
+    display_name: "Metamyelocytes"
+    category: cbc
+    tier: 3
+    direction: binary_flag
+    units: "%"
+    aliases: ["metamyelocyte count"]
+    ranges:
+      optimal_min: null
+      optimal_max: null
+      borderline_min: null
+      borderline_max: null
+      out_of_range_low_max: null
+      out_of_range_high_min: null
+    source_citation: "Standard hematology manual differential reference"
+    source_url: "https://www.labcorp.com"
+    notes: >
+      Metamyelocytes should be absent from peripheral blood; presence indicates a significant
+      left shift from bone marrow stress (severe infection, sepsis, myeloproliferative
+      neoplasm, G-CSF administration). Binary flag: zero is normal.
+
+  - canonical_key: monocytes_pct
+    display_name: "Monocytes %"
+    category: cbc
+    tier: 3
+    direction: mid_range
+    units: "%"
+    aliases: ["monocyte percent", "monos %"]
+    ranges:
+      optimal_min: 2
+      optimal_max: 8
+      borderline_min: 8
+      borderline_max: 11
+      out_of_range_low_max: null
+      out_of_range_high_min: 11
+    source_citation: "UCSF blood differential (2–8%); LabCorp reference 1–10%"
+    source_url: "https://www.ucsfhealth.org/care/medical-tests/blood-differential-test"
+    notes: >
+      Monocytosis (>10%) may indicate chronic infection (TB, endocarditis), monocytic leukemia,
+      or inflammatory bowel disease; monocytes are tissue macrophage precursors and play a key
+      role in atherogenesis via foam cell formation.
+
+  - canonical_key: monocytes_abs
+    display_name: "Monocytes (Absolute)"
+    category: cbc
+    tier: 3
+    direction: mid_range
+    units: "K/μL"
+    aliases: ["absolute monocyte count", "monocyte absolute"]
+    ranges:
+      optimal_min: 0.2
+      optimal_max: 0.8
+      borderline_min: 0.8
+      borderline_max: 1
+      out_of_range_low_max: null
+      out_of_range_high_min: 1
+    source_citation: "LabCorp reference 0.1–0.9 K/μL; StatPearls CBC"
+    source_url: "https://www.ncbi.nlm.nih.gov/books/NBK604207/"
+    notes: >
+      Absolute monocyte count interpretation parallels monocyte percentage; used in
+      hematological malignancy staging and chronic inflammatory condition monitoring.
+
+  - canonical_key: myelocytes
+    display_name: "Myelocytes"
+    category: cbc
+    tier: 3
+    direction: binary_flag
+    units: "%"
+    aliases: ["myelocyte count"]
+    ranges:
+      optimal_min: null
+      optimal_max: null
+      borderline_min: null
+      borderline_max: null
+      out_of_range_low_max: null
+      out_of_range_high_min: null
+    source_citation: "Standard hematology reference; WHO classification"
+    source_url: "https://www.labcorp.com"
+    notes: >
+      Myelocytes should be absent from peripheral blood in healthy adults; presence represents
+      an extreme left shift — seen in severe infection, CML, or myeloid neoplasms. Binary flag:
+      absent = normal.
+
+  - canonical_key: neutrophils_pct
+    display_name: "Neutrophils %"
+    category: cbc
+    tier: 3
+    direction: mid_range
+    units: "%"
+    aliases: ["neutrophil percent", "segs %", "polymorphonuclear %"]
+    ranges:
+      optimal_min: 50
+      optimal_max: 65
+      borderline_min: 45
+      borderline_max: 50
+      out_of_range_low_max: 40
+      out_of_range_high_min: 70
+    source_citation: "UCSF blood differential reference (40–60%); LabCorp reference 45–75%"
+    source_url: "https://www.ucsfhealth.org/care/medical-tests/blood-differential-test"
+    notes: >
+      Neutrophilia (>75%) suggests bacterial infection, stress response, or corticosteroids;
+      neutropenia (<40%) raises concern for viral infection, autoimmune disease, or
+      chemotherapy effects; high neutrophil-to-lymphocyte ratio (NLR >3) is an inflammation and
+      CVD mortality signal.
+
+  - canonical_key: neutrophils_abs
+    display_name: "Neutrophils (Absolute)"
+    category: cbc
+    tier: 3
+    direction: mid_range
+    units: "K/μL"
+    aliases: ["absolute neutrophil count", "ANC", "neutrophil absolute"]
+    ranges:
+      optimal_min: 1.8
+      optimal_max: 5
+      borderline_min: 1.5
+      borderline_max: 1.8
+      out_of_range_low_max: 1.5
+      out_of_range_high_min: 7
+    source_citation: "LabCorp reference 1.8–7.7 K/μL; Endocrine Society; oncology ANC thresholds"
+    source_url: "https://www.labcorp.com"
+    notes: >
+      ANC <1.5 K/μL is mild neutropenia; <0.5 K/μL is severe neutropenia with high infection
+      risk; oncology uses ANC <1.0 K/μL as clinically significant; elevated ANC (>7.0 K/μL)
+      typically signals active infection or inflammatory state.
+
+  - canonical_key: nucleated_rbc
+    display_name: "Nucleated RBC (NRBC)"
+    category: cbc
+    tier: 3
+    direction: binary_flag
+    units: "/100 WBC"
+    aliases: ["NRBC", "normoblasts", "nucleated red blood cells"]
+    ranges:
+      optimal_min: null
+      optimal_max: null
+      borderline_min: null
+      borderline_max: null
+      out_of_range_low_max: null
+      out_of_range_high_min: null
+    source_citation: "Standard hematology reference; StatPearls CBC"
+    source_url: "https://www.ncbi.nlm.nih.gov/books/NBK604207/"
+    notes: >
+      NRBCs should be absent in adults (present only in neonates physiologically); adult
+      presence indicates severe bone marrow stress, myelophthisic anemia (marrow infiltration),
+      hemolytic crisis, or severe hypoxia. Binary flag: zero is normal for adults.
+
+  - canonical_key: plasma_cells
+    display_name: "Plasma Cells (Peripheral)"
+    category: cbc
+    tier: 3
+    direction: binary_flag
+    units: "%"
+    aliases: ["circulating plasma cells"]
+    ranges:
+      optimal_min: null
+      optimal_max: null
+      borderline_min: null
+      borderline_max: null
+      out_of_range_low_max: null
+      out_of_range_high_min: null
+    source_citation: "Standard hematology reference; IMWG myeloma criteria"
+    source_url: "https://www.labcorp.com"
+    notes: >
+      Plasma cells should be ABSENT in peripheral blood; presence raises concern for plasma
+      cell dyscrasias (multiple myeloma, plasma cell leukemia) — confirm with SPEP, bone marrow
+      evaluation. Binary flag: zero is normal.
+
+  - canonical_key: prolymphocytes
+    display_name: "Prolymphocytes (Peripheral)"
+    category: cbc
+    tier: 3
+    direction: binary_flag
+    units: "%"
+    aliases: ["prolymphocyte count"]
+    ranges:
+      optimal_min: null
+      optimal_max: null
+      borderline_min: null
+      borderline_max: null
+      out_of_range_low_max: null
+      out_of_range_high_min: null
+    source_citation: "Standard hematology reference; B-PLL diagnostic criteria"
+    source_url: "https://www.labcorp.com"
+    notes: >
+      Prolymphocytes >55% of circulating lymphocytes is diagnostic of prolymphocytic leukemia
+      (B-PLL or T-PLL); their presence on routine review warrants hematology evaluation. Binary
+      flag: any meaningful presence is abnormal.
+
+  - canonical_key: promyelocytes
+    display_name: "Promyelocytes"
+    category: cbc
+    tier: 3
+    direction: binary_flag
+    units: "%"
+    aliases: ["promyelocyte count"]
+    ranges:
+      optimal_min: null
+      optimal_max: null
+      borderline_min: null
+      borderline_max: null
+      out_of_range_low_max: null
+      out_of_range_high_min: null
+    source_citation: "WHO AML classification; standard hematology reference"
+    source_url: "https://www.labcorp.com"
+    notes: >
+      Promyelocytes should be ABSENT from peripheral blood; their presence is a hematologic
+      emergency (acute promyelocytic leukemia — APL — has promyelocytes >20% and is
+      life-threatening). Binary flag.
+
+  - canonical_key: reactive_lymphocytes
+    display_name: "Reactive Lymphocytes (Atypical Lymphocytes)"
+    category: cbc
+    tier: 3
+    direction: binary_flag
+    units: "%"
+    aliases: ["atypical lymphocytes", "variant lymphocytes", "reactive lymphs"]
+    ranges:
+      optimal_min: null
+      optimal_max: null
+      borderline_min: null
+      borderline_max: null
+      out_of_range_low_max: null
+      out_of_range_high_min: null
+    source_citation: "Standard laboratory hematology reference"
+    source_url: "https://www.labcorp.com"
+    notes: >
+      Up to 5% atypical lymphocytes can be normal; >10% atypical lymphocytes with clinical
+      syndrome suggests EBV (mononucleosis), CMV, viral hepatitis, or drug reaction. Binary
+      flag used here — any report of atypical lymphocytes warrants clinical correlation.
+
+  # ---------------------------------------------------------------------
+  # URINALYSIS — Dipstick + microscopic (Tier 3)
+  # 27 markers
+  # ---------------------------------------------------------------------
+
+  - canonical_key: ua_leukocyte_esterase
+    display_name: "Leukocyte Esterase (Urine)"
+    category: urinalysis
+    tier: 3
+    direction: binary_flag
+    units: "qualitative"
+    aliases: ["WBC esterase", "urine LE", "leukocyte esterase dipstick"]
+    ranges:
+      optimal_min: null
+      optimal_max: null
+      borderline_min: null
+      borderline_max: null
+      out_of_range_low_max: null
+      out_of_range_high_min: null
+    source_citation: "AAFP urinalysis review 2022 (sensitivity 75–90%); UNC Medical Center (normal: negative)"
+    source_url: "https://www.aafp.org/afp/2022/0700/office-based-urinalysis"
+    notes: >
+      Should be NEGATIVE; positive LE indicates pyuria (WBCs in urine) from UTI, urethritis,
+      interstitial nephritis, or bladder irritation; sensitivity 75–90%, specificity 95% for
+      UTI; >5 WBCs/hpf on microscopy confirms pyuria; false positive: vaginal contamination,
+      trichomonas. Binary flag.
+
+  - canonical_key: ua_amorphous_sediment
+    display_name: "Urine Amorphous Sediment"
+    category: urinalysis
+    tier: 3
+    direction: binary_flag
+    units: "qualitative"
+    aliases: ["amorphous urates", "amorphous phosphates", "granular debris urine"]
+    ranges:
+      optimal_min: null
+      optimal_max: null
+      borderline_min: null
+      borderline_max: null
+      out_of_range_low_max: null
+      out_of_range_high_min: null
+    source_citation: "Standard urinalysis interpretation guide; LabCorp reference"
+    source_url: "https://www.labcorp.com"
+    notes: >
+      Amorphous sediment (amorphous urates in acid urine, amorphous phosphates in alkaline
+      urine) is common, often temperature-dependent artifact with no primary clinical
+      significance; can obscure other elements under microscopy. Binary flag: presence noted
+      but generally non-pathological in isolation.
+
+  - canonical_key: ua_appearance
+    display_name: "Urine Appearance"
+    category: urinalysis
+    tier: 3
+    direction: binary_flag
+    units: "qualitative"
+    aliases: ["urine clarity", "urine turbidity"]
+    ranges:
+      optimal_min: null
+      optimal_max: null
+      borderline_min: null
+      borderline_max: null
+      out_of_range_low_max: null
+      out_of_range_high_min: null
+    source_citation: "UNC Medical Center urinalysis reference; AAFP urinalysis review 2022"
+    source_url: "https://www.uncmedicalcenter.org/mclendon-clinical-laboratories/available-tests/urinalysis-general-microscopic/"
+    notes: >
+      Normal: clear to slightly hazy. Turbid urine indicates presence of WBCs, RBCs, bacteria,
+      epithelial cells, lipids, or crystal precipitation; turbidity alone does not diagnose
+      infection — must correlate with dipstick and microscopic findings. Binary flag: normal
+      (clear) vs. abnormal (cloudy/turbid).
+
+  - canonical_key: ua_bacteria
+    display_name: "Urine Bacteria (Microscopic)"
+    category: urinalysis
+    tier: 3
+    direction: binary_flag
+    units: "qualitative"
+    aliases: ["bacteriuria", "urine bacteria"]
+    ranges:
+      optimal_min: null
+      optimal_max: null
+      borderline_min: null
+      borderline_max: null
+      out_of_range_low_max: null
+      out_of_range_high_min: null
+    source_citation: "AAFP urinalysis review 2022; Wisconsin pharmacy guide (negative = normal)"
+    source_url: "https://www.aafp.org/afp/2022/0700/office-based-urinalysis"
+    notes: >
+      Should be NONE SEEN; bacterial presence can represent contamination or true bacteriuria;
+      ≥5 bacteria/hpf correlates with ≥100,000 CFU/mL on culture; asymptomatic bacteriuria
+      should NOT be treated (except in pregnancy or pre-urologic procedure); clinical symptoms
+      + bacteria = UTI. Binary flag.
+
+  - canonical_key: ua_bilirubin
+    display_name: "Urine Bilirubin"
+    category: urinalysis
+    tier: 3
+    direction: binary_flag
+    units: "qualitative"
+    aliases: ["bilirubinuria"]
+    ranges:
+      optimal_min: null
+      optimal_max: null
+      borderline_min: null
+      borderline_max: null
+      out_of_range_low_max: null
+      out_of_range_high_min: null
+    source_citation: "UNC Medical Center urinalysis; standard laboratory reference"
+    source_url: "https://www.uncmedicalcenter.org/mclendon-clinical-laboratories/available-tests/urinalysis-general-microscopic/"
+    notes: >
+      Should be NEGATIVE; positive urine bilirubin indicates direct (conjugated)
+      hyperbilirubinemia — hepatocellular disease or biliary obstruction; urobilinogen is
+      elevated in hemolysis (unconjugated bilirubin not filtered); together they help
+      differentiate biliary obstruction from hepatocellular disease. Binary flag.
+
+  - canonical_key: ua_casts_granular
+    display_name: "Urine Casts — Granular"
+    category: urinalysis
+    tier: 3
+    direction: binary_flag
+    units: "/lpf"
+    aliases: ["granular casts urine", "muddy brown casts"]
+    ranges:
+      optimal_min: null
+      optimal_max: null
+      borderline_min: null
+      borderline_max: null
+      out_of_range_low_max: null
+      out_of_range_high_min: null
+    source_citation: "BC Guidelines (granular casts = ATN); AAFP 2022"
+    source_url: "https://www2.gov.bc.ca/assets/gov/health/practitioner-pro/bc-guidelines/appendix_2_-_interpretation_of_urine_testing_results_reported_by_laboratories_in_bc.pdf"
+    notes: >
+      Should be ABSENT; granular (muddy brown) casts indicate acute tubular necrosis (ATN) — a
+      serious renal emergency; can also occur in nephrotic syndrome or chronic glomerular
+      disease; always clinically significant. Binary flag.
+
+  - canonical_key: ua_casts_hyaline
+    display_name: "Urine Casts — Hyaline"
+    category: urinalysis
+    tier: 3
+    direction: lower_is_better
+    units: "/lpf"
+    aliases: ["hyaline casts urine"]
+    ranges:
+      optimal_min: 0
+      optimal_max: 1
+      borderline_min: null
+      borderline_max: null
+      out_of_range_low_max: null
+      out_of_range_high_min: 2
+    source_citation: "AAFP 2022; BC Guidelines (hyaline casts normal when present without other casts); UNC Medical Center (0–1 hyaline/lpf)"
+    source_url: "https://www.aafp.org/afp/2022/0700/office-based-urinalysis"
+    notes: >
+      0–1 hyaline casts/lpf is normal (Tamm-Horsfall protein matrix); modest increase with
+      dehydration, fever, or diuretics is benign; high numbers or presence with other cast
+      types suggests renal pathology; 'low power field' (lpf) for casts vs. high power field
+      (hpf) for cells.
+
+  - canonical_key: ua_color
+    display_name: "Urine Color"
+    category: urinalysis
+    tier: 3
+    direction: binary_flag
+    units: "qualitative"
+    aliases: ["urine colour"]
+    ranges:
+      optimal_min: null
+      optimal_max: null
+      borderline_min: null
+      borderline_max: null
+      out_of_range_low_max: null
+      out_of_range_high_min: null
+    source_citation: "UNC Medical Center urinalysis reference; AAFP urinalysis review 2022"
+    source_url: "https://www.uncmedicalcenter.org/mclendon-clinical-laboratories/available-tests/urinalysis-general-microscopic/"
+    notes: >
+      Normal: pale yellow to amber (straw-colored). Colorless = over-dilution (diabetes
+      insipidus, diuretics). Dark amber = dehydration or bilirubin. Red/pink = hematuria,
+      myoglobinuria, or rifampin. Green/blue = pseudomonal infection or certain medications.
+      Binary flag: straw/yellow = normal.
+
+  - canonical_key: ua_crystals_calcium_oxalate
+    display_name: "Urine Crystals — Calcium Oxalate"
+    category: urinalysis
+    tier: 3
+    direction: binary_flag
+    units: "qualitative"
+    aliases: ["calcium oxalate crystals", "oxalate crystals urine"]
+    ranges:
+      optimal_min: null
+      optimal_max: null
+      borderline_min: null
+      borderline_max: null
+      out_of_range_low_max: null
+      out_of_range_high_min: null
+    source_citation: "AAFP urinalysis review 2022; standard urinalysis crystal reference"
+    source_url: "https://www.aafp.org/afp/2022/0700/office-based-urinalysis"
+    notes: >
+      Calcium oxalate crystals can appear in normal concentrated urine (especially after
+      cooling of sample) — clinical significance depends on quantity and clinical history; in
+      patients with recurrent calcium oxalate nephrolithiasis, even trace crystals are
+      clinically relevant. Binary flag: presence in freshly collected warm sample is more
+      meaningful than in stored sample.
+
+  - canonical_key: ua_crystals_triple_phosphate
+    display_name: "Urine Crystals — Triple Phosphate (Struvite)"
+    category: urinalysis
+    tier: 3
+    direction: binary_flag
+    units: "qualitative"
+    aliases: ["struvite crystals", "magnesium ammonium phosphate crystals"]
+    ranges:
+      optimal_min: null
+      optimal_max: null
+      borderline_min: null
+      borderline_max: null
+      out_of_range_low_max: null
+      out_of_range_high_min: null
+    source_citation: "AAFP 2022; urinalysis crystal identification guide"
+    source_url: "https://www.aafp.org/afp/2022/0700/office-based-urinalysis"
+    notes: >
+      Struvite (triple phosphate, 'coffin-lid') crystals form in alkaline urine (pH >7.5) and
+      are associated with urease-producing bacteria (Proteus, Klebsiella) causing struvite
+      nephrolithiasis; also can form in stored alkaline urine as artifact; clinical context
+      essential. Binary flag.
+
+  - canonical_key: ua_crystals_uric_acid
+    display_name: "Urine Crystals — Uric Acid"
+    category: urinalysis
+    tier: 3
+    direction: binary_flag
+    units: "qualitative"
+    aliases: ["uric acid crystals urine"]
+    ranges:
+      optimal_min: null
+      optimal_max: null
+      borderline_min: null
+      borderline_max: null
+      out_of_range_low_max: null
+      out_of_range_high_min: null
+    source_citation: "AAFP 2022; urinalysis interpretation guides"
+    source_url: "https://www.aafp.org/afp/2022/0700/office-based-urinalysis"
+    notes: >
+      Uric acid crystals form in acidic urine (pH <5.5); clinically significant in gout, tumor
+      lysis syndrome, and uric acid nephrolithiasis; presence in fresh urine with low pH
+      warrants serum uric acid measurement and dietary assessment. Binary flag.
+
+  - canonical_key: ua_epithelial_renal
+    display_name: "Urine Epithelial Cells — Renal Tubular"
+    category: urinalysis
+    tier: 3
+    direction: binary_flag
+    units: "qualitative"
+    aliases: ["renal tubular epithelial cells", "RTE cells urine"]
+    ranges:
+      optimal_min: null
+      optimal_max: null
+      borderline_min: null
+      borderline_max: null
+      out_of_range_low_max: null
+      out_of_range_high_min: null
+    source_citation: "Wisconsin pharmacy guide (0–1/hpf normal); BC Guidelines (ATN indication)"
+    source_url: "https://apps.pharmacy.wisc.edu/courses/728-656/urinalysis/presentation_content/external_files/handout.pdf"
+    notes: >
+      Should be ABSENT or rare (0–1/hpf); increased renal tubular epithelial cells indicate
+      acute tubular necrosis (ATN) — often with granular casts; seen in acute kidney injury
+      from ischemia, nephrotoxins (aminoglycosides, contrast), or NSAID-induced AKI. Binary
+      flag.
+
+  - canonical_key: ua_epithelial_squamous
+    display_name: "Urine Epithelial Cells — Squamous"
+    category: urinalysis
+    tier: 3
+    direction: binary_flag
+    units: "/hpf"
+    aliases: ["squamous epithelial cells urine"]
+    ranges:
+      optimal_min: null
+      optimal_max: null
+      borderline_min: null
+      borderline_max: null
+      out_of_range_low_max: null
+      out_of_range_high_min: null
+    source_citation: "AAFP 2022 (>5 large squamous cells/hpf = contamination); Wisconsin pharmacy guide (0–2/hpf normal)"
+    source_url: "https://www.aafp.org/afp/2022/0700/office-based-urinalysis"
+    notes: >
+      >5 squamous epithelial cells/hpf indicates vaginal or urethral contamination and the
+      sample should be repeated with clean-catch technique; their presence does not indicate
+      pathology — it signals specimen quality issue. Binary flag as presence in significant
+      numbers invalidates the specimen.
+
+  - canonical_key: ua_epithelial_transitional
+    display_name: "Urine Epithelial Cells — Transitional"
+    category: urinalysis
+    tier: 3
+    direction: lower_is_better
+    units: "/hpf"
+    aliases: ["urothelial cells", "transitional epithelial cells urine"]
+    ranges:
+      optimal_min: 0
+      optimal_max: 2
+      borderline_min: null
+      borderline_max: null
+      out_of_range_low_max: null
+      out_of_range_high_min: 2
+    source_citation: "UNC Medical Center (0–2/hpf); standard urinalysis reference"
+    source_url: "https://www.uncmedicalcenter.org/mclendon-clinical-laboratories/available-tests/urinalysis-general-microscopic/"
+    notes: >
+      0–2/hpf is normal; increased transitional cells may indicate urinary tract infection or,
+      more importantly, urothelial carcinoma (bladder cancer) — persistent increases warrant
+      urine cytology and cystoscopy evaluation.
+
+  - canonical_key: ua_glucose
+    display_name: "Urine Glucose"
+    category: urinalysis
+    tier: 3
+    direction: binary_flag
+    units: "qualitative"
+    aliases: ["glycosuria", "urine sugar"]
+    ranges:
+      optimal_min: null
+      optimal_max: null
+      borderline_min: null
+      borderline_max: null
+      out_of_range_low_max: null
+      out_of_range_high_min: null
+    source_citation: "UNC Medical Center urinalysis; AAFP 2022"
+    source_url: "https://www.uncmedicalcenter.org/mclendon-clinical-laboratories/available-tests/urinalysis-general-microscopic/"
+    notes: >
+      Should be NEGATIVE; glucosuria appears when blood glucose exceeds renal threshold (~180
+      mg/dL) — diagnostic of uncontrolled diabetes until proven otherwise; SGLT2 inhibitors
+      cause intentional glucosuria (binary flag: negative = normal, positive = significant
+      clinical finding).
+
+  - canonical_key: ua_ketones
+    display_name: "Urine Ketones"
+    category: urinalysis
+    tier: 3
+    direction: binary_flag
+    units: "qualitative"
+    aliases: ["ketonuria", "urine ketone bodies"]
+    ranges:
+      optimal_min: null
+      optimal_max: null
+      borderline_min: null
+      borderline_max: null
+      out_of_range_low_max: null
+      out_of_range_high_min: null
+    source_citation: "UNC Medical Center; AAFP 2022; standard urinalysis reference"
+    source_url: "https://www.uncmedicalcenter.org/mclendon-clinical-laboratories/available-tests/urinalysis-general-microscopic/"
+    notes: >
+      Should be NEGATIVE in typical metabolic state; positive ketones indicate fat-predominant
+      metabolism (ketogenic diet, fasting, prolonged exercise, DKA); trace ketones are common
+      with low-carbohydrate dietary patterns — clinically significant only with symptoms of DKA
+      (high glucose + ketonuria + acidosis). Binary flag in metabolic health context.
+
+  - canonical_key: ua_mucus
+    display_name: "Urine Mucus Threads"
+    category: urinalysis
+    tier: 3
+    direction: binary_flag
+    units: "qualitative"
+    aliases: ["mucus threads urine", "mucosal strands urine"]
+    ranges:
+      optimal_min: null
+      optimal_max: null
+      borderline_min: null
+      borderline_max: null
+      out_of_range_low_max: null
+      out_of_range_high_min: null
+    source_citation: "Standard urinalysis reference; LabCorp urinalysis interpretation"
+    source_url: "https://www.labcorp.com"
+    notes: >
+      Mucus threads are fibrillar structures from Tamm-Horsfall protein or urethral secretions;
+      their presence is generally clinically insignificant; can appear with urethral
+      inflammation or vaginal contamination; not independently pathological. Binary flag:
+      present vs. absent.
+
+  - canonical_key: ua_nitrite
+    display_name: "Urine Nitrite"
+    category: urinalysis
+    tier: 3
+    direction: binary_flag
+    units: "qualitative"
+    aliases: ["urine nitrites", "nitrituria"]
+    ranges:
+      optimal_min: null
+      optimal_max: null
+      borderline_min: null
+      borderline_max: null
+      out_of_range_low_max: null
+      out_of_range_high_min: null
+    source_citation: "AAFP urinalysis review 2022; BC Guidelines UTI appendix; QFTOX table"
+    source_url: "https://www.aafp.org/afp/2022/0700/office-based-urinalysis"
+    notes: >
+      Should be NEGATIVE; positive nitrites indicate gram-negative bacterial UTI (E. coli,
+      Klebsiella converting nitrates to nitrites); specificity ~95%; sensitivity ~35–85%
+      (gram-positives don't convert nitrates, requires ≥4 hrs bladder dwell time); interpret
+      with leukocyte esterase for UTI diagnosis. Binary flag.
+
+  - canonical_key: ua_occult_blood
+    display_name: "Urine Occult Blood (Dipstick)"
+    category: urinalysis
+    tier: 3
+    direction: binary_flag
+    units: "qualitative"
+    aliases: ["urine blood dipstick", "hematuria dipstick", "urinary occult blood"]
+    ranges:
+      optimal_min: null
+      optimal_max: null
+      borderline_min: null
+      borderline_max: null
+      out_of_range_low_max: null
+      out_of_range_high_min: null
+    source_citation: "AAFP urinalysis review 2022 (>90% sensitivity for hematuria)"
+    source_url: "https://www.aafp.org/afp/2022/0700/office-based-urinalysis"
+    notes: >
+      Should be NEGATIVE; false positives from free hemoglobin (hemolysis), myoglobin
+      (rhabdomyolysis), menstrual contamination, strenuous exercise; confirmed hematuria (≥3
+      RBCs/hpf on microscopy) in men or postmenopausal women warrants workup for urinary tract
+      malignancy. Binary flag.
+
+  - canonical_key: ua_protein
+    display_name: "Urine Protein"
+    category: urinalysis
+    tier: 3
+    direction: binary_flag
+    units: "qualitative"
+    aliases: ["proteinuria", "urine albumin dipstick"]
+    ranges:
+      optimal_min: null
+      optimal_max: null
+      borderline_min: null
+      borderline_max: null
+      out_of_range_low_max: null
+      out_of_range_high_min: null
+    source_citation: "AAFP urinalysis review 2022; POCD guide (normal <150 mg/day); KDIGO proteinuria guidelines"
+    source_url: "https://www.aafp.org/afp/2022/0700/office-based-urinalysis"
+    notes: >
+      Should be NEGATIVE; trace protein may be seen with fever, exercise, or orthostatic
+      proteinuria (benign in young adults); persistent protein ≥1+ warrants quantification with
+      urine albumin:creatinine ratio (uACR) and nephrology evaluation; proteinuria >3.5 g/day
+      defines nephrotic syndrome. Key early CKD marker — Attia monitors uACR specifically.
+
+  - canonical_key: ua_micro_rbc
+    display_name: "Urine RBC (Microscopic)"
+    category: urinalysis
+    tier: 3
+    direction: lower_is_better
+    units: "/hpf"
+    aliases: ["urine red blood cells microscopic", "hematuria microscopic"]
+    ranges:
+      optimal_min: 0
+      optimal_max: 3
+      borderline_min: null
+      borderline_max: null
+      out_of_range_low_max: null
+      out_of_range_high_min: 3
+    source_citation: "AAFP 2022 (microhematuria ≥3 RBCs/hpf in adults); BC Guidelines (0–2/hpf normal); UNC Medical Center (males 0–3/hpf, females 0–4/hpf)"
+    source_url: "https://www.aafp.org/afp/2022/0700/office-based-urinalysis"
+    notes: >
+      0–2 RBCs/hpf is typically normal; ≥3 RBCs/hpf defines microhematuria in adults (and
+      requires further evaluation if persistent); dysmorphic RBCs (acanthocytes) indicate
+      glomerular disease; risk of GU malignancy is ~3% in microhematuria — cystoscopy and
+      imaging recommended in intermediate/high-risk adults.
+
+  - canonical_key: ua_specific_gravity
+    display_name: "Urine Specific Gravity"
+    category: urinalysis
+    tier: 3
+    direction: mid_range
+    units: "SG"
+    aliases: ["SG urine", "urine osmolality proxy"]
+    ranges:
+      optimal_min: 1.01
+      optimal_max: 1.025
+      borderline_min: 1.003
+      borderline_max: 1.01
+      out_of_range_low_max: 1.003
+      out_of_range_high_min: 1.03
+    source_citation: "UNC Medical Center (1.003–1.030 normal); POCD interpretation guide"
+    source_url: "https://www.uncmedicalcenter.org/mclendon-clinical-laboratories/available-tests/urinalysis-general-microscopic/"
+    notes: >
+      SG reflects urine concentration and kidney's concentrating ability; SG 1.001–1.003 is
+      isosthenuria (kidney cannot concentrate) — seen in diabetes insipidus; SG consistently
+      >1.030 suggests severe dehydration; fixed SG at 1.010 suggests renal tubular dysfunction
+      (isosthenuria in CKD).
+
+  - canonical_key: ua_trichomonas
+    display_name: "Urine Trichomonas (Microscopic)"
+    category: urinalysis
+    tier: 3
+    direction: binary_flag
+    units: "qualitative"
+    aliases: ["trichomonad", "T. vaginalis urine"]
+    ranges:
+      optimal_min: null
+      optimal_max: null
+      borderline_min: null
+      borderline_max: null
+      out_of_range_low_max: null
+      out_of_range_high_min: null
+    source_citation: "CDC STI guidelines; standard urinalysis reference"
+    source_url: "https://www.labcorp.com"
+    notes: >
+      Should be ABSENT; motile trichomonads visible on wet prep confirm Trichomonas vaginalis
+      infection — an STI; treatment with metronidazole/tinidazole; sensitivity of wet prep
+      ~60–70% (NAAT testing preferred for diagnosis). Binary flag.
+
+  - canonical_key: ua_urobilinogen
+    display_name: "Urine Urobilinogen"
+    category: urinalysis
+    tier: 3
+    direction: mid_range
+    units: "mg/dL"
+    aliases: ["urine urobilinogen level"]
+    ranges:
+      optimal_min: 0.1
+      optimal_max: 1
+      borderline_min: 1
+      borderline_max: 2
+      out_of_range_low_max: null
+      out_of_range_high_min: 2
+    source_citation: "UNC Medical Center (normal <2.0 mg/dL); IDEXX urinalysis guide (0.1–1.0 normal)"
+    source_url: "https://www.uncmedicalcenter.org/mclendon-clinical-laboratories/available-tests/urinalysis-general-microscopic/"
+    notes: >
+      Normal urobilinogen 0.1–1.0 mg/dL is expected (from gut bacteria converting bilirubin);
+      absent urobilinogen suggests biliary obstruction (no bilirubin reaching gut); elevated
+      >2.0 mg/dL suggests hemolysis or liver disease with increased bilirubin load.
+
+  - canonical_key: ua_micro_wbc
+    display_name: "Urine WBC (Microscopic)"
+    category: urinalysis
+    tier: 3
+    direction: lower_is_better
+    units: "/hpf"
+    aliases: ["urine white blood cells microscopic", "pyuria microscopic"]
+    ranges:
+      optimal_min: 0
+      optimal_max: 5
+      borderline_min: null
+      borderline_max: null
+      out_of_range_low_max: null
+      out_of_range_high_min: 5
+    source_citation: "AAFP 2022 (>5 WBCs/hpf = pyuria for symptomatic UTI); Wisconsin pharmacy guide (0–5/hpf normal); UNC (males 0–2/hpf, females 0–5/hpf)"
+    source_url: "https://apps.pharmacy.wisc.edu/courses/728-656/urinalysis/presentation_content/external_files/handout.pdf"
+    notes: >
+      >5 WBCs/hpf is consistent with UTI in symptomatic patients; sterile pyuria (WBCs without
+      bacteria) warrants evaluation for interstitial nephritis, TB, Chlamydia, or urolithiasis;
+      WBC casts indicate pyelonephritis or acute interstitial nephritis (not just bladder
+      infection).
+
+  - canonical_key: ua_yeast
+    display_name: "Urine Yeast (Microscopic)"
+    category: urinalysis
+    tier: 3
+    direction: binary_flag
+    units: "qualitative"
+    aliases: ["candiduria", "urine fungi"]
+    ranges:
+      optimal_min: null
+      optimal_max: null
+      borderline_min: null
+      borderline_max: null
+      out_of_range_low_max: null
+      out_of_range_high_min: null
+    source_citation: "Standard microbiology/urinalysis reference"
+    source_url: "https://www.labcorp.com"
+    notes: >
+      Should be ABSENT; yeast in urine may represent contamination (especially in women with
+      vaginal candidiasis) or true candiduria (common in diabetics, catheterized patients,
+      immunocompromised); requires clinical correlation and repeat clean-catch before
+      treatment. Binary flag.
+
+  - canonical_key: ua_ph
+    display_name: "Urine pH"
+    category: urinalysis
+    tier: 3
+    direction: mid_range
+    units: "pH"
+    aliases: ["urine acidity", "urinary pH"]
+    ranges:
+      optimal_min: 5
+      optimal_max: 7
+      borderline_min: 4.6
+      borderline_max: 5
+      out_of_range_low_max: 4.5
+      out_of_range_high_min: 8
+    source_citation: "POCD urinalysis interpretation; UNC Medical Center (normal 5–9); QFTOX table (average pH 6.0)"
+    source_url: "https://www.uncmedicalcenter.org/mclendon-clinical-laboratories/available-tests/urinalysis-general-microscopic/"
+    notes: >
+      Normal urine pH ranges from 4.6–8.0; average is ~6.0; alkaline urine (>7.5) favors
+      struvite crystal formation and may indicate Proteus UTI or renal tubular acidosis; acid
+      urine (<5.0) favors uric acid crystal formation; pH interpretation requires clinical
+      context (diet, medications, time of day).

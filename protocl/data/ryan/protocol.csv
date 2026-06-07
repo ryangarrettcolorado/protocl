@@ -1,30 +1,14 @@
 start_date,end_date,category,name,dose,unit,frequency,route,timing,reason,prescriber,cycle_status,adherence_pct,notes
-2026-05-01,,hormone,Testosterone Cypionate,100.0,mg,2x/week (Mon & Thu AM),IM or subQ,AM,TRT — physiologic testosterone restoration,Physician,active,100,200 mg/mL vial; 0.5 mL = 50 U per injection; 200 mg/week total
-2026-05-01,,peptide,Retatrutide,4.0,mg,weekly (Sun PM),subQ,Evening,Metabolic / GLP-1+GIP+GCG agonist,Physician,active,100,12 mg + 3.0 mL BAC → 4 mg/mL; 1.0 mL = 100 U
-2026-05-01,,medication,Anastrozole,0.25,mg,2x/week (Mon & Thu AM),oral,AM with TRT,Estrogen control on TRT,Physician,active,100,0.5 mg/week total
-2026-05-01,,medication,Oxandrolone (Anavar),50.0,mg,daily (split 25 AM + 25 pre-workout),oral,AM + pre-workout,Anabolic / strength cycle,Physician,active,100,No acetaminophen or alcohol on-cycle; mid-cycle liver panel
-2026-05-01,,supplement,Creatine Monohydrate,10.0,g,2x/day (AM + pre-workout),oral,AM + pre-workout,Strength / power / cognitive,self,active,95,20 g/day loading; drop to 3–5 g/day maintenance after week 1
-2026-05-01,,supplement,CoQ10,100.0,mg,2x/day (AM + pre-workout),oral,AM + pre-workout,Mitochondrial / cardiovascular,self,active,95,200 mg/day split
-2026-05-01,,supplement,PQQ,20.0,mg,2x/day (AM + midday),oral,AM + midday,Mitochondrial biogenesis,self,active,95,40 mg/day split
-2026-05-01,,supplement,Alpha GPC,600.0,mg,2x/day (AM + pre-workout),oral,AM + pre-workout,Acetylcholine / cognitive / training drive,self,active,95,"1,200 mg/day split"
-2026-05-01,,supplement,Micro Ingredients Saffron+ (10-in-1),1.0,serving,daily,oral,AM,Mood / stress / Mg / turmeric / KSM-66,self,active,90,Contains magnesium — account for total Mg across stack
-2026-05-01,,supplement,Grüns Adult Super Greens Gummies,1.0,serving,daily,oral,AM,Multivitamin / greens baseline,self,active,90,Contains Zn + Se — monitor overlap with bedtime stack
-2026-05-01,,supplement,Vitamin D3 + K2 (MK-7),1.0,serving,daily (sublingual),sublingual,AM fasted,Free T optimization / bone / CV,self,active,95,D3 reduces SHBG; K2 directs calcium away from arteries
-2026-05-01,,supplement,PartiQlar Pure NMN,550.0,mg,daily,oral,AM fasted,NAD+ precursor / cellular energy,self,active,95,Pairs with CoQ10 + PQQ + MOTS-c mitochondrial stack
-2026-05-01,,supplement,Omega-3 Fish Oil (EPA+DHA),3.5,g,daily,oral,Largest meal,HDL support / anti-inflammatory / recovery,self,active,95,Critical on Anavar cycle for HDL protection; TG-form preferred
-2026-05-01,,supplement,Life Extension Pomegranate Fruit Extract,500.0,mg,daily,oral,AM with meal,Urolithin A precursor / mitophagy,self,active,90,Standardized to 30% punicalagins
-2026-05-01,,supplement,Nature's Truth Boron Complex,6.0,mg,daily,oral,AM with food,Free T / SHBG reduction / bone,self,active,90,Triple-form citrate + glycinate + aspartate
-2026-05-01,,supplement,Jarrow Taurine,1000.0,mg,2x/day (AM + pre-workout),oral,AM + pre-workout,Cardiovascular / HDL protection / fatigue buffer,self,active,95,2 g/day total
-2026-05-01,,supplement,Toniiq Berberine HCl 97%,500.0,mg,3x/day (before each meal),oral,Before B/L/D,AMPK / glucose / lipid metabolism,self,active,85,"1,500 mg/day; avoid pre-workout timing"
-2026-05-01,,supplement,Double Wood TUDCA,375.0,mg,daily,oral,AM with food,Liver protection (on-cycle),self,active,95,250–500 mg range; away from Anavar by 1–2 h
-2026-05-01,,supplement,Jarrow NAC Sustain,600.0,mg,2x/day (midday + evening),oral,Midday + evening,Glutathione precursor / liver antioxidant,self,active,90,"1,200 mg/day total"
-2026-05-01,,supplement,Adapt Naturals 4-in-1 Biome Protect,1.0,serving,daily,oral,Evening,Pre/pro/postbiotics + polyphenols,self,active,90,Away from antibiotics if applicable
-2026-05-01,,supplement,Adapt Naturals Magnesium Glycinate,300.0,mg,daily,oral,Bedtime,Sleep / muscle recovery,self,active,95,Confirm total Mg stays within 350–400 mg/day across stack
-2026-05-01,,supplement,Zinc + Selenium + Copper (Deal Supplement),1.0,serving,daily,oral,Bedtime,Hormonal / immune / antioxidant,self,active,80,⚠️ 50 mg Zn exceeds NIH UL of 40 mg/day — discuss with MD
-2026-05-01,,peptide,Semax,300.0,mcg,Mon–Fri AM,subQ,AM fasted,Cognitive drive / focus,self,active,90,10 mg + 3 mL BAC → 9 U per dose; 10–20 day sprints with off weeks
-2026-05-01,,peptide,Selank,300.0,mcg,Mon–Fri AM,subQ,AM fasted,Calm focus / anxiety control,self,active,90,10 mg + 3 mL BAC → 9 U per dose; 6–8 wk cycle / 2–4 wk off
-2026-05-01,,peptide,MOTS-c,400.0,mcg,daily AM (weekend optional),subQ,AM fasted,Metabolic / mitochondrial,self,active,90,10 mg + 3 mL BAC → 12 U per dose; 8–12 wk on / 4+ wk off
-2026-05-01,,peptide,GHK-Cu,1500.0,mcg,Mon–Fri AM,subQ,AM,Systemic anti-aging / recovery,self,active,85,Confirm mg/mL with pharmacy; 1–2 mg range; 6–8 wk on / 4 wk off
-2026-05-01,,peptide,CJC-1295 (no DAC) + Ipamorelin,600.0,mcg,daily PM (weekend optional),subQ,Evening fasted,GH axis / recovery,self,active,90,10 mg blend + 3 mL BAC → 18 U; 8–12 wk cycle
-2026-05-01,,peptide,BPC-157 + TB-500,800.0,mcg,daily PM,subQ,Evening,Tissue repair / recovery,self,active,90,20 mg total + 2 mL BAC → 6–10 U range; 8–12 wk
-2026-05-01,,peptide,DSIP,300.0,mcg,nightly (within cycle),subQ,Bedtime,Deep sleep quality,self,active,85,9 U at bedtime; 4–8 wk on / 2–4 wk off
+2025-08-01,,hormone,Testosterone Cypionate,160,mg,weekly (split E3.5D),subq injection,Mon/Thu AM,TRT — restore physiologic levels,Defy Medical,active,100,0.16 mL × 2 per week
+2025-09-15,,hormone,Anastrozole,0.25,mg,as needed (E2 control),oral,with TRT dose,Manage estradiol on TRT,Defy Medical,active,80,Only when E2 > 35
+2026-02-01,,peptide,BPC-157,250,mcg,daily,subq injection,"AM, near injury site",Connective tissue repair (shoulder),compounding pharmacy,active,95,8-week cycle
+2026-03-10,,peptide,CJC-1295 / Ipamorelin,300/300,mcg,5 nights/week,subq injection,"bedtime, fasted","GH pulse support, body comp, sleep",compounding pharmacy,active,90,"5-on, 2-off"
+2025-06-01,,supplement,Creatine Monohydrate,5,g,daily,oral,any time,"Strength, cognitive support, longevity",self,active,98,
+2025-06-01,,supplement,Omega-3 (EPA/DHA),3,g,daily,oral,with meals,"CV health, omega-3 index target",self,active,95,Nordic Naturals Ultimate Omega
+2025-06-01,,supplement,Vitamin D3 + K2,5000/200,IU/mcg,daily,oral,with breakfast (fat),Vit D target 60-80,self,active,95,
+2025-06-01,,supplement,Magnesium Glycinate,400,mg,daily,oral,bedtime,"RBC Mg target, sleep quality",self,active,95,
+2025-09-01,,supplement,Berberine,500,mg,2x daily with carb meals,oral,lunch + dinner,Glucose / insulin sensitivity,self,active,85,
+2025-10-01,,supplement,Rapamycin,6,mg,weekly,oral,Sunday AM fasted,Longevity / mTOR cycling,AgelessRx,active,100,8-week on / 4-week off pattern
+2025-06-01,2025-09-30,supplement,Ashwagandha (KSM-66),600,mg,daily,oral,PM,Cortisol control during high-stress period,self,completed,90,Discontinued after cortisol normalized
+2025-07-15,2025-12-15,peptide,Tesamorelin,1,mg,daily,subq injection,AM fasted,Visceral fat reduction trial,compounding pharmacy,completed,92,5-month cycle complete
+2025-08-01,2025-09-15,supplement,DIM,200,mg,daily,oral,AM,E2 management before anastrozole,self,completed,100,Replaced by anastrozole

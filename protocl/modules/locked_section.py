@@ -82,7 +82,7 @@ def render_locked_card(source_key: str, *, dismissible: bool = True,
     header_cols = st.columns([8, 1])
     with header_cols[0]:
         st.markdown(
-            f"<div style='font-size:1.05rem;font-weight:600;color:#F0F0F0;'>"
+            f"<div style='font-size:1.05rem;font-weight:600;color:var(--brand-text);'>"
             f"{src.icon} {src.label}</div>",
             unsafe_allow_html=True,
         )
@@ -94,7 +94,7 @@ def render_locked_card(source_key: str, *, dismissible: bool = True,
 
     if src.value_prop:
         st.markdown(
-            f"<div style='color:#A0A0A0;font-size:0.9rem;margin:0.3rem 0 0.7rem 0;'>"
+            f"<div style='color:var(--brand-muted);font-size:0.9rem;margin:0.3rem 0 0.7rem 0;'>"
             f"{src.value_prop}</div>",
             unsafe_allow_html=True,
         )

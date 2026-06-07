@@ -72,16 +72,16 @@ def _latest_for(integ: Integration, lookup: dict[str, pd.Timestamp]) -> pd.Times
 
 STATUS_STYLES = {
     "connected": (
-        "background:rgba(63,191,127,0.15); color:#3FBF7F; "
-        "border:1px solid rgba(63,191,127,0.40);"
+        "background:var(--brand-success-soft); color:var(--brand-success); "
+        "border:1px solid var(--brand-success);"
     ),
     "file_based": (
-        "background:rgba(255,182,18,0.12); color:#FFB612; "
-        "border:1px solid rgba(255,182,18,0.35);"
+        "background:var(--brand-primary-soft); color:var(--brand-primary); "
+        "border:1px solid var(--brand-primary);"
     ),
     "coming_soon": (
-        "background:rgba(255,255,255,0.04); color:#888; "
-        "border:1px solid rgba(255,255,255,0.10);"
+        "background:var(--brand-muted-soft); color:var(--brand-muted); "
+        "border:1px solid var(--brand-border);"
     ),
 }
 
@@ -261,20 +261,20 @@ summary_html = f"""
 <div style="display:flex; gap:0.6rem; flex-wrap:wrap;
             margin:0.2rem 0 1.3rem 0;">
   <span style="padding:0.35rem 0.85rem; border-radius:999px;
-               background:rgba(63,191,127,0.12); color:#3FBF7F;
-               border:1px solid rgba(63,191,127,0.30);
+               background:var(--brand-success-soft); color:var(--brand-success);
+               border:1px solid var(--brand-success);
                font-size:0.78rem; font-weight:500;">
     {n_connected} connected
   </span>
   <span style="padding:0.35rem 0.85rem; border-radius:999px;
-               background:rgba(255,182,18,0.10); color:#FFB612;
-               border:1px solid rgba(255,182,18,0.30);
+               background:var(--brand-primary-soft); color:var(--brand-primary);
+               border:1px solid var(--brand-primary);
                font-size:0.78rem; font-weight:500;">
     {n_file} file-based
   </span>
   <span style="padding:0.35rem 0.85rem; border-radius:999px;
-               background:rgba(255,255,255,0.04); color:#888;
-               border:1px solid rgba(255,255,255,0.10);
+               background:var(--brand-muted-soft); color:var(--brand-muted);
+               border:1px solid var(--brand-border);
                font-size:0.78rem; font-weight:500;">
     {n_soon} coming soon
   </span>
@@ -338,7 +338,7 @@ st.markdown(
     <div style="margin-top:1.5rem; padding:0.9rem 1.1rem; border-radius:10px;
                 background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.06);
                 color:#888; font-size:0.78rem; line-height:1.5;">
-      <strong style="color:#FFB612;">How sync works.</strong>
+      <strong style="color:var(--brand-primary);">How sync works.</strong>
       Strava + Apple Health refresh daily at 7:00 AM MDT via the daily cron
       (<code>scripts/daily_sync.py</code>). File-based sources update whenever
       you upload through Imports. Last-sync timestamps read from

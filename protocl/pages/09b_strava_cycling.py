@@ -216,7 +216,7 @@ with tab_elev:
                 marker=dict(
                     color=TYPE_COLORS[atype],
                     size=(sub["distance_miles"] * 1.4).clip(6, 26),
-                    line=dict(color="#0E0E10", width=1),
+                    line=dict(color=COLORS["bg"], width=1),
                     opacity=0.85,
                 ),
                 customdata=sub[["distance_miles", "elevation_ft"]].values,

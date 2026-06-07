@@ -270,8 +270,12 @@ if not latest.empty:
             df = pd.DataFrame(rows)
 
             def style_status(val):
-                colors = {"Optimal": "#4CAF50", "Monitor": "#FF9800", "Risk": "#F44336"}
-                c = colors.get(val, "#A0A0A0")
+                colors = {
+                    "Optimal": COLORS["success"],
+                    "Monitor": COLORS["warning"],
+                    "Risk":    COLORS["danger"],
+                }
+                c = colors.get(val, COLORS["text_muted"])
                 return f"color: {c}; font-weight: 600"
 
             styled = df.style.map(style_status, subset=["Status"])
@@ -332,8 +336,10 @@ with st.expander("Biomarker drill-down — details", expanded=False):
         fig.update_yaxes(title_text=y_title)
 
         if not data.protocol.empty:
-            CAT_COLORS = {"hormone": "#FFB612", "peptide": "#4FC3F7",
-                          "supplement": "#81C784", "medication": "#FF8A65"}
+            # Use the brand chart series so colors follow the active theme.
+            _series = COLORS["chart_series"]
+            CAT_COLORS = {"hormone": _series[0], "peptide": _series[1],
+                          "supplement": _series[2], "medication": _series[3]}
             for _, item in data.protocol.iterrows():
                 try:
                     fig.add_vline(

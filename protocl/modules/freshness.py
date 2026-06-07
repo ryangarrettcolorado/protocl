@@ -97,10 +97,10 @@ def render_freshness_strip(*, show_build: bool = True) -> None:
     now = datetime.now()
 
     color_to_css = {
-        "green": "background:rgba(63,191,127,0.15); color:#3FBF7F; border:1px solid rgba(63,191,127,0.35);",
-        "amber": "background:rgba(255,182,18,0.15); color:#FFB612; border:1px solid rgba(255,182,18,0.40);",
-        "red":   "background:rgba(255,90,90,0.15); color:#FF7373; border:1px solid rgba(255,90,90,0.40);",
-        "muted": "background:rgba(255,255,255,0.04); color:#888; border:1px solid rgba(255,255,255,0.08);",
+        "green": "background:var(--brand-success-soft); color:var(--brand-success); border:1px solid var(--brand-success);",
+        "amber": "background:var(--brand-warn-soft); color:var(--brand-warn); border:1px solid var(--brand-warn);",
+        "red":   "background:var(--brand-danger-soft); color:var(--brand-danger); border:1px solid var(--brand-danger);",
+        "muted": "background:var(--brand-muted-soft); color:var(--brand-muted); border:1px solid var(--brand-border);",
     }
 
     pills_html: list[str] = []
@@ -131,8 +131,8 @@ def render_freshness_strip(*, show_build: bool = True) -> None:
             f'<span style="display:inline-flex; align-items:center; gap:0.4rem; '
             f'padding:0.18rem 0.6rem; border-radius:999px; font-size:0.7rem; '
             f'font-weight:500; letter-spacing:0.04em; '
-            f'background:rgba(255,182,18,0.08); color:#FFB612; '
-            f'border:1px solid rgba(255,182,18,0.25);" '
+            f'background:var(--brand-primary-soft); color:var(--brand-primary); '
+            f'border:1px solid var(--brand-primary);" '
             f'title="{UI_BUILD_LABEL}">UI v{UI_VERSION}</span>'
         )
 

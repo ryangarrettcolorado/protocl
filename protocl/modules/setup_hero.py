@@ -158,11 +158,11 @@ def render_setup_hero(store: ProfileStorage | None = None) -> None:
     filled = int(round(coverage / 100 * 40))
     bar = "▓" * filled + "░" * (40 - filled)
     st.markdown(
-        f"<div style='background:#1C1C1C;border:1px solid rgba(255,182,18,0.25);"
+        f"<div style='background:var(--brand-surface);border:1px solid var(--brand-primary);"
         f"border-radius:10px;padding:1rem 1.2rem;margin-bottom:1rem;'>"
-        f"<div style='font-size:1.15rem;font-weight:700;color:#F0F0F0;'>"
+        f"<div style='font-size:1.15rem;font-weight:700;color:var(--brand-text);'>"
         f"Welcome back — you're at {coverage}% setup</div>"
-        f"<div style='font-family:monospace;color:#FFB612;margin:0.4rem 0;"
+        f"<div style='font-family:monospace;color:var(--brand-primary);margin:0.4rem 0;"
         f"letter-spacing:1px;'>{bar} &nbsp;{coverage} / 100</div></div>",
         unsafe_allow_html=True,
     )

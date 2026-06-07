@@ -55,7 +55,11 @@ CHART_SERIES = COLORS["chart_series"]
 
 
 def _color_for_verdict(v: str) -> str:
-    return {"ready": "#4CAF50", "moderate": "#FFD54F", "low": "#EF5350"}.get(v, COLORS["text_muted"])
+    return {
+        "ready":    COLORS["success"],
+        "moderate": COLORS["warning"],
+        "low":      COLORS["danger"],
+    }.get(v, COLORS["text_muted"])
 
 
 def _fmt_hm(minutes: float | int | None) -> str:

@@ -16,12 +16,19 @@ from typing import Literal
 # ────────────────────────────────────────────────────────────────────────────
 # SVG brand marks — 56x56 viewBox, monochrome where possible. Brand colors
 # are kept only where they are essential to recognition (Strava orange,
-# Apple Health red). Everything else uses gold (#FFB612) on transparent so
-# cards blend into the dark theme.
+# Apple Health red). Everything else uses the Protocōl primary teal on
+# transparent so cards blend into either light or dark theme.
+#
+# We keep the historical names ``GOLD`` and ``MUTED`` for backward compat,
+# but ``GOLD`` is now the teal primary (#01696F) and ``DARK_INK`` replaces
+# the legacy near-black for SVG detailing (knurling, pin-holes, etc.) so
+# icons read in both modes.
 # ────────────────────────────────────────────────────────────────────────────
 
-GOLD = "#FFB612"
+GOLD = "#01696F"      # legacy name retained — now the teal primary
+PRIMARY = "#01696F"   # canonical name (use this in new code)
 MUTED = "#6B6B70"
+DARK_INK = "#28251D"  # replaces the legacy near-black for monochrome SVG details
 
 _SVG_BOX = (
     '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 56 56" '
@@ -94,7 +101,7 @@ SVG_BLOODWORK = _svg(
     f'<rect x="22" y="18" width="12" height="7" fill="rgba(255,255,255,0.85)"/>'
     # Barcode lines on label
     f'<path d="M24 20 V23 M25.5 20 V23 M27 20 V23 M28.5 20 V23 '
-    f'M30 20 V23 M31.5 20 V23" stroke="#0E0E10" stroke-width="0.6"/>'
+    f'M30 20 V23 M31.5 20 V23" stroke="{DARK_INK}" stroke-width="0.6"/>'
 )
 
 # InBody — the actual machine silhouette: vertical column with handgrips,
@@ -132,7 +139,7 @@ SVG_GPX = _svg(
     f'<path d="M28 6 C20 6 14 12 14 20 C14 28 22 36 28 44 '
     f'C34 36 42 28 42 20 C42 12 36 6 28 6 Z" fill="{GOLD}"/>'
     # Pin hole (dark center)
-    f'<circle cx="28" cy="20" r="4.5" fill="#0E0E10"/>'
+    f'<circle cx="28" cy="20" r="4.5" fill="{DARK_INK}"/>'
 )
 
 # ECG — Apple Watch silhouette with an ECG trace running across the face.
@@ -270,7 +277,7 @@ SVG_SMART_SCALE = _svg(
     f'<circle cx="41" cy="15" r="1" fill="{MUTED}" opacity="0.45"/>'
     # Digital display readout
     f'<rect x="18" y="36" width="20" height="8" rx="1.5" fill="{MUTED}" opacity="0.55"/>'
-    f'<path d="M22 40 H26 M28 40 H30 M32 40 H36" stroke="#0E0E10" '
+    f'<path d="M22 40 H26 M28 40 H30 M32 40 H36" stroke="{DARK_INK}" '
     f'stroke-width="1.5" stroke-linecap="round"/>'
 )
 
@@ -311,7 +318,7 @@ SVG_STRENGTH = _svg(
     f'<rect x="15" y="26" width="26" height="4" rx="1" fill="{MUTED}"/>'
     # Grip texture on the bar
     f'<path d="M20 26 V30 M24 26 V30 M28 26 V30 M32 26 V30 M36 26 V30" '
-    f'stroke="#0E0E10" stroke-width="0.7"/>'
+    f'stroke="{DARK_INK}" stroke-width="0.7"/>'
     # Right weight plate
     f'<rect x="41" y="22" width="3" height="12" rx="1" fill="{MUTED}"/>'
     f'<rect x="44" y="18" width="6" height="20" rx="1.5" fill="{MUTED}"/>'

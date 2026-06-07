@@ -192,7 +192,7 @@ with tab_gantt:
                 x=sub["date"], y=[cat] * len(sub),
                 mode="markers",
                 marker=dict(size=12, color=CAT_COLORS.get(cat, COLORS["chart_series"][0]),
-                            line=dict(width=1, color="#1C1C1C")),
+                            line=dict(width=1, color=COLORS["bg"])),
                 name=cat,
                 hovertemplate=(
                     "<b>%{customdata[0]}</b><br>"
@@ -217,7 +217,7 @@ with tab_list:
         # Group by date — Notion-style
         for date, group in filtered.groupby(filtered["date"].dt.date, sort=False):
             st.markdown(
-                f"<div style='color:#A0A0A0;font-size:0.85rem;margin-top:14px;"
+                f"<div style='color:var(--brand-muted);font-size:0.85rem;margin-top:14px;"
                 f"font-weight:600;letter-spacing:0.5px;'>"
                 f"{pd.to_datetime(date).strftime('%b %d, %Y · %a')}</div>",
                 unsafe_allow_html=True,
@@ -225,14 +225,14 @@ with tab_list:
             for _, row in group.iterrows():
                 color = CAT_COLORS.get(row["category"], COLORS["chart_series"][0])
                 st.markdown(
-                    f'<div style="background:#1C1C1C;border-left:4px solid {color};'
+                    f'<div style="background:var(--brand-surface);border:1px solid var(--brand-border);border-left:4px solid {color};'
                     f'padding:10px 14px;border-radius:6px;margin:6px 0;">'
                     f'<div style="display:flex;justify-content:space-between;">'
-                    f'<strong style="color:#F0F0F0;">{row["title"]}</strong>'
+                    f'<strong style="color:var(--brand-text);">{row["title"]}</strong>'
                     f'<span style="background:{color}22;color:{color};padding:2px 8px;'
                     f'border-radius:4px;font-size:0.7rem;font-weight:600;">'
                     f'{row["category"].upper()}</span></div>'
-                    f'<div style="color:#A0A0A0;font-size:0.85rem;margin-top:4px;">'
+                    f'<div style="color:var(--brand-muted);font-size:0.85rem;margin-top:4px;">'
                     f'{row["detail"]}</div></div>',
                     unsafe_allow_html=True,
                 )

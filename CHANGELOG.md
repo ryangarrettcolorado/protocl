@@ -1,5 +1,21 @@
 # Changelog
 
+## v3.8 — 2026-06-03
+### Added
+- WHOOP DataSource (OAuth 2.0, refresh-token flow) — recovery, sleep, cycle
+- Google Health DataSource (post-Fitbit Web API, OAuth 2.0) — sleep, HR, HRV
+- `OAuth2DataSource` base class with token caching + 401 cache invalidation
+- Setup guides for both integrations under `docs/`
+- 45 new tests (OAuth refresh, payload mapping, error matrix) — 312 passing total
+
+## v3.7 — 2026-06-02
+### Added
+- Biomarker catalog expanded to **118 markers** across 9 categories (CBC, urinalysis, liver/kidney, hormones, lipids, vitamins, metabolic, thyroid, inflammation)
+- YAML-driven catalog (`config/biomarker_catalog.yaml`) — add a marker without code changes
+- Sparse-rendering policy — only markers with data for a given user appear in their view
+- Oura Ring DataSource (Personal Access Token) — sleep, HRV, resting HR, respiratory rate
+- `DataSource` ABC + canonical wearables schema for plug-in integrations
+
 ## v3.6 — 2026-06-01
 ### Added
 - Page-view + feature interaction tracking (anonymized, opt-in)

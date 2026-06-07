@@ -38,15 +38,23 @@ TODAY = pd.Timestamp("2026-05-25")
 active = protocol[protocol["end_date"].isna()].copy()
 historical = protocol[protocol["end_date"].notna()].copy()
 
-# Category color map for Gantt
-CAT_COLORS = {
-    "hormone":     "#FFB612",
-    "peptide":     "#4FC3F7",
-    "supplement":  "#81C784",
-    "medication":  "#FF8A65",
-    "probiotic":   "#CE93D8",
-    "other":       "#80DEEA",
-}
+# Category color map for Gantt. Resolved at call-time via cat_colors() so
+# colors follow the active brand theme (chart_series rotates with light/dark).
+def cat_colors() -> dict[str, str]:
+    s = COLORS["chart_series"]
+    return {
+        "hormone":     COLORS["primary"],
+        "peptide":     s[0],
+        "supplement":  s[2],
+        "medication":  s[1],
+        "probiotic":   s[4],
+        "other":       s[3],
+    }
+
+# Backward-compat alias — some legacy code paths still read CAT_COLORS as a
+# dict. This evaluates once at import time using the default (light) palette;
+# new code should call cat_colors() instead.
+CAT_COLORS = cat_colors()
 
 
 # ────────────────────────────────────────────────────────────────────────────

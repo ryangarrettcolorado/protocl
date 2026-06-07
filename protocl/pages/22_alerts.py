@@ -26,10 +26,12 @@ from explainers.ui import explainer_block
 inject_css()
 
 
+# Severity colors source from the active theme so dark / light modes
+# both render with brand-correct semantic hues.
 SEV_COLORS = {
-    SEVERITY_CRITICAL: "#EF5350",
-    SEVERITY_WARNING:  "#FFD54F",
-    SEVERITY_INFO:     "#4FC3F7",
+    SEVERITY_CRITICAL: COLORS["danger"],
+    SEVERITY_WARNING:  COLORS["warning"],
+    SEVERITY_INFO:     COLORS["primary"],
 }
 SEV_LABELS = {
     SEVERITY_CRITICAL: "Critical",

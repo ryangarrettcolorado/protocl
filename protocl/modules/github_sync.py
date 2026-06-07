@@ -149,10 +149,10 @@ def commit_data_snapshot(data_dir: Path, user_id: str = "ryan") -> dict:
 def status_badge_html() -> str:
     """Small HTML pill for pages that want to surface sync state."""
     if is_configured():
-        return ('<span style="background:rgba(76,175,80,0.18);color:#4CAF50;'
+        return ('<span style="background:var(--brand-success-soft);color:var(--brand-success);'
                 'padding:2px 8px;border-radius:4px;font-size:0.75rem;'
                 'font-weight:600;">GITHUB SYNC LIVE</span>')
-    return ('<span style="background:rgba(255,152,0,0.18);color:#FF9800;'
+    return ('<span style="background:var(--brand-warn-soft);color:var(--brand-warn);'
             'padding:2px 8px;border-radius:4px;font-size:0.75rem;'
             'font-weight:600;">GITHUB SYNC DISABLED</span>')
 

@@ -111,15 +111,15 @@ def render_card(row: pd.Series) -> None:
               "low": COLORS["chart_series"][1]}.get(row.get("priority", "low"), COLORS["text_muted"])
 
     st.markdown(
-        f'<div style="background:#1C1C1C;border-left:4px solid {border};'
+        f'<div style="background:var(--brand-surface);border:1px solid var(--brand-border);border-left:4px solid {border};'
         f'padding:14px 18px;border-radius:6px;margin-bottom:10px;">'
         f'<div style="display:flex;justify-content:space-between;align-items:flex-start;">'
-        f'<strong style="font-size:1.02rem;color:#F0F0F0;">{row["title"]}</strong>'
+        f'<strong style="font-size:1.02rem;color:var(--brand-text);">{row["title"]}</strong>'
         f'{priority_pill(row.get("priority", "low"))}</div>'
-        f'<div style="margin-top:6px;color:#A0A0A0;font-size:0.85rem;">'
+        f'<div style="margin-top:6px;color:var(--brand-muted);font-size:0.85rem;">'
         f'{row.get("why_it_matters", "")}</div>'
         f'<div style="margin-top:10px;display:flex;justify-content:space-between;'
-        f'font-size:0.75rem;color:#A0A0A0;">'
+        f'font-size:0.75rem;color:var(--brand-muted);">'
         f'<span>{row.get("category", "")} · {row.get("source", "")}</span>'
         f'<span style="color:{due_color};font-weight:600;">{due_str}</span></div>'
         f'</div>',

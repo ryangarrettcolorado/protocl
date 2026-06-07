@@ -279,8 +279,8 @@ def _locked_tile_html(source_key: str) -> str:
     src = get_source(source_key)
     return (
         f'<div class="metric-card" style="opacity:0.7;">'
-        f'<div style="font-size:0.8rem;color:#A0A0A0;">{src.icon} {src.label}</div>'
-        f'<div style="font-size:0.9rem;color:#FFB612;margin-top:6px;">'
+        f'<div style="font-size:0.8rem;color:var(--brand-muted);">{src.icon} {src.label}</div>'
+        f'<div style="font-size:0.9rem;color:var(--brand-primary);margin-top:6px;">'
         f'Add {src.label.split("(")[0].strip().lower()} to unlock</div></div>'
     )
 
@@ -424,10 +424,10 @@ def _render_attention_action_items(data: HealthData) -> None:
             due_text = "no due date"
 
         st.markdown(
-            f'<div style="background:#1C1C1C;border-left:3px solid {pri_color};'
+            f'<div style="background:var(--brand-surface);border:1px solid var(--brand-border);border-left:3px solid {pri_color};'
             f'padding:8px 12px;border-radius:4px;margin-bottom:6px;">'
-            f'<div style="font-size:0.95rem;color:#F0F0F0">{row["title"]}</div>'
-            f'<div style="font-size:0.78rem;color:#A0A0A0;margin-top:2px;">'
+            f'<div style="font-size:0.95rem;color:var(--brand-text)">{row["title"]}</div>'
+            f'<div style="font-size:0.78rem;color:var(--brand-muted);margin-top:2px;">'
             f'{pri.upper()} · {due_text}</div>'
             f'</div>',
             unsafe_allow_html=True,
@@ -491,10 +491,10 @@ def _render_attention_protocol(data: HealthData) -> None:
         return
     for name, note in flags[:4]:
         st.markdown(
-            f'<div style="background:#1C1C1C;border-left:3px solid {COLORS["warning"]};'
+            f'<div style="background:var(--brand-surface);border:1px solid var(--brand-border);border-left:3px solid {COLORS["warning"]};'
             f'padding:8px 12px;border-radius:4px;margin-bottom:6px;">'
-            f'<div style="font-size:0.95rem;color:#F0F0F0">{name}</div>'
-            f'<div style="font-size:0.78rem;color:#A0A0A0;margin-top:2px;">{note}</div>'
+            f'<div style="font-size:0.95rem;color:var(--brand-text)">{name}</div>'
+            f'<div style="font-size:0.78rem;color:var(--brand-muted);margin-top:2px;">{note}</div>'
             f'</div>',
             unsafe_allow_html=True,
         )

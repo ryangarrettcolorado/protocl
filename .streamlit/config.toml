@@ -8,13 +8,17 @@ maxUploadSize = 50
 gatherUsageStats = false
 
 [theme]
-# Locked to dark — Protocōl's identity is gold-on-near-black.
-# All component CSS in modules/theme.py is built against this palette.
-base = "dark"
-primaryColor = "#FFB612"
-backgroundColor = "#0E0E10"
-secondaryBackgroundColor = "#1C1C1C"
-textColor = "#F2F2F2"
+# v2 brand: Teal scheme, light by default. Dark mode is supported by the app
+# via a session-level toggle; the Streamlit baseline below is the LIGHT palette
+# because Streamlit's base= can't be flipped at runtime. The component CSS in
+# protocl/modules/theme.py uses CSS custom properties keyed off
+# body[data-theme="dark|light"] to switch surfaces and text colors for the rest
+# of the UI. See docs/BRAND.md for the canonical token contract.
+base = "light"
+primaryColor = "#01696F"
+backgroundColor = "#F7F6F2"
+secondaryBackgroundColor = "#F9F8F5"
+textColor = "#28251D"
 font = "sans serif"
 
 [client]

@@ -1,0 +1,16 @@
+{
+  "auto_sync": {
+    "strava": true,
+    "apple_health": true
+  },
+  "last_seen_changelog_version": "v3.6",
+  "changelog_banner_dismissed": [],
+  "analytics_consent": true,
+  "dropoff_nudge": null,
+  "dropoff_stage_actioned": 0,
+  "appearance": {
+    "density": "comfortable",
+    "theme": "light"
+  },
+  "show_empty_sections": true
+}

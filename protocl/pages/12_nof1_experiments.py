@@ -55,25 +55,26 @@ st.markdown("")
 # Verdict badge helper
 # ────────────────────────────────────────────────────────────────────────────
 def verdict_badge(verdict: str) -> str:
-    colors = {
-        "likely_beneficial": ("#4CAF50", "rgba(76,175,80,0.18)", "✓ Likely Beneficial"),
-        "likely_harmful":    ("#F44336", "rgba(244,67,54,0.18)", "✗ Likely Harmful"),
-        "inconclusive":      ("#FF9800", "rgba(255,152,0,0.18)", "~ Inconclusive"),
-        "neutral":           ("#A0A0A0", "rgba(160,160,160,0.18)", "— No Effect"),
+    # Resolve at call time so light/dark mode flips re-color the badges.
+    palette = {
+        "likely_beneficial": (COLORS["success"], "var(--brand-success-soft)", "✓ Likely Beneficial"),
+        "likely_harmful":    (COLORS["danger"],  "var(--brand-danger-soft)",  "✗ Likely Harmful"),
+        "inconclusive":      (COLORS["warning"], "var(--brand-warn-soft)",    "~ Inconclusive"),
+        "neutral":           (COLORS["text_muted"], "var(--brand-muted-soft)", "— No Effect"),
     }
-    fg, bg, label = colors.get(verdict, ("#A0A0A0", "rgba(160,160,160,0.18)", verdict or "Pending"))
+    fg, bg, label = palette.get(verdict, (COLORS["text_muted"], "var(--brand-muted-soft)", verdict or "Pending"))
     return (f'<span style="background:{bg};color:{fg};padding:3px 10px;border-radius:6px;'
             f'font-size:0.8rem;font-weight:600;">{label}</span>')
 
 
 def status_badge(status: str) -> str:
-    colors = {
-        "active":   ("#FFB612", "rgba(255,182,18,0.18)"),
-        "complete": ("#4FC3F7", "rgba(79,195,247,0.18)"),
-        "planned":  ("#A0A0A0", "rgba(160,160,160,0.18)"),
-        "paused":   ("#FF9800", "rgba(255,152,0,0.18)"),
+    palette = {
+        "active":   (COLORS["primary"],      "var(--brand-primary-soft)"),
+        "complete": (COLORS["chart_series"][0], "var(--brand-primary-soft)"),
+        "planned":  (COLORS["text_muted"],   "var(--brand-muted-soft)"),
+        "paused":   (COLORS["warning"],      "var(--brand-warn-soft)"),
     }
-    fg, bg = colors.get(status, ("#A0A0A0", "rgba(160,160,160,0.18)"))
+    fg, bg = palette.get(status, (COLORS["text_muted"], "var(--brand-muted-soft)"))
     return (f'<span style="background:{bg};color:{fg};padding:2px 8px;border-radius:4px;'
             f'font-size:0.72rem;font-weight:600;text-transform:uppercase;">{status}</span>')
 

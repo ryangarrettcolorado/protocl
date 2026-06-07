@@ -180,7 +180,29 @@ def _render_denial(email: str | None) -> None:
     st.stop()
 
 
+import os as _os
+
+
+def _demo_principal():
+    """Demo-mode bypass: skip OIDC and act as owner with seeded data."""
+    return Principal(
+        email="demo@protocl.local",
+        role=ROLE_OWNER,
+        profile_id="ryan",
+        display_name="Ryan Garrett",
+    )
+
+
 def require_auth() -> Principal:
+    if _os.environ.get("PROTOCL_DEMO") == "1":
+        p = _demo_principal()
+        st.session_state["auth_email"] = p.email
+        st.session_state["base_role"] = p.role
+        st.session_state["base_profile_id"] = p.profile_id
+        st.session_state["base_display_name"] = p.display_name
+        st.session_state["role"] = p.role
+        st.session_state["profile_id"] = p.profile_id
+        return p
     """Guard placed at the top of every page.
 
     Renders the login button (and stops) if the visitor is not authenticated;

@@ -270,8 +270,13 @@ with tab_calendar:
         z=pivot.values,
         x=week_labels,
         y=dow_labels,
-        colorscale=[[0, "#1C1C1C"], [0.2, "#3D2F0E"], [0.5, "#7A5C18"],
-                    [0.8, "#C99022"], [1.0, COLORS["gold"]]],
+        # Heat ramps from surface → mist → primary teal so the gradient
+        # reads in both light and dark modes (chart_series follows theme).
+        colorscale=[[0, COLORS["surface"]],
+                    [0.25, COLORS["chart_series"][3]],  # mist
+                    [0.5,  COLORS["chart_series"][2]],  # deep teal
+                    [0.75, COLORS["chart_series"][0]],  # series c1
+                    [1.0,  COLORS["primary"]]],
         showscale=True,
         colorbar=dict(title="TSS"),
         hovertemplate="%{y} %{x}<br>TSS: %{z:.0f}<extra></extra>",
