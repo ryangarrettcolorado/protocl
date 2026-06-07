@@ -115,10 +115,8 @@ def token(name: str, *, mode: str | None = None) -> str:
 # source-order. Putting light under `:root` made it impossible to override
 # at the body level — that was the long-standing dark-mode bug.
 
-CUSTOM_CSS = """
-<style>
-/* ── Token contract ────────────────────────────────────────────────────── */
-body, body[data-theme="light"] {
+_LIGHT_TOKENS_CSS = """
+:root {
     --brand-bg:             #F7F6F2;
     --brand-surface:        #F9F8F5;
     --brand-surface-strong: #EFEDE6;
@@ -139,7 +137,16 @@ body, body[data-theme="light"] {
     --brand-danger-soft:    rgba(168,52,30,0.14);
     --brand-muted-soft:     rgba(122,121,116,0.14);
 }
-body[data-theme="dark"] {
+html, body, .stApp,
+[data-testid="stAppViewContainer"],
+[data-testid="stHeader"] {
+    background-color: var(--brand-bg) !important;
+    color: var(--brand-text);
+}
+"""
+
+_DARK_TOKENS_CSS = """
+:root {
     --brand-bg:             #0C1E20;
     --brand-surface:        #152A2D;
     --brand-surface-strong: #0F2326;
@@ -159,21 +166,56 @@ body[data-theme="dark"] {
     --brand-warn-soft:      rgba(255,152,0,0.18);
     --brand-danger-soft:    rgba(244,67,54,0.18);
     --brand-muted-soft:     rgba(160,168,168,0.18);
-    background-color: var(--brand-bg);
-    color: var(--brand-text);
 }
-body[data-theme="dark"] .stApp,
-body[data-theme="dark"] [data-testid="stAppViewContainer"],
-body[data-theme="dark"] [data-testid="stHeader"] {
+html, body, .stApp,
+[data-testid="stAppViewContainer"],
+[data-testid="stHeader"],
+[data-testid="stSidebar"],
+[data-testid="stSidebarContent"] {
     background-color: var(--brand-bg) !important;
-    color: var(--brand-text);
+    color: var(--brand-text) !important;
 }
-body[data-theme="dark"], body[data-theme="dark"] p,
-body[data-theme="dark"] li, body[data-theme="dark"] span,
-body[data-theme="dark"] h1, body[data-theme="dark"] h2,
-body[data-theme="dark"] h3, body[data-theme="dark"] h4 {
-    color: var(--brand-text);
+body p, body li, body span, body label,
+body h1, body h2, body h3, body h4, body h5, body h6 {
+    color: var(--brand-text) !important;
 }
+/* Streamlit's own MD blocks override text color — force it */
+[data-testid="stMarkdownContainer"] p,
+[data-testid="stMarkdownContainer"] li,
+[data-testid="stMarkdownContainer"] span:not(.protocl-brand):not(.protocl-tagline),
+[data-testid="stMarkdownContainer"] h1,
+[data-testid="stMarkdownContainer"] h2,
+[data-testid="stMarkdownContainer"] h3,
+[data-testid="stMarkdownContainer"] h4 {
+    color: var(--brand-text) !important;
+}
+/* Inputs / selects / dataframes */
+[data-testid="stTextInput"] input,
+[data-testid="stNumberInput"] input,
+[data-testid="stTextArea"] textarea,
+[data-testid="stDateInput"] input,
+[data-testid="stSelectbox"] div[role="combobox"],
+[data-testid="stMultiSelect"] div[role="combobox"] {
+    background-color: var(--brand-surface) !important;
+    color: var(--brand-text) !important;
+    border-color: var(--brand-border) !important;
+}
+[data-testid="stDataFrame"] {
+    background-color: var(--brand-surface) !important;
+}
+/* Expanders + containers */
+[data-testid="stExpander"],
+[data-testid="stExpander"] details,
+[data-testid="stExpander"] summary {
+    background-color: var(--brand-surface) !important;
+    border-color: var(--brand-border) !important;
+    color: var(--brand-text) !important;
+}
+"""
+
+
+CUSTOM_CSS_BASE = """
+<style>
 
 /* ── Base ──────────────────────────────────────────────────────────────── */
 .block-container { padding-top: 1.5rem; }
@@ -199,8 +241,8 @@ h1, h2, h3, h4 { letter-spacing: -0.01em; }
     align-items: center;
     justify-content: center;
 }
-body[data-theme="dark"] .protocl-mark {
-    filter: drop-shadow(0 0 12px rgba(60,180,190,0.25));
+.protocl-mark {
+    filter: var(--brand-mark-glow, none);
 }
 .protocl-mark svg { width: 100%; height: 100%; display: block; }
 .protocl-mark svg path,
@@ -231,84 +273,41 @@ body[data-theme="dark"] .protocl-mark {
     .protocl-tagline { font-size: 0.8rem; }
 }
 
-/* ── Header theme toggle (teleports into Streamlit top-right) ──────────── */
-/* The toggle is a real Streamlit st.button wrapped in a marker div. We
-   position the marker fixed in the top-right of the viewport so it sits
-   inside the Streamlit toolbar band (which is 2.875rem tall). */
-.protocl-header-toggle-wrap {
-    position: fixed;
-    top: 0.5rem;
-    right: 5.25rem;       /* clears the Share/Star/Edit cluster on the right */
-    z-index: 1000;
-    width: 36px;
-    height: 36px;
+/* ── Brand-bar theme toggle (icon button on the right of the brand row) ── */
+/* The toggle is a real Streamlit st.button rendered into the second column
+   of the brand row. We scope its appearance via the column wrapper class. */
+.protocl-brand-toggle-col div[data-testid="stButton"] {
     display: flex;
-    align-items: center;
-    justify-content: center;
-    pointer-events: auto;
-}
-/* The next Streamlit horizontal-block after the marker is the column that
-   contains our button. Pin it to the marker. */
-.protocl-header-toggle-wrap + div[data-testid="stHorizontalBlock"] {
-    position: fixed;
-    top: 0.5rem;
-    right: 5.25rem;
-    z-index: 1000;
-    width: 36px !important;
-    min-width: 36px !important;
-    margin: 0 !important;
-    padding: 0 !important;
-}
-.protocl-header-toggle-wrap + div[data-testid="stHorizontalBlock"]
-  > div[data-testid="stColumn"] {
-    width: 36px !important;
-    min-width: 36px !important;
-    padding: 0 !important;
-    gap: 0 !important;
-    flex: 0 0 36px !important;
-}
-.protocl-header-toggle-wrap + div[data-testid="stHorizontalBlock"]
-  div[data-testid="stButton"] {
-    width: 36px;
-    height: 36px;
+    justify-content: flex-end;
     margin: 0;
 }
-.protocl-header-toggle-wrap + div[data-testid="stHorizontalBlock"]
-  div[data-testid="stButton"] > button {
-    width: 36px;
-    height: 36px;
+.protocl-brand-toggle-col div[data-testid="stButton"] > button {
+    width: 40px;
+    height: 40px;
     min-height: 0;
     padding: 0;
     border: 1px solid var(--brand-border);
     border-radius: 50%;
     background: var(--brand-surface);
     color: var(--brand-text);
-    font-size: 1rem;
+    font-size: 1.05rem;
     line-height: 1;
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    transition: background 120ms ease, color 120ms ease, border-color 120ms ease;
+    transition: background 120ms ease, color 120ms ease, border-color 120ms ease, transform 120ms ease;
     box-shadow: 0 1px 3px rgba(0,0,0,0.08);
 }
-.protocl-header-toggle-wrap + div[data-testid="stHorizontalBlock"]
-  div[data-testid="stButton"] > button:hover {
+.protocl-brand-toggle-col div[data-testid="stButton"] > button:hover {
     background: var(--brand-primary);
-    color: #fff;
+    color: #ffffff;
     border-color: var(--brand-primary);
+    transform: translateY(-1px);
 }
-.protocl-header-toggle-wrap + div[data-testid="stHorizontalBlock"]
-  div[data-testid="stButton"] > button:focus,
-.protocl-header-toggle-wrap + div[data-testid="stHorizontalBlock"]
-  div[data-testid="stButton"] > button:focus-visible {
+.protocl-brand-toggle-col div[data-testid="stButton"] > button:focus,
+.protocl-brand-toggle-col div[data-testid="stButton"] > button:focus-visible {
     outline: 2px solid var(--brand-primary);
     outline-offset: 2px;
-}
-@media (max-width: 640px) {
-    .protocl-header-toggle-wrap,
-    .protocl-header-toggle-wrap + div[data-testid="stHorizontalBlock"] {
-        right: 0.75rem;
-    }
 }
 
 /* ── KPI metric cards ──────────────────────────────────────────────────── */
@@ -459,7 +458,7 @@ body[data-theme="dark"] .protocl-mark {
 .density-comfortable              { /* default — no overrides */ }
 
 /* ── Tables / Streamlit chrome ─────────────────────────────────────────── */
-body[data-theme="dark"] [data-testid="stDataFrame"] { background: var(--brand-surface); }
+/* dataframe theming handled by token-level rules above */
 
 .stButton > button {
     background: var(--brand-surface);
@@ -482,127 +481,98 @@ section[data-testid="stSidebar"] {
 #MainMenu { visibility: hidden; }
 footer { visibility: hidden; }
 </style>
-
-<script>
-/* Apply the data-theme attribute to BOTH the iframe body AND the parent
-   document body. The iframe body is where this CSS lives (so it controls
-   variables for Streamlit-rendered content); the parent body covers the
-   outer shell. Reads the desired mode from a `<meta name="protocl-theme">`
-   tag injected with the marker just before this script. */
-(function() {
-    function getMode(doc) {
-        if (!doc) return 'light';
-        const meta = doc.querySelector('meta[name="protocl-theme"]');
-        return meta ? meta.getAttribute('content') : 'light';
-    }
-    const localDoc = document;
-    const parentDoc = (window.parent && window.parent.document &&
-                       window.parent.document !== localDoc)
-        ? window.parent.document : null;
-    /* Prefer the meta tag from whichever doc has it; iframe is set first. */
-    const mode = getMode(localDoc) || getMode(parentDoc) || 'light';
-    const apply = (doc) => {
-        if (!doc || !doc.body) return;
-        doc.body.setAttribute('data-theme', mode === 'dark' ? 'dark' : 'light');
-    };
-    apply(localDoc);
-    apply(parentDoc);
-})();
-</script>
 """
 
 
 # Bump this whenever CSS changes shape so we can prove server-side which build
 # is live (the value is also shown by the freshness badge on Home).
-UI_VERSION = "2.0.1"
-UI_BUILD_LABEL = "v2.0.1 · teal-on-cream · header-toggle · dark-mode-fix"
+UI_VERSION = "2.0.2"
+UI_BUILD_LABEL = "v2.0.2 · teal-on-cream · brand-bar-toggle · cascading-tokens"
 
 
 def inject_css() -> None:
     """Inject the Protocōl CSS. Idempotent — call once per page near the top.
 
-    Also writes a `<meta name="protocl-theme">` tag based on the current
-    session theme mode so the inline JS in CUSTOM_CSS can set the body's
-    `data-theme` attribute.
+    Emits the active theme's CSS variables on :root directly. No DOM-attribute
+    flipping, no JS — when the user toggles, ``st.rerun()`` re-runs this
+    function with the new mode and the new variable values are written. The
+    cascade does the rest.
     """
     mode = get_theme_mode()
-    marker = (
-        f'<!-- protocl ui={UI_VERSION} mode={mode} build="{UI_BUILD_LABEL}" -->'
-        f'<meta name="protocl-theme" content="{mode}">'
-    )
-    st.markdown(marker + CUSTOM_CSS, unsafe_allow_html=True)
+    tokens_css = _DARK_TOKENS_CSS if mode == "dark" else _LIGHT_TOKENS_CSS
+    marker = f'<!-- protocl ui={UI_VERSION} mode={mode} build="{UI_BUILD_LABEL}" -->'
+    css = f"{marker}<style>{tokens_css}</style>{CUSTOM_CSS_BASE}"
+    st.markdown(css, unsafe_allow_html=True)
+
+
+_MARK_SVG = (
+    '<svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" '
+    'aria-hidden="true" role="img">'
+    '<path d="M32 4 L56 12 L56 32 Q56 50 32 60 Q8 50 8 32 L8 12 Z" '
+    'fill="none" stroke="currentColor" stroke-width="2.5" stroke-linejoin="round"/>'
+    '<path d="M18 44 L32 30 L46 44" fill="none" stroke="currentColor" '
+    'stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" opacity="0.4"/>'
+    '<path d="M18 36 L32 22 L46 36" fill="none" stroke="currentColor" '
+    'stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" opacity="0.7"/>'
+    '<path d="M18 28 L32 14 L46 28" fill="none" stroke="currentColor" '
+    'stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"/>'
+    '<circle cx="32" cy="14" r="2.8" fill="currentColor"/>'
+    '</svg>'
+)
 
 
 def render_top_brand(tagline: str = "Precision data. Confident decisions. Verified outcomes.") -> None:
-    """Render the Protocōl brand bar (no toggle inside — toggle lives in header).
+    """Render the Protocōl brand bar with the theme toggle anchored on the right.
 
-    The theme toggle is rendered separately by ``render_header_theme_toggle``
-    which teleports into Streamlit's top-right toolbar area via CSS.
+    Layout: a two-column row — brand mark + name on the left, theme toggle
+    button on the right. The toggle is a real ``st.button`` so click handling
+    is robust; ``inject_css`` re-emits the active theme's CSS variables on
+    every render, so flipping the toggle actually flips the colors.
     """
-    mark_svg = (
-        '<svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" '
-        'aria-hidden="true" role="img">'
-        '<path d="M32 4 L56 12 L56 32 Q56 50 32 60 Q8 50 8 32 L8 12 Z" '
-        'fill="none" stroke="currentColor" stroke-width="2.5" stroke-linejoin="round"/>'
-        '<path d="M18 44 L32 30 L46 44" fill="none" stroke="currentColor" '
-        'stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" opacity="0.4"/>'
-        '<path d="M18 36 L32 22 L46 36" fill="none" stroke="currentColor" '
-        'stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" opacity="0.7"/>'
-        '<path d="M18 28 L32 14 L46 28" fill="none" stroke="currentColor" '
-        'stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"/>'
-        '<circle cx="32" cy="14" r="2.8" fill="currentColor"/>'
-        '</svg>'
-    )
-
-    st.markdown(
-        f'<div class="protocl-top-brand-row">'
-        f'<div class="protocl-top-brand">'
-        f'<span class="protocl-mark" style="color: var(--brand-primary);">{mark_svg}</span>'
-        f'<span class="protocl-brand-stack">'
-        f'<span class="protocl-brand">Protocōl</span>'
-        f'<span class="protocl-tagline">{tagline}</span>'
-        f'</span>'
-        f'</div>'
-        f'</div>',
-        unsafe_allow_html=True,
-    )
-
-    # Render the header toggle right after the brand. CSS pins it to the
-    # viewport so it appears next to the Share/Star icons regardless of
-    # where it lives in document order.
-    render_header_theme_toggle()
+    left, right = st.columns([10, 1], vertical_alignment="center")
+    with left:
+        st.markdown(
+            f'<div class="protocl-top-brand-row">'
+            f'<div class="protocl-top-brand">'
+            f'<span class="protocl-mark" style="color: var(--brand-primary);">{_MARK_SVG}</span>'
+            f'<span class="protocl-brand-stack">'
+            f'<span class="protocl-brand">Protocōl</span>'
+            f'<span class="protocl-tagline">{tagline}</span>'
+            f'</span>'
+            f'</div>'
+            f'</div>',
+            unsafe_allow_html=True,
+        )
+    with right:
+        st.markdown('<div class="protocl-brand-toggle-col">', unsafe_allow_html=True)
+        _render_theme_toggle_button(key="theme_mode_brand_btn")
+        st.markdown('</div>', unsafe_allow_html=True)
 
 
-def render_header_theme_toggle(*, key: str = "theme_mode_header_btn") -> None:
-    """Render the compact icon-only theme toggle pinned to the top-right.
-
-    Real Streamlit ``st.button`` so click handling is reliable. CSS
-    ``.protocl-header-toggle-wrap + ...`` positions it ``fixed`` in the
-    top-right corner, alongside Streamlit's own toolbar icons.
-    """
+def _render_theme_toggle_button(*, key: str) -> None:
+    """Render the icon-only toggle button. Internal — use ``render_top_brand``."""
     current = get_theme_mode()
     next_mode = "dark" if current == "light" else "light"
     icon = "🌙" if next_mode == "dark" else "☀️"
     help_text = f"Switch to {next_mode} mode"
+    if st.button(icon, key=key, help=help_text, use_container_width=False):
+        st.session_state["theme_mode"] = next_mode
+        st.rerun()
 
-    st.markdown('<div class="protocl-header-toggle-wrap"></div>',
-                unsafe_allow_html=True)
-    # Single-column wrapper so the sibling-selector CSS catches it cleanly.
-    (col,) = st.columns(1)
-    with col:
-        if st.button(icon, key=key, help=help_text):
-            st.session_state["theme_mode"] = next_mode
-            st.rerun()
+
+def render_header_theme_toggle(*, key: str = "theme_mode_header_btn") -> None:
+    """Legacy entry point — renders just the toggle button on its own.
+
+    Prefer ``render_top_brand`` which renders the toggle in the brand row.
+    Kept so any page that calls this directly still works.
+    """
+    st.markdown('<div class="protocl-brand-toggle-col">', unsafe_allow_html=True)
+    _render_theme_toggle_button(key=key)
+    st.markdown('</div>', unsafe_allow_html=True)
 
 
 def render_theme_toggle(*, key: str = "theme_mode_toggle") -> None:
-    """Legacy entry point — kept so any page that calls it still works.
-
-    Delegates to ``render_header_theme_toggle``. Note that calling this from
-    a page body will still anchor the button to the top-right of the
-    viewport (because the CSS is fixed-position), which is exactly what we
-    want — one toggle, one place.
-    """
+    """Legacy entry point — delegates to ``render_header_theme_toggle``."""
     render_header_theme_toggle(key=key)
 
 
