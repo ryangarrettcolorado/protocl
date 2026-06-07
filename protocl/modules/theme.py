@@ -214,8 +214,11 @@ body h1, body h2, body h3, body h4, body h5, body h6 {
 """
 
 
+# NOTE: CUSTOM_CSS_BASE does NOT include its own <style>...</style> tags.
+# inject_css() concatenates tokens + base CSS inside a single <style> block
+# so we don't ship two adjacent <style> elements (Streamlit's markdown
+# sanitizer can strip the second one, leaking the raw CSS into the page).
 CUSTOM_CSS_BASE = """
-<style>
 
 /* ── Base ──────────────────────────────────────────────────────────────── */
 .block-container { padding-top: 1.5rem; }
@@ -480,14 +483,13 @@ section[data-testid="stSidebar"] {
 
 #MainMenu { visibility: hidden; }
 footer { visibility: hidden; }
-</style>
 """
 
 
 # Bump this whenever CSS changes shape so we can prove server-side which build
 # is live (the value is also shown by the freshness badge on Home).
-UI_VERSION = "2.0.2"
-UI_BUILD_LABEL = "v2.0.2 · teal-on-cream · brand-bar-toggle · cascading-tokens"
+UI_VERSION = "2.0.3"
+UI_BUILD_LABEL = "v2.0.3 · single-style-block · css-leak-fix"
 
 
 def inject_css() -> None:
@@ -501,7 +503,7 @@ def inject_css() -> None:
     mode = get_theme_mode()
     tokens_css = _DARK_TOKENS_CSS if mode == "dark" else _LIGHT_TOKENS_CSS
     marker = f'<!-- protocl ui={UI_VERSION} mode={mode} build="{UI_BUILD_LABEL}" -->'
-    css = f"{marker}<style>{tokens_css}</style>{CUSTOM_CSS_BASE}"
+    css = f"{marker}<style>{tokens_css}\n{CUSTOM_CSS_BASE}\n</style>"
     st.markdown(css, unsafe_allow_html=True)
 
 
