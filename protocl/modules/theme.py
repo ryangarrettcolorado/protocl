@@ -167,13 +167,49 @@ body[data-theme="dark"] h3, body[data-theme="dark"] h4 {
 h1, h2, h3, h4 { letter-spacing: -0.01em; }
 
 /* ── Top brand bar (replaces sidebar brand) ────────────────────────────── */
+/* The brand-row wrapper holds the brand on the left and the theme toggle
+   pill on the right in a single border-bottomed band. Streamlit columns
+   render right after this marker div, so we target them by sibling. */
+.protocl-top-brand-row {
+    margin: 2.5rem -1rem 0;
+    padding: 0 1rem;
+    border-bottom: 1px solid var(--brand-border);
+}
+.protocl-top-brand-row + div[data-testid="stHorizontalBlock"] {
+    margin: 0 -1rem 1.5rem;
+    padding: 0 1rem;
+    align-items: center;
+}
+.protocl-top-brand-row + div[data-testid="stHorizontalBlock"]
+  > div[data-testid="stColumn"]:last-child {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+}
+.protocl-top-brand-row + div[data-testid="stHorizontalBlock"]
+  div[data-testid="stButton"] > button {
+    background: var(--brand-surface);
+    color: var(--brand-text);
+    border: 1px solid var(--brand-border);
+    border-radius: 999px;
+    padding: 6px 14px;
+    font-size: 0.85rem;
+    font-weight: 500;
+    min-height: 0;
+    line-height: 1.2;
+    transition: background 120ms ease, color 120ms ease, border-color 120ms ease;
+}
+.protocl-top-brand-row + div[data-testid="stHorizontalBlock"]
+  div[data-testid="stButton"] > button:hover {
+    background: var(--brand-primary);
+    color: #fff;
+    border-color: var(--brand-primary);
+}
 .protocl-top-brand {
     display: flex;
     align-items: center;
     gap: 18px;
-    padding: 22px 1rem 20px;
-    border-bottom: 1px solid var(--brand-border);
-    margin: 2.5rem -1rem 1.5rem;
+    padding: 22px 0 20px;
 }
 .protocl-mark {
     flex: 0 0 auto;
@@ -429,10 +465,12 @@ def inject_css() -> None:
 
 
 def render_top_brand(tagline: str = "Precision data. Confident decisions. Verified outcomes.") -> None:
-    """Render the Protocōl brand bar above the top nav.
+    """Render the Protocōl brand bar with a right-aligned theme switcher.
 
     Streamlit renders ``st.navigation`` once per session at the entry point,
     so this needs to be called from ``app.py`` (not from individual pages).
+    Uses ``st.columns`` so the toggle button is a real Streamlit control
+    (not an unreachable HTML element) and can mutate session_state on click.
     """
     # Custom inline SVG mark (Chevron Shield). Strokes are colored by CSS
     # (.protocl-mark svg path { stroke: var(--brand-primary) }), so we use
@@ -451,35 +489,44 @@ def render_top_brand(tagline: str = "Precision data. Confident decisions. Verifi
         '<circle cx="32" cy="14" r="2.8" fill="currentColor"/>'
         '</svg>'
     )
-    st.markdown(
-        f'<div class="protocl-top-brand">'
-        f'<span class="protocl-mark" style="color: var(--brand-primary);">{mark_svg}</span>'
-        f'<span class="protocl-brand-stack">'
-        f'<span class="protocl-brand">Protocōl</span>'
-        f'<span class="protocl-tagline">{tagline}</span>'
-        f'</span>'
-        f'</div>',
-        unsafe_allow_html=True,
-    )
+
+    # Two-column header: brand on the left, theme switcher pill on the right.
+    # The header CSS (.protocl-top-brand-row) flattens column padding so the
+    # toggle button lines up with the brand text baseline.
+    st.markdown('<div class="protocl-top-brand-row">', unsafe_allow_html=True)
+    col_brand, col_toggle = st.columns([6, 1], gap="small")
+    with col_brand:
+        st.markdown(
+            f'<div class="protocl-top-brand">'
+            f'<span class="protocl-mark" style="color: var(--brand-primary);">{mark_svg}</span>'
+            f'<span class="protocl-brand-stack">'
+            f'<span class="protocl-brand">Protocōl</span>'
+            f'<span class="protocl-tagline">{tagline}</span>'
+            f'</span>'
+            f'</div>',
+            unsafe_allow_html=True,
+        )
+    with col_toggle:
+        render_theme_toggle(key="theme_mode_header")
+    st.markdown('</div>', unsafe_allow_html=True)
 
 
 def render_theme_toggle(*, key: str = "theme_mode_toggle") -> None:
-    """Render a Light/Dark mode toggle. Call from app.py sidebar.
+    """Render a single-click Light↔Dark switcher pill.
 
     Stores the chosen mode in ``st.session_state["theme_mode"]`` and triggers
-    a rerun so the CSS can re-inject with the new mode marker.
+    a rerun so the CSS can re-inject with the new mode marker. Designed to be
+    placed in the header (see ``render_top_brand``), but safe to call anywhere.
     """
     current = get_theme_mode()
-    choice = st.radio(
-        "Appearance",
-        options=["Light", "Dark"],
-        index=0 if current == "light" else 1,
-        horizontal=True,
-        key=key,
-    )
-    new_mode = "dark" if choice == "Dark" else "light"
-    if new_mode != current:
-        st.session_state["theme_mode"] = new_mode
+    # Show the icon for the mode you'd switch TO (affordance: "click here to
+    # go dark" when light, "click here to go light" when dark).
+    next_mode = "dark" if current == "light" else "light"
+    icon = "🌙" if next_mode == "dark" else "☀️"
+    label = f"{icon} {next_mode.capitalize()}"
+    help_text = f"Switch to {next_mode} mode"
+    if st.button(label, key=key, help=help_text, use_container_width=True):
+        st.session_state["theme_mode"] = next_mode
         st.rerun()
 
 

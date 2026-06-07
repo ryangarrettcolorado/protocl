@@ -90,12 +90,10 @@ def boot() -> auth.Principal:
 def _render_sidebar(principal: auth.Principal) -> None:
     from modules import changelog
     from modules import feedback_v2 as feedback
-    from modules.theme import render_theme_toggle
 
     with st.sidebar:
         st.caption(f"Signed in: {st.session_state.get('display_name', principal.display_name)}")
-        # v2.0 — light/dark toggle for the teal brand system.
-        render_theme_toggle()
+        # v2.0 — light/dark toggle moved to the header (render_top_brand).
     feedback.render_sidebar_widget(current_page=_current_page_label())
     auth.logout_button()
     with st.sidebar:
