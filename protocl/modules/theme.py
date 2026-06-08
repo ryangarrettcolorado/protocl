@@ -488,8 +488,8 @@ footer { visibility: hidden; }
 
 # Bump this whenever CSS changes shape so we can prove server-side which build
 # is live (the value is also shown by the freshness badge on Home).
-UI_VERSION = "2.0.3"
-UI_BUILD_LABEL = "v2.0.3 · single-style-block · css-leak-fix"
+UI_VERSION = "2.0.4"
+UI_BUILD_LABEL = "v2.0.4 · st.html · no-markdown-leak"
 
 
 def inject_css() -> None:
@@ -502,9 +502,25 @@ def inject_css() -> None:
     """
     mode = get_theme_mode()
     tokens_css = _DARK_TOKENS_CSS if mode == "dark" else _LIGHT_TOKENS_CSS
-    marker = f'<!-- protocl ui={UI_VERSION} mode={mode} build="{UI_BUILD_LABEL}" -->'
-    css = f"{marker}<style>{tokens_css}\n{CUSTOM_CSS_BASE}\n</style>"
-    st.markdown(css, unsafe_allow_html=True)
+    # Single <style> block, no leading HTML comment (the marker is moved into
+    # the CSS itself as a comment, where it's harmless). st.html() renders
+    # raw HTML in its own component iframe — it bypasses Streamlit's markdown
+    # processor entirely, so there's no risk of <style> being stripped or
+    # the contents leaking out as visible text.
+    css = (
+        f"<style>\n"
+        f"/* protocl ui={UI_VERSION} mode={mode} build=\"{UI_BUILD_LABEL}\" */\n"
+        f"{tokens_css}\n"
+        f"{CUSTOM_CSS_BASE}\n"
+        f"</style>"
+    )
+    # Prefer st.html when available (Streamlit ≥ 1.33). Falls back to
+    # st.markdown(unsafe_allow_html=True) for older builds.
+    html_fn = getattr(st, "html", None)
+    if callable(html_fn):
+        html_fn(css)
+    else:
+        st.markdown(css, unsafe_allow_html=True)
 
 
 _MARK_SVG = (
