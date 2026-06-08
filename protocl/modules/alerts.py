@@ -36,6 +36,28 @@ SEVERITY_CRITICAL = "critical"
 SEVERITY_WARNING  = "warning"
 SEVERITY_INFO     = "info"
 
+# Path to the JSON file scripts/daily_sync.py writes after each healthkit
+# sync attempt. Read here so the watchlist can show truthful, actionable
+# pipeline state instead of guessing from wearables.csv mtimes.
+_HEALTHKIT_STATUS_PATH = "protocl/data/ryan/healthkit_sync_status.json"
+
+
+def _read_healthkit_sync_status() -> dict | None:
+    """Return the most recent healthkit sync status dict, or None if absent.
+
+    Never raises — if the file is missing or malformed we just return None
+    and the caller falls back to mtime-based freshness detection.
+    """
+    import json
+    import os
+    if not os.path.exists(_HEALTHKIT_STATUS_PATH):
+        return None
+    try:
+        with open(_HEALTHKIT_STATUS_PATH) as f:
+            return json.load(f)
+    except (OSError, json.JSONDecodeError):
+        return None
+
 
 def _stable_id(category: str, key: str, fired_date: str) -> str:
     h = hashlib.sha256(f"{category}|{key}|{fired_date}".encode()).hexdigest()
@@ -341,11 +363,56 @@ def evaluate_data_freshness() -> list[Alert]:
     # the Health Auto Export iOS app dropping JSON files into Drive every
     # 6h, which the daily_sync workflow ingests. If wearables go stale, the
     # automation has stopped firing on the user's phone.
+    #
+    # We prefer the truthful pipeline state from
+    # ``healthkit_sync_status.json`` (written by scripts/daily_sync.py) over
+    # raw file-mtime guessing, so the user sees "not configured" vs
+    # "connected, drive empty" vs "connected, X rows last sync" — not just
+    # "no data for N days" which is true but unactionable.
+    sync_status = _read_healthkit_sync_status()
+    if sync_status is not None:
+        state = sync_status.get("state")
+        detail = sync_status.get("detail", "")
+        if state == "not_configured":
+            alerts.append(_alert(
+                CATEGORY_FRESHNESS, "healthkit_not_configured",
+                SEVERITY_WARNING,
+                "HealthKit sync not configured",
+                detail or "Add GitHub Secrets to enable the Health Auto Export pipeline.",
+                evidence={"state": state, "last_run_utc": sync_status.get("last_run_utc")},
+            ))
+        elif state == "connected_no_data":
+            alerts.append(_alert(
+                CATEGORY_FRESHNESS, "healthkit_no_data",
+                SEVERITY_INFO,
+                "HealthKit connected — awaiting data",
+                detail or "Drive folder is empty. Check the Health Auto Export automation.",
+                evidence={"state": state, "last_run_utc": sync_status.get("last_run_utc")},
+            ))
+        elif state == "error":
+            alerts.append(_alert(
+                CATEGORY_FRESHNESS, "healthkit_sync_error",
+                SEVERITY_WARNING,
+                "HealthKit sync failed",
+                detail or "Last sync raised an error — check the Actions log.",
+                evidence={"state": state,
+                          "errors": sync_status.get("errors", []),
+                          "last_run_utc": sync_status.get("last_run_utc")},
+            ))
+        # state == "connected_with_data" — fall through to the freshness
+        # check below so users still get an alert if HAE stopped firing
+        # after working previously.
+
     if not data.wearables.empty:
         try:
             last_w = pd.Timestamp(data.wearables["date"].max()).date()
             days = (today - last_w).days
-            if days >= 3:
+            # Skip if we already raised a "not configured" or "no data" alert
+            # above — don't pile two alerts on the same root cause.
+            already_raised = sync_status is not None and sync_status.get("state") in {
+                "not_configured", "connected_no_data", "error",
+            }
+            if days >= 3 and not already_raised:
                 alerts.append(_alert(
                     CATEGORY_FRESHNESS, "healthkit_stale",
                     SEVERITY_WARNING,
