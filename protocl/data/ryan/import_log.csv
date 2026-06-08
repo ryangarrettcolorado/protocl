@@ -29,3 +29,4 @@ timestamp,source_type,filename,rows_imported,rows_skipped_duplicate,errors,impor
 2026-06-05T13:03:38,strava_api,training.csv (+strava),0.0,1.0,,load_strava.py
 2026-06-06T13:08:40,strava_api,training.csv (+strava),0.0,1.0,,load_strava.py
 2026-06-07T13:01:04,strava_api,training.csv (+strava),50.0,0.0,,load_strava.py
+2026-06-08T13:10:06,strava_api,training.csv (+strava),2.0,0.0,,load_strava.py
