@@ -57,3 +57,7 @@ protocl/data/ryan/_hr_raw.json
 # (data/ryan) and shared/sample templates stay tracked; beta user dirs do not.
 protocl/data/profiles/
 data/profiles/
+
+# Stray temp scripts from cron runs
+_tmp_*.py
+pull_strava_and_write_raw.py
