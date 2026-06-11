@@ -1,6 +1,8 @@
 date,activity_type,source,duration_min,distance_miles,elevation_ft,avg_hr_bpm,max_hr_bpm,avg_power_watts,avg_cadence_rpm,calories,tss,zone2_min,notes
 2024-06-15,workout,strava,151.2,,,139.0,180.0,,,,170.0,,Morning Workout · indoor · dev:Apple Watch Series 5 · strava_id:11681336369
 2024-06-18,ride,strava,60.6,14.84,1303.0,,,,,,95.0,,Afternoon Ride · dev:Strava App · strava_id:11684662344
+2025-05-29,walk,strava,16.0,0.66,14.0,94.0,102.0,,,,2.0,,Evening Walk · dev:Apple Watch Ultra 2 · strava_id:14637335905
+2025-05-31,workout,strava,140.7,,,147.9,184.0,,,,178.0,,Morning Workout · indoor · dev:Apple Watch Ultra 2 · strava_id:14654731564
 2025-06-07,workout,strava,124.0,,,152.4,180.0,,,,199.0,,Morning Workout · indoor · dev:Apple Watch Ultra 2 · strava_id:14781951856
 2025-06-14,mtb,strava,137.8,24.41,6158.0,,,,,,355.0,,Winter Park Trestles Day1 · dev:Strava App · strava_id:14800566640
 2025-06-25,mtb,strava,52.0,10.32,733.0,,,,,,,,Evening Mountain Bike Ride · dev:Strava App · strava_id:14917565653
