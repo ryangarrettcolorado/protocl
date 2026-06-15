@@ -133,3 +133,5 @@ date,activity_type,source,duration_min,distance_miles,elevation_ft,avg_hr_bpm,ma
 2026-05-20,mountain_bike,demo,70.0,12.583158087451697,1756.0,151.0,167.0,192.0,85.0,770.0,84.0,24.0,
 2026-05-21,ride,demo,181.0,44.11511752003329,2821.0,146.0,160.0,182.0,87.0,1991.0,217.0,63.0,
 2026-05-22,strength,demo,52.0,0.0,0.0,123.0,134.0,0.0,0.0,312.0,0.0,0.0,
+2026-06-14,ride,strava,162.7,44.01,1775.0,146.6,167.0,133.7,,1305.0,191.0,,Half-century'ish · dev:Strava App · strava_id:18921039776
+2026-06-14,walk,strava,36.3,1.52,61.0,103.2,114.0,,,,5.0,,Afternoon Walk · dev:Apple Watch Ultra 2 · strava_id:18924261116
