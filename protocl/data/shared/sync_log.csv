@@ -35,3 +35,5 @@ timestamp,profile_id,source,status,records_added,error_message
 2026-06-23T14:08:54+00:00,ryan,apple_health,ok,0,
 2026-06-24T13:09:22+00:00,ryan,strava,ok,1,
 2026-06-24T13:09:22+00:00,ryan,apple_health,ok,0,
+2026-06-25T13:04:24+00:00,ryan,strava,ok,1,
+2026-06-25T13:04:24+00:00,ryan,apple_health,ok,0,
