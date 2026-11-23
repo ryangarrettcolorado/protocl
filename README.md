@@ -5,9 +5,6 @@ wearables, CGM, training, and protocol data into a single longitudinal view
 with biological-age scoring, N=1 experiment tracking, risk detection, and
 LLM-augmented recommendations.
 
-Built across 4 sessions from a single master prompt. Demo data anchored to
-**May 25, 2026** for a 42-year-old male on TRT + peptides.
-
 ---
 
 ## Quick start
